@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans:
+    "Raleway Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+  --font-heading:
+    "Libre Franklin Variable", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, "SF Mono", "Cascadia Mono",
+    "Segoe UI Mono", Consolas, monospace;
+
+  --color-bg: #f5fafa;
+  --color-surface: #ffffff;
+  --color-ink: #10282b;
+  --color-ink-muted: #62797c;
+  --color-line: #dce6e7;
+  --color-accent: #146b7d;
+
+  --color-status-good: #2e9e5b;
+  --color-status-good-bg: #e6f6ec;
+  --color-status-good-fg: #1b7f45;
+
+  --color-status-watch: #d98f0b;
+  --color-status-watch-bg: #fdf3dc;
+  --color-status-watch-fg: #9a6400;
+
+  --color-status-bad: #d64f3e;
+  --color-status-bad-bg: #fbe9e6;
+  --color-status-bad-fg: #b23a2e;
+
+  --color-status-overdue: #a9b4b4;
+  --color-status-overdue-bg: #eef2f2;
+  --color-status-overdue-fg: #667070;
+}
+
+body {
+  background: var(--color-bg);
+}
+
+.recharts-wrapper text {
+  font-family: var(--font-mono);
+}
