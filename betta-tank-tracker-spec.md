@@ -113,11 +113,55 @@ Tap any dashboard card to open it.
 - Export all readings to CSV
 - Import a CSV back
 
-## Photo import of handwritten logs
+## Mobile requirements
+
+This is used on mobile almost exclusively. Build mobile-first.
+
+- Single column, full width
+- Tap targets at least 44px tall
+- Number inputs must use `inputMode="decimal"` so iOS opens the number pad
+- Primary action button fixed near the bottom
+- Respect the mobile safe areas with `env(safe-area-inset-bottom)`
+
+## PWA setup
+
+- `manifest.json` with name, short name, theme color, `"display": "standalone"`
+- Icons at 192px and 512px
+- A service worker that caches the app shell so it opens without a signal
+- No Vite `base` path needed — Cloudflare Pages serves from the domain root
+
+## Deployment
+
+- Cloudflare Pages, connected via Git integration: builds on push to `master`, no CI config or repo secrets needed
+- Build command `npm run build`, output directory `dist`
+- Supabase URL and anon key set as environment variables in the Cloudflare Pages project settings (Production and Preview), never committed
+
+## Out of scope for v1
+
+- Multiple tanks
+- Photo import of handwritten logs — see "v2" below
+- Storing or gallerying tank photos
+- Push notifications for overdue tests
+- Water change and feeding logs
+- Sharing or multi-user access
+
+## Build order
+
+1. Vite scaffold, Tailwind, deploy an empty page to Cloudflare Pages and confirm it loads on the phone
+2. Supabase tables and seed data
+3. Dashboard reading real data
+4. Log a test form
+5. Parameter history with chart
+6. Settings, CSV export and import
+7. PWA manifest, service worker, home screen install
+
+## v2 (future)
+
+### Photo import of handwritten logs
 
 Snap a photo of a handwritten note and have the app read the numbers into the log form.
 
-### Flow
+#### Flow
 
 1. On the "Log a test" screen, add a camera button at the top.
 2. Tapping it opens the iPhone camera or photo library. Use `<input type="file" accept="image/*" capture="environment">`.
@@ -127,7 +171,7 @@ Snap a photo of a handwritten note and have the app read the numbers into the lo
 6. The app fills the form fields with whatever came back.
 7. **She reviews and corrects, then saves.** Nothing writes to the database straight from the photo.
 
-### Edge function
+#### Edge function
 
 Keep the API key server side. It must never appear in the browser bundle.
 
@@ -155,7 +199,7 @@ Prompt rules to include:
 
 Parse the response defensively. Strip stray backticks before `JSON.parse`, and wrap it in try/catch.
 
-### Review screen
+#### Review screen
 
 After extraction, show the form prefilled with:
 
@@ -164,7 +208,7 @@ After extraction, show the form prefilled with:
 - A thumbnail of the photo pinned to the top of the screen so she can compare against her own writing
 - A "Clear all" button to throw out a bad read and start over
 
-### Cost and setup
+#### Cost and setup
 
 This is the one piece that is not free. It needs an Anthropic API key with a small prepaid balance, which is separate from a Claude subscription. A resized photo runs well under a cent, so a few dollars will last years at this volume. Supabase Edge Functions are included in the free tier.
 
@@ -172,44 +216,4 @@ If you would rather keep the app fully free, ship everything else first and leav
 
 Do not store the photos. Process and discard.
 
-## Mobile requirements
-
-This is used on an iPhone almost exclusively. Build mobile-first and only let the layout widen on desktop.
-
-- Single column, full width
-- Tap targets at least 44px tall
-- Number inputs must use `inputMode="decimal"` so iOS opens the number pad
-- Primary action button fixed near the bottom
-- Respect the iPhone safe area with `env(safe-area-inset-bottom)`
-
-## PWA setup
-
-- `manifest.json` with name, short name, theme color, `"display": "standalone"`
-- Icons at 192px and 512px
-- A service worker that caches the app shell so it opens without a signal
-- No Vite `base` path needed — Cloudflare Pages serves from the domain root
-
-## Deployment
-
-- Cloudflare Pages, connected via Git integration: builds on push to `master`, no CI config or repo secrets needed
-- Build command `npm run build`, output directory `dist`
-- Supabase URL and anon key set as environment variables in the Cloudflare Pages project settings (Production and Preview), never committed
-
-## Out of scope for v1
-
-- Multiple tanks
-- Storing or gallerying tank photos — the only photo use is handwriting import, and those are discarded
-- Push notifications for overdue tests
-- Water change and feeding logs
-- Sharing or multi-user access
-
-## Build order
-
-1. Vite scaffold, Tailwind, deploy an empty page to GitHub Pages and confirm it loads on the phone
-2. Supabase tables and seed data
-3. Dashboard reading real data
-4. Log a test form
-5. Parameter history with chart
-6. Settings, CSV export and import
-7. PWA manifest, service worker, home screen install
-8. Photo import — edge function first, tested with a real photo of your handwriting, then the review screen
+Build order for this feature: edge function first, tested with a real photo of your handwriting, then the review screen.
