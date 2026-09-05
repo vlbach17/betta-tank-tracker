@@ -67,3 +67,11 @@ Temperature is also tracked (78–80°F) but is handled separately in code: a 3-
 - **After shipping any change**, update `CHANGELOG.md` (newest entry at top) and `ROADMAP.md` (move finished items out of "Next up").
 - **New feature ideas** go under "Someday" in `ROADMAP.md`. Only move something into "Next up" when explicitly told to, or when work on it actually starts.
 - Log non-obvious decisions (and things deliberately *not* done) in `DECISIONS.md` as they happen, not retroactively.
+
+## Branching and deployment
+
+`master` is the production branch — Cloudflare auto-builds and deploys it to the live URL on every push, with no approval step. `dev` is the working branch for everyday changes; pushing it only triggers a Cloudflare *preview* deployment, not production.
+
+- Do all normal work on `dev` (commit and push there), not `master`.
+- Only merge `dev` into `master` when explicitly told to deploy/ship/go live. A merge to `master` is a live production deploy — treat it with the same care as a manual "deploy" click.
+- If asked to work directly on `master` for something urgent, confirm that's intended before pushing, since it skips the preview step entirely.
