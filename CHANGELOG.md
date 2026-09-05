@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here. Newest release first.
 
+## [Unreleased]
+
+### Changed
+- Deploy workflow now uses `dev` as the working branch and `master` as the production branch — `master` still auto-deploys on push, but `dev` pushes only trigger a Cloudflare preview build, so changes no longer go live automatically as they're made
+
+### Fixed
+- Cloudflare deploy step (`npx wrangler versions upload`) failing with "Missing entry-point to Worker script or to assets directory" — added `wrangler.jsonc` specifying the Worker name and `./dist` as the assets directory, which earlier deploys had been missing without issue until the first `dev`-branch build surfaced it
+
 ## [1.0.0] - 2026-09-05
 
 ### Added
