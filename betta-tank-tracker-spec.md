@@ -12,7 +12,7 @@ Log water test results as they happen, see whether each result is in range, and 
 - Tailwind for styling
 - Supabase for the database (free tier)
 - Recharts for the trend graphs
-- Deployed to GitHub Pages
+- Deployed to Cloudflare Pages
 - Installed to the iPhone home screen as a PWA
 
 No login screen. This is a single-user app. Use Supabase anon key with row level security locked to a single hardcoded user, or skip auth entirely and keep the project private.
@@ -187,12 +187,13 @@ This is used on an iPhone almost exclusively. Build mobile-first and only let th
 - `manifest.json` with name, short name, theme color, `"display": "standalone"`
 - Icons at 192px and 512px
 - A service worker that caches the app shell so it opens without a signal
-- Set the Vite `base` to the repo name so GitHub Pages resolves assets correctly
+- No Vite `base` path needed — Cloudflare Pages serves from the domain root
 
 ## Deployment
 
-- GitHub Actions workflow that builds on push to `main` and publishes `dist` to GitHub Pages
-- Supabase URL and anon key come from `.env` and repo secrets, never committed
+- Cloudflare Pages, connected via Git integration: builds on push to `master`, no CI config or repo secrets needed
+- Build command `npm run build`, output directory `dist`
+- Supabase URL and anon key set as environment variables in the Cloudflare Pages project settings (Production and Preview), never committed
 
 ## Out of scope for v1
 

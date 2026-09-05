@@ -4,7 +4,7 @@ Single-user water parameter log for one Betta aquarium. See `betta-tank-tracker-
 
 ## Stack
 
-Vite + React + TypeScript, Tailwind CSS, Supabase, Recharts. Deployed to GitHub Pages, installed as a PWA on iPhone.
+Vite + React + TypeScript, Tailwind CSS, Supabase, Recharts. Deployed to Cloudflare Pages, installed as a PWA on iPhone.
 
 ## Development
 
