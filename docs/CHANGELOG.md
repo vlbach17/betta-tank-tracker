@@ -4,6 +4,9 @@ All notable changes to this project are documented here. Newest release first.
 
 ## [Unreleased]
 
+### Added
+- °F / °C display toggle in Settings — temperature readings, ideal range, and the largest-swing callout convert on the way out only; the stored value is always Fahrenheit
+
 ### Changed
 - Renamed the app from "Betta Tank Tracker" to "Spunk's Bettabase" — updated the page title, PWA manifest name/short name, home-screen title, in-app dashboard header, and README
 - Deploy workflow now uses `dev` as the working branch and `master` as the production branch — `master` still auto-deploys on push, but `dev` pushes only trigger a Cloudflare preview build, so changes no longer go live automatically as they're made

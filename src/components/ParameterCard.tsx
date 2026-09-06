@@ -6,6 +6,12 @@ import {
 } from '../lib/format'
 import type { ParameterWithLatestReading } from '../lib/parameters'
 import { getReadingStatus, isOverdue } from '../lib/status'
+import {
+  TEMPERATURE_PARAMETER_NAME,
+  convertTempForDisplay,
+  tempUnitLabel,
+} from '../lib/temperature'
+import { useTempUnit } from '../lib/useTempUnit'
 import { StatusPill } from './StatusPill'
 
 export function ParameterCard({
@@ -13,12 +19,28 @@ export function ParameterCard({
 }: {
   parameter: ParameterWithLatestReading
 }) {
+  const { tempUnit } = useTempUnit()
   const { name, unit, ideal_min, ideal_max, latestReading } = parameter
   const overdue = isOverdue(name, latestReading?.tested_at ?? null)
   const status = latestReading
     ? getReadingStatus(latestReading.value, ideal_min, ideal_max)
     : null
-  const rangeText = formatIdealRange(ideal_min, ideal_max)
+
+  const isTemperature = name === TEMPERATURE_PARAMETER_NAME
+  const displayUnit = isTemperature ? tempUnitLabel(tempUnit) : unit
+  const displayIdealMin =
+    isTemperature && ideal_min != null
+      ? convertTempForDisplay(ideal_min, tempUnit)
+      : ideal_min
+  const displayIdealMax =
+    isTemperature && ideal_max != null
+      ? convertTempForDisplay(ideal_max, tempUnit)
+      : ideal_max
+  const displayValue =
+    isTemperature && latestReading
+      ? convertTempForDisplay(latestReading.value, tempUnit)
+      : (latestReading?.value ?? null)
+  const rangeText = formatIdealRange(displayIdealMin, displayIdealMax)
 
   const accentClass =
     !latestReading || overdue
@@ -43,9 +65,9 @@ export function ParameterCard({
         <div className="flex items-start justify-between gap-3">
           <h2 className="font-heading text-base font-medium text-ink">
             {name}
-            {unit && (
+            {displayUnit && (
               <span className="ml-1 font-mono text-sm font-normal text-ink-muted">
-                ({unit})
+                ({displayUnit})
               </span>
             )}
           </h2>
@@ -53,7 +75,7 @@ export function ParameterCard({
         </div>
 
         <p className="font-mono text-3xl font-medium tabular-nums text-ink">
-          {latestReading ? formatReadingValue(latestReading.value) : '–'}
+          {displayValue != null ? formatReadingValue(displayValue) : '–'}
         </p>
 
         {rangeText && (

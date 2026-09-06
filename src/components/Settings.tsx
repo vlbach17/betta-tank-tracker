@@ -8,19 +8,36 @@ import {
   updateParameter,
   type NewReading,
 } from '../lib/parameters'
+import {
+  TEMPERATURE_PARAMETER_NAME,
+  convertTempForDisplay,
+  convertTempForStorage,
+  tempUnitLabel,
+  type TempUnit,
+} from '../lib/temperature'
+import { useTempUnit } from '../lib/useTempUnit'
 import type { Parameter } from '../types/database'
 import { BackLink } from './BackLink'
 
 type RangeEdits = Record<string, { min: string; max: string }>
 
-function toEdit(parameter: Parameter) {
+function toEdit(parameter: Parameter, tempUnit: TempUnit) {
+  const isTemperature = parameter.name === TEMPERATURE_PARAMETER_NAME
+  const displayValue = (value: number | null) => {
+    if (value == null) return ''
+    if (!isTemperature) return value.toString()
+    // Allow one decimal place, per spec, instead of a long float tail.
+    return (Math.round(convertTempForDisplay(value, tempUnit) * 10) / 10).toString()
+  }
+
   return {
-    min: parameter.ideal_min?.toString() ?? '',
-    max: parameter.ideal_max?.toString() ?? '',
+    min: displayValue(parameter.ideal_min),
+    max: displayValue(parameter.ideal_max),
   }
 }
 
 export function Settings() {
+  const { tempUnit, setTempUnit } = useTempUnit()
   const [parameters, setParameters] = useState<Parameter[] | null>(null)
   const [edits, setEdits] = useState<RangeEdits>({})
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -38,6 +55,11 @@ export function Settings() {
   const [importResult, setImportResult] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const parametersRef = useRef<Parameter[] | null>(null)
+  useEffect(() => {
+    parametersRef.current = parameters
+  }, [parameters])
+
   useEffect(() => {
     let cancelled = false
 
@@ -45,7 +67,9 @@ export function Settings() {
       .then((data) => {
         if (cancelled) return
         setParameters(data)
-        setEdits(Object.fromEntries(data.map((p) => [p.id, toEdit(p)])))
+        setEdits(
+          Object.fromEntries(data.map((p) => [p.id, toEdit(p, tempUnit)])),
+        )
       })
       .catch((err: unknown) => {
         if (!cancelled) {
@@ -56,20 +80,45 @@ export function Settings() {
     return () => {
       cancelled = true
     }
+    // Only load once; the tempUnit used here is whatever it is at mount time.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Re-derive the edit strings (but only these, not the rest of the row
+  // state) when the display unit changes, without clobbering edits the user
+  // is mid-typing in other rows when `parameters` updates for other reasons.
+  useEffect(() => {
+    const current = parametersRef.current
+    if (!current) return
+    setEdits(
+      Object.fromEntries(current.map((p) => [p.id, toEdit(p, tempUnit)])),
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tempUnit])
 
   async function saveRange(parameter: Parameter, field: 'ideal_min' | 'ideal_max') {
     const key = field === 'ideal_min' ? 'min' : 'max'
     const raw = (edits[parameter.id]?.[key] ?? '').trim()
-    const newValue = raw === '' ? null : Number(raw)
+    const isTemperature = parameter.name === TEMPERATURE_PARAMETER_NAME
+    const displayValue = raw === '' ? null : Number(raw)
 
-    if (raw !== '' && !Number.isFinite(newValue)) {
+    if (raw !== '' && !Number.isFinite(displayValue)) {
       setEdits((e) => ({
         ...e,
-        [parameter.id]: { ...e[parameter.id], [key]: toEdit(parameter)[key] },
+        [parameter.id]: {
+          ...e[parameter.id],
+          [key]: toEdit(parameter, tempUnit)[key],
+        },
       }))
       return
     }
+
+    const newValue =
+      displayValue == null
+        ? null
+        : isTemperature
+          ? convertTempForStorage(displayValue, tempUnit)
+          : displayValue
     if (newValue === parameter[field]) return
 
     setRowError(null)
@@ -84,7 +133,10 @@ export function Settings() {
       setRowError(err instanceof Error ? err.message : 'Failed to save')
       setEdits((e) => ({
         ...e,
-        [parameter.id]: { ...e[parameter.id], [key]: toEdit(parameter)[key] },
+        [parameter.id]: {
+          ...e[parameter.id],
+          [key]: toEdit(parameter, tempUnit)[key],
+        },
       }))
     }
   }
@@ -124,7 +176,7 @@ export function Settings() {
         ideal_max: newMax.trim() === '' ? null : Number(newMax),
       })
       setParameters((ps) => [...(ps ?? []), created])
-      setEdits((e) => ({ ...e, [created.id]: toEdit(created) }))
+      setEdits((e) => ({ ...e, [created.id]: toEdit(created, tempUnit) }))
       setNewName('')
       setNewUnit('')
       setNewMin('')
@@ -242,6 +294,35 @@ export function Settings() {
         Settings
       </h1>
 
+      <section className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-4">
+        <h2 className="font-heading text-base font-medium text-ink">
+          Display
+        </h2>
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-sm font-medium text-ink">
+            Temperature unit
+          </span>
+          <div className="flex gap-1 rounded-lg border border-line bg-bg p-1">
+            {(['F', 'C'] as const).map((unit) => (
+              <button
+                key={unit}
+                type="button"
+                onClick={() => setTempUnit(unit)}
+                className={`h-9 w-14 rounded-md font-heading text-sm font-medium ${
+                  tempUnit === unit ? 'bg-accent text-white' : 'text-ink-muted'
+                }`}
+              >
+                {tempUnitLabel(unit)}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p className="text-xs text-ink-muted">
+          Temperature is always stored in °F — this only changes how it's
+          displayed.
+        </p>
+      </section>
+
       {loadError && (
         <p className="rounded-lg bg-status-bad-bg p-3 text-sm text-status-bad-fg">
           Couldn't load parameters: {loadError}
@@ -275,9 +356,15 @@ export function Settings() {
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="font-heading text-base font-medium text-ink">
                     {parameter.name}
-                    {parameter.unit && (
+                    {(parameter.name === TEMPERATURE_PARAMETER_NAME
+                      ? tempUnitLabel(tempUnit)
+                      : parameter.unit) && (
                       <span className="ml-1 font-mono text-sm font-normal text-ink-muted">
-                        ({parameter.unit})
+                        (
+                        {parameter.name === TEMPERATURE_PARAMETER_NAME
+                          ? tempUnitLabel(tempUnit)
+                          : parameter.unit}
+                        )
                       </span>
                     )}
                   </h3>

@@ -8,7 +8,6 @@ _Nothing right now._
 
 Real unfinished work — known gaps against the v1 spec, not ideas.
 
-- **°F / °C display toggle in Settings.** The spec calls for temperature to be stored in Fahrenheit with a display toggle that converts on the way out only, so stored data never changes. Not built yet — the app currently only displays in the stored unit.
 - **On-device install verification.** PWA install-to-home-screen and offline app-shell loading have only been verified via desktop browser devtools (service worker registration, cache contents, manifest resolution) — not yet confirmed on an actual phone.
 - **Icon family support** install Tabler icon support for use throughout app.
 

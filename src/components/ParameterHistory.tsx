@@ -24,6 +24,13 @@ import {
   fetchReadingsForParameter,
 } from '../lib/parameters'
 import { isWithinRange, type Range } from '../lib/range'
+import {
+  TEMPERATURE_PARAMETER_NAME,
+  convertTempDeltaForDisplay,
+  convertTempForDisplay,
+  tempUnitLabel,
+} from '../lib/temperature'
+import { useTempUnit } from '../lib/useTempUnit'
 import type { Parameter, Reading } from '../types/database'
 import { BackLink } from './BackLink'
 import { RangeToggle } from './RangeToggle'
@@ -31,6 +38,7 @@ import { makeStatusDot } from './StatusDot'
 
 export function ParameterHistory() {
   const { parameterId } = useParams<{ parameterId: string }>()
+  const { tempUnit } = useTempUnit()
 
   const [parameter, setParameter] = useState<Parameter | null>(null)
   const [readings, setReadings] = useState<Reading[] | null>(null)
@@ -63,6 +71,17 @@ export function ParameterHistory() {
     }
   }, [parameterId])
 
+  const isTemperature = parameter?.name === TEMPERATURE_PARAMETER_NAME
+  const displayUnit = isTemperature ? tempUnitLabel(tempUnit) : parameter?.unit
+  const displayIdealMin =
+    isTemperature && parameter?.ideal_min != null
+      ? convertTempForDisplay(parameter.ideal_min, tempUnit)
+      : (parameter?.ideal_min ?? null)
+  const displayIdealMax =
+    isTemperature && parameter?.ideal_max != null
+      ? convertTempForDisplay(parameter.ideal_max, tempUnit)
+      : (parameter?.ideal_max ?? null)
+
   const readingsDesc = useMemo(
     () => (readings ?? []).filter((r) => isWithinRange(r.tested_at, range)),
     [readings, range],
@@ -71,9 +90,26 @@ export function ParameterHistory() {
     () => [...readingsDesc].reverse(),
     [readingsDesc],
   )
+  const displayReadingsDesc = useMemo(
+    () =>
+      isTemperature
+        ? readingsDesc.map((r) => ({
+            ...r,
+            value: convertTempForDisplay(r.value, tempUnit),
+          }))
+        : readingsDesc,
+    [readingsDesc, isTemperature, tempUnit],
+  )
+  const displayReadingsAsc = useMemo(
+    () => [...displayReadingsDesc].reverse(),
+    [displayReadingsDesc],
+  )
 
-  const swing =
-    parameter?.name === 'Temperature' ? getLargestSwing(readingsAsc) : null
+  const swing = isTemperature ? getLargestSwing(readingsAsc) : null
+  const displaySwingDelta =
+    swing && isTemperature
+      ? convertTempDeltaForDisplay(swing.delta, tempUnit)
+      : swing?.delta
 
   async function handleDelete(id: string) {
     setDeleteError(null)
@@ -106,15 +142,15 @@ export function ParameterHistory() {
         <>
           <h1 className="font-heading text-xl font-semibold text-ink">
             {parameter.name}
-            {parameter.unit && (
+            {displayUnit && (
               <span className="ml-1 font-mono text-base font-normal text-ink-muted">
-                ({parameter.unit})
+                ({displayUnit})
               </span>
             )}
           </h1>
-          {formatIdealRange(parameter.ideal_min, parameter.ideal_max) && (
+          {formatIdealRange(displayIdealMin, displayIdealMax) && (
             <p className="mb-4 font-mono text-xs text-ink-muted">
-              {formatIdealRange(parameter.ideal_min, parameter.ideal_max)}
+              {formatIdealRange(displayIdealMin, displayIdealMax)}
             </p>
           )}
 
@@ -122,30 +158,29 @@ export function ParameterHistory() {
             <RangeToggle value={range} onChange={setRange} />
           </div>
 
-          {readingsAsc.length === 0 && (
+          {displayReadingsAsc.length === 0 && (
             <p className="mb-4 text-sm text-ink-muted">
               No readings in this range.
             </p>
           )}
 
-          {readingsAsc.length > 0 && (
+          {displayReadingsAsc.length > 0 && (
             <div className="mb-2 h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
-                  data={readingsAsc}
+                  data={displayReadingsAsc}
                   margin={{ top: 8, right: 8, left: -4, bottom: 0 }}
                 >
                   <CartesianGrid stroke={CHART_COLORS.grid} vertical={false} />
-                  {parameter.ideal_min != null &&
-                    parameter.ideal_max != null && (
-                      <ReferenceArea
-                        y1={parameter.ideal_min}
-                        y2={parameter.ideal_max}
-                        fill={CHART_COLORS.band}
-                        fillOpacity={0.12}
-                        stroke="none"
-                      />
-                    )}
+                  {displayIdealMin != null && displayIdealMax != null && (
+                    <ReferenceArea
+                      y1={displayIdealMin}
+                      y2={displayIdealMax}
+                      fill={CHART_COLORS.band}
+                      fillOpacity={0.12}
+                      stroke="none"
+                    />
+                  )}
                   <XAxis
                     dataKey="tested_at"
                     tickFormatter={formatShortDate}
@@ -179,8 +214,8 @@ export function ParameterHistory() {
                     strokeWidth={2}
                     isAnimationActive={false}
                     dot={makeStatusDot(
-                      parameter.ideal_min,
-                      parameter.ideal_max,
+                      displayIdealMin,
+                      displayIdealMax,
                     )}
                   />
                 </LineChart>
@@ -192,8 +227,8 @@ export function ParameterHistory() {
             <p className="mb-4 font-mono text-xs text-ink-muted">
               Largest swing in this range:{' '}
               <span className="font-medium text-ink">
-                {formatReadingValue(swing.delta)}
-                {parameter.unit}
+                {formatReadingValue(displaySwingDelta ?? swing.delta)}
+                {displayUnit}
               </span>{' '}
               ({formatShortDate(swing.from.tested_at)} to{' '}
               {formatShortDate(swing.to.tested_at)})
@@ -207,12 +242,12 @@ export function ParameterHistory() {
           )}
 
           <div className="flex flex-col divide-y divide-line rounded-lg border border-line bg-surface">
-            {readingsDesc.length === 0 && (
+            {displayReadingsDesc.length === 0 && (
               <p className="p-4 text-sm text-ink-muted">
                 No readings logged yet.
               </p>
             )}
-            {readingsDesc.map((reading) => (
+            {displayReadingsDesc.map((reading) => (
               <div key={reading.id} className="flex flex-col gap-1 p-4">
                 {confirmingId === reading.id ? (
                   <div className="flex items-center justify-between gap-2">
@@ -241,9 +276,9 @@ export function ParameterHistory() {
                     <div>
                       <p className="font-mono text-lg tabular-nums text-ink">
                         {formatReadingValue(reading.value)}
-                        {parameter.unit && (
+                        {displayUnit && (
                           <span className="ml-1 text-xs text-ink-muted">
-                            {parameter.unit}
+                            {displayUnit}
                           </span>
                         )}
                       </p>
