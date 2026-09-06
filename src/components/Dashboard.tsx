@@ -34,7 +34,7 @@ export function Dashboard() {
     <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-4 pt-6 pb-28">
       <div className="flex items-center justify-between gap-2">
         <h1 className="font-heading text-xl font-semibold text-ink">
-          Betta Tank Tracker
+          Spunk's Bettabase
         </h1>
         <div className="flex items-center">
           <Link

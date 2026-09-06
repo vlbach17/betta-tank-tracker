@@ -12,8 +12,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon.ico', 'apple-touch-icon-180x180.png'],
       manifest: {
-        name: 'Betta Tank Tracker',
-        short_name: 'Tank Tracker',
+        name: "Spunk's Bettabase",
+        short_name: 'Bettabase',
         description: 'Water parameter log for a Betta aquarium',
         theme_color: '#146b7d',
         background_color: '#f5fafa',

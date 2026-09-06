@@ -1,6 +1,6 @@
-# Betta Tank Tracker
+# Spunk's Bettabase
 
-Single-user water parameter log for one Betta aquarium. Log a test result whenever you check the tank, see at a glance whether it's in range, and review trends over time.
+Single-user water parameter log for one Betta aquarium (Spunk's). Log a test result whenever you check the tank, see at a glance whether it's in range, and review trends over time.
 
 See `betta-tank-tracker-spec.md` for the full build spec, `CHANGELOG.md` for release history, and `ROADMAP.md` for what's planned.
 
