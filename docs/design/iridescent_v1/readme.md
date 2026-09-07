@@ -36,13 +36,6 @@ The brand is named after and colored by Spunk, a blue/teal betta with violet-to-
 ## Iconography - In progress
 Custom icon fonts supported by npm package.
 
-## Intentional additions (not in the source app)
-- **Avatar** — the header photo slot with the gradient ring (user requested a mascot spot).
-- **Hero tile** — full-width variant of ParameterTile for the most urgent parameter.
-- **Summary line** — "5 of 7 in range" under the title.
-- **Icon** — wrapper for the app's three existing glyphs.
-- **RangeField** — min/max slider + inputs (user-requested; replaces the source app's two bare number fields).
-
 ## Index
 - `styles.css` → `tokens/fonts.css`, `tokens/colors.css`, `tokens/typography.css`, `tokens/shape.css`
 - `guidelines/style-guide.html` — the full style guide for designers and developers (read this first)
