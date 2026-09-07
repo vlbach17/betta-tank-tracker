@@ -8,6 +8,9 @@ import {
 } from '../lib/parameters'
 import type { Parameter } from '../types/database'
 import { BackLink } from './BackLink'
+import { Button } from './Button'
+import { Input } from './Input'
+import { Notice } from './Notice'
 
 export function LogTest() {
   const navigate = useNavigate()
@@ -80,18 +83,19 @@ export function LogTest() {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col px-4 pt-4 pb-28">
+    <main className="mx-auto flex min-h-svh max-w-md flex-col px-5 pt-5 pb-28">
       <BackLink to="/" label="Dashboard" />
 
-      <h1 className="mb-4 font-heading text-xl font-semibold text-ink">
-        Log a test
-      </h1>
-
-      {loadError && (
-        <p className="rounded-lg bg-status-bad-bg p-3 text-sm text-status-bad-fg">
-          Couldn't load parameters: {loadError}
+      <div className="mb-5 flex flex-col gap-1">
+        <h1 className="lowercase text-title font-name text-ink">
+          log a test
+        </h1>
+        <p className="text-caption font-sans text-ink-3">
+          Fill in whatever you tested. Blanks are skipped.
         </p>
-      )}
+      </div>
+
+      {loadError && <Notice>Couldn't load parameters: {loadError}</Notice>}
 
       {parameters && (
         <form
@@ -99,39 +103,35 @@ export function LogTest() {
           onSubmit={handleSave}
           className="flex flex-col gap-5"
         >
-          <div className="flex flex-col gap-1">
-            <label htmlFor="tested-at" className="text-sm font-medium text-ink">
-              Tested at
-            </label>
-            <input
-              id="tested-at"
-              type="datetime-local"
-              value={testedAt}
-              onChange={(e) => setTestedAt(e.target.value)}
-              required
-              className="h-11 rounded-lg border border-line bg-surface px-3 text-ink"
-            />
-          </div>
+          <Input
+            id="tested-at"
+            label="Tested at"
+            type="datetime-local"
+            value={testedAt}
+            onChange={setTestedAt}
+            required
+          />
 
-          <div className="flex flex-col divide-y divide-line rounded-lg border border-line bg-surface">
+          <div className="grid grid-cols-2 gap-2.5">
             {parameters.map((parameter) => (
               <div
                 key={parameter.id}
-                className="flex flex-col gap-1 px-4 py-3"
+                className="flex flex-col gap-1.5 rounded-tile border border-line bg-surface p-3 shadow-tile"
               >
                 <label
                   htmlFor={`value-${parameter.id}`}
-                  className="font-heading text-sm font-medium text-ink"
+                  className="truncate text-heading font-sans text-ink"
                 >
                   {parameter.name}
                   {parameter.unit && (
-                    <span className="ml-1 font-mono font-normal text-ink-muted">
+                    <span className="ml-1 text-meta font-mono text-ink-3">
                       ({parameter.unit})
                     </span>
                   )}
                 </label>
-                <input
+                <Input
                   id={`value-${parameter.id}`}
+                  mono
                   type="number"
                   inputMode="decimal"
                   step="any"
@@ -142,50 +142,36 @@ export function LogTest() {
                     ) ?? undefined
                   }
                   value={values[parameter.id] ?? ''}
-                  onChange={(e) =>
-                    setValues((v) => ({
-                      ...v,
-                      [parameter.id]: e.target.value,
-                    }))
+                  onChange={(v) =>
+                    setValues((prev) => ({ ...prev, [parameter.id]: v }))
                   }
-                  className="h-11 w-full rounded-lg border border-line bg-bg px-3 font-mono text-lg text-ink placeholder:text-sm placeholder:text-ink-muted"
                 />
               </div>
             ))}
           </div>
 
-          <div className="flex flex-col gap-1">
-            <label htmlFor="note" className="text-sm font-medium text-ink">
-              Note (optional)
-            </label>
-            <input
-              id="note"
-              type="text"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="day after water change"
-              className="h-11 rounded-lg border border-line bg-surface px-3 text-ink placeholder:text-ink-muted"
-            />
-          </div>
+          <Input
+            id="note"
+            label="Note (optional)"
+            value={note}
+            onChange={setNote}
+            placeholder="day after water change"
+          />
 
-          {saveError && (
-            <p className="rounded-lg bg-status-bad-bg p-3 text-sm text-status-bad-fg">
-              {saveError}
-            </p>
-          )}
+          {saveError && <Notice>{saveError}</Notice>}
         </form>
       )}
 
-      <div className="fixed inset-x-0 bottom-0 border-t border-line bg-surface px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)]">
+      <div className="fixed inset-x-0 bottom-0 bg-gradient-to-t from-bg from-40% to-transparent px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+16px)]">
         <div className="mx-auto max-w-md">
-          <button
+          <Button
             type="submit"
             form="log-test-form"
+            className="w-full"
             disabled={!parameters || !hasAnyValue || saving}
-            className="h-12 w-full rounded-xl bg-accent font-heading text-base font-semibold text-white disabled:opacity-40"
           >
             {saving ? 'Saving…' : 'Save readings'}
-          </button>
+          </Button>
         </div>
       </div>
     </main>

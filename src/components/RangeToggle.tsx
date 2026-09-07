@@ -8,14 +8,18 @@ export function RangeToggle({
   onChange: (range: Range) => void
 }) {
   return (
-    <div className="flex gap-1 rounded-lg border border-line bg-surface p-1">
+    <div role="tablist" className="flex gap-1 rounded-full bg-mist p-1">
       {RANGE_OPTIONS.map((opt) => (
         <button
           key={opt.value}
           type="button"
+          role="tab"
+          aria-selected={value === opt.value}
           onClick={() => onChange(opt.value)}
-          className={`h-9 flex-1 rounded-md font-heading text-sm font-medium ${
-            value === opt.value ? 'bg-accent text-white' : 'text-ink-muted'
+          className={`h-9 flex-1 rounded-full text-label font-sans transition-colors ${
+            value === opt.value
+              ? 'bg-surface text-ink shadow-segment'
+              : 'text-ink-muted'
           }`}
         >
           {opt.label}

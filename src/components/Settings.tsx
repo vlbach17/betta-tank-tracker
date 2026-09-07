@@ -17,17 +17,59 @@ import {
 } from '../lib/temperature'
 import { useTempUnit } from '../lib/useTempUnit'
 import type { Parameter } from '../types/database'
-import { BackLink } from './BackLink'
+import { Avatar } from './Avatar'
+import { Button } from './Button'
+import { Input } from './Input'
+import { NavChips } from './NavChips'
+import { Notice } from './Notice'
+import { RangeField, type RangeFieldValue } from './RangeField'
 
-type RangeEdits = Record<string, { min: string; max: string }>
+type RangeEdits = Record<string, RangeFieldValue>
 
-function toEdit(parameter: Parameter, tempUnit: TempUnit) {
+// Tuned slider bounds for the 6 seed parameters + Temperature. Any other
+// (custom) parameter falls back to a generic bounds formula below.
+const KNOWN_BOUNDS: Record<string, { min: number; max: number; step: number }> =
+  {
+    pH: { min: 5, max: 9, step: 0.1 },
+    Ammonia: { min: 0, max: 8, step: 0.25 },
+    Nitrite: { min: 0, max: 5, step: 0.25 },
+    Nitrate: { min: 0, max: 80, step: 1 },
+    'Carbonate hardness (KH)': { min: 0, max: 20, step: 1 },
+    'General hardness (GH)': { min: 0, max: 20, step: 1 },
+    [TEMPERATURE_PARAMETER_NAME]: { min: 65, max: 90, step: 1 },
+  }
+
+function getRangeFieldBounds(parameter: Parameter, tempUnit: TempUnit) {
+  const known = KNOWN_BOUNDS[parameter.name]
+  if (known) {
+    if (parameter.name === TEMPERATURE_PARAMETER_NAME) {
+      return {
+        min: convertTempForDisplay(known.min, tempUnit),
+        max: convertTempForDisplay(known.max, tempUnit),
+        step: known.step,
+      }
+    }
+    return known
+  }
+  if (parameter.ideal_min != null && parameter.ideal_max != null) {
+    const span = parameter.ideal_max - parameter.ideal_min
+    const padding = Math.max(1, span * 0.5)
+    return {
+      min: Math.max(0, parameter.ideal_min - padding),
+      max: parameter.ideal_max + padding,
+      step: 0.1,
+    }
+  }
+  return { min: 0, max: 100, step: 0.1 }
+}
+
+function toEdit(parameter: Parameter, tempUnit: TempUnit): RangeFieldValue {
   const isTemperature = parameter.name === TEMPERATURE_PARAMETER_NAME
   const displayValue = (value: number | null) => {
-    if (value == null) return ''
-    if (!isTemperature) return value.toString()
+    if (value == null) return null
+    if (!isTemperature) return value
     // Allow one decimal place, per spec, instead of a long float tail.
-    return (Math.round(convertTempForDisplay(value, tempUnit) * 10) / 10).toString()
+    return Math.round(convertTempForDisplay(value, tempUnit) * 10) / 10
   }
 
   return {
@@ -45,8 +87,10 @@ export function Settings() {
 
   const [newName, setNewName] = useState('')
   const [newUnit, setNewUnit] = useState('')
-  const [newMin, setNewMin] = useState('')
-  const [newMax, setNewMax] = useState('')
+  const [newRange, setNewRange] = useState<RangeFieldValue>({
+    min: null,
+    max: null,
+  })
   const [adding, setAdding] = useState(false)
   const [addError, setAddError] = useState<string | null>(null)
 
@@ -84,7 +128,7 @@ export function Settings() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Re-derive the edit strings (but only these, not the rest of the row
+  // Re-derive the edit values (but only these, not the rest of the row
   // state) when the display unit changes, without clobbering edits the user
   // is mid-typing in other rows when `parameters` updates for other reasons.
   useEffect(() => {
@@ -96,47 +140,31 @@ export function Settings() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tempUnit])
 
-  async function saveRange(parameter: Parameter, field: 'ideal_min' | 'ideal_max') {
-    const key = field === 'ideal_min' ? 'min' : 'max'
-    const raw = (edits[parameter.id]?.[key] ?? '').trim()
+  async function commitRange(parameter: Parameter, next: RangeFieldValue) {
     const isTemperature = parameter.name === TEMPERATURE_PARAMETER_NAME
-    const displayValue = raw === '' ? null : Number(raw)
+    const toStorage = (v: number | null) =>
+      v == null ? null : isTemperature ? convertTempForStorage(v, tempUnit) : v
 
-    if (raw !== '' && !Number.isFinite(displayValue)) {
-      setEdits((e) => ({
-        ...e,
-        [parameter.id]: {
-          ...e[parameter.id],
-          [key]: toEdit(parameter, tempUnit)[key],
-        },
-      }))
-      return
-    }
-
-    const newValue =
-      displayValue == null
-        ? null
-        : isTemperature
-          ? convertTempForStorage(displayValue, tempUnit)
-          : displayValue
-    if (newValue === parameter[field]) return
+    const newMin = toStorage(next.min)
+    const newMax = toStorage(next.max)
+    const patch: Partial<Pick<Parameter, 'ideal_min' | 'ideal_max'>> = {}
+    if (newMin !== parameter.ideal_min) patch.ideal_min = newMin
+    if (newMax !== parameter.ideal_max) patch.ideal_max = newMax
+    if (Object.keys(patch).length === 0) return
 
     setRowError(null)
     try {
-      await updateParameter(parameter.id, { [field]: newValue })
+      await updateParameter(parameter.id, patch)
       setParameters((ps) =>
         (ps ?? []).map((p) =>
-          p.id === parameter.id ? { ...p, [field]: newValue } : p,
+          p.id === parameter.id ? { ...p, ...patch } : p,
         ),
       )
     } catch (err) {
       setRowError(err instanceof Error ? err.message : 'Failed to save')
       setEdits((e) => ({
         ...e,
-        [parameter.id]: {
-          ...e[parameter.id],
-          [key]: toEdit(parameter, tempUnit)[key],
-        },
+        [parameter.id]: toEdit(parameter, tempUnit),
       }))
     }
   }
@@ -172,15 +200,14 @@ export function Settings() {
       const created = await createParameter({
         name,
         unit: newUnit.trim(),
-        ideal_min: newMin.trim() === '' ? null : Number(newMin),
-        ideal_max: newMax.trim() === '' ? null : Number(newMax),
+        ideal_min: newRange.min,
+        ideal_max: newRange.max,
       })
       setParameters((ps) => [...(ps ?? []), created])
       setEdits((e) => ({ ...e, [created.id]: toEdit(created, tempUnit) }))
       setNewName('')
       setNewUnit('')
-      setNewMin('')
-      setNewMax('')
+      setNewRange({ min: null, max: null })
     } catch (err) {
       setAddError(
         err instanceof Error ? err.message : 'Failed to add parameter',
@@ -287,29 +314,43 @@ export function Settings() {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-6 px-4 pt-4 pb-8">
-      <BackLink to="/" label="Dashboard" />
+    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-6 px-5 pt-5 pb-8">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Avatar />
+          <div className="flex flex-col">
+            <h1 className="text-title font-sans text-ink">Settings</h1>
+            <p className="text-caption font-sans text-ink-3">
+              Ranges, parameters, backup
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <h1 className="font-heading text-xl font-semibold text-ink">
-        Settings
-      </h1>
+      <NavChips
+        items={[
+          { to: '/', label: 'Now' },
+          { to: '/overview', label: 'Overview' },
+          { to: '/settings', label: 'Settings' },
+        ]}
+      />
 
-      <section className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-4">
-        <h2 className="font-heading text-base font-medium text-ink">
-          Display
-        </h2>
+      <section className="flex flex-col gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile">
+        <h2 className="text-heading font-sans text-ink">Display</h2>
         <div className="flex items-center justify-between gap-2">
-          <span className="text-sm font-medium text-ink">
+          <span className="text-body font-sans text-ink">
             Temperature unit
           </span>
-          <div className="flex gap-1 rounded-lg border border-line bg-bg p-1">
+          <div className="flex gap-1 rounded-full bg-mist p-1">
             {(['F', 'C'] as const).map((unit) => (
               <button
                 key={unit}
                 type="button"
                 onClick={() => setTempUnit(unit)}
-                className={`h-9 w-14 rounded-md font-heading text-sm font-medium ${
-                  tempUnit === unit ? 'bg-accent text-white' : 'text-ink-muted'
+                className={`h-9 w-14 rounded-full text-label font-sans ${
+                  tempUnit === unit
+                    ? 'bg-surface text-ink shadow-segment'
+                    : 'text-ink-muted'
                 }`}
               >
                 {tempUnitLabel(unit)}
@@ -317,218 +358,140 @@ export function Settings() {
             ))}
           </div>
         </div>
-        <p className="text-xs text-ink-muted">
+        <p className="text-body-sm font-sans text-ink-3">
           Temperature is always stored in °F — this only changes how it's
           displayed.
         </p>
       </section>
 
-      {loadError && (
-        <p className="rounded-lg bg-status-bad-bg p-3 text-sm text-status-bad-fg">
-          Couldn't load parameters: {loadError}
-        </p>
-      )}
+      {loadError && <Notice>Couldn't load parameters: {loadError}</Notice>}
 
       {!loadError && !parameters && (
-        <p className="text-sm text-ink-muted">Loading…</p>
+        <p className="text-body font-sans text-ink-3">Loading…</p>
       )}
 
       {parameters && (
         <section className="flex flex-col gap-3">
-          <h2 className="font-heading text-base font-medium text-ink">
-            Parameters
-          </h2>
+          <h2 className="text-heading font-sans text-ink">Parameters</h2>
 
-          {rowError && (
-            <p className="rounded-lg bg-status-bad-bg p-3 text-sm text-status-bad-fg">
-              {rowError}
-            </p>
-          )}
+          {rowError && <Notice>{rowError}</Notice>}
 
           <div className="flex flex-col gap-3">
-            {parameters.map((parameter) => (
-              <div
-                key={parameter.id}
-                className={`flex flex-col gap-3 rounded-xl border border-line p-4 ${
-                  parameter.active ? 'bg-surface' : 'bg-status-overdue-bg/40'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="font-heading text-base font-medium text-ink">
-                    {parameter.name}
-                    {(parameter.name === TEMPERATURE_PARAMETER_NAME
-                      ? tempUnitLabel(tempUnit)
-                      : parameter.unit) && (
-                      <span className="ml-1 font-mono text-sm font-normal text-ink-muted">
-                        (
-                        {parameter.name === TEMPERATURE_PARAMETER_NAME
-                          ? tempUnitLabel(tempUnit)
-                          : parameter.unit}
-                        )
-                      </span>
-                    )}
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => toggleActive(parameter)}
-                    className={`h-9 shrink-0 rounded-full px-3 font-heading text-xs font-medium ${
-                      parameter.active
-                        ? 'bg-status-good-bg text-status-good-fg'
-                        : 'bg-status-overdue-bg text-status-overdue-fg'
-                    }`}
-                  >
-                    {parameter.active ? 'Active' : 'Inactive'}
-                  </button>
-                </div>
+            {parameters.map((parameter) => {
+              const bounds = getRangeFieldBounds(parameter, tempUnit)
+              const displayUnit =
+                parameter.name === TEMPERATURE_PARAMETER_NAME
+                  ? tempUnitLabel(tempUnit)
+                  : parameter.unit
 
-                <div className="flex gap-3">
-                  <label className="flex min-w-0 flex-1 flex-col gap-1">
-                    <span className="text-xs text-ink-muted">Ideal min</span>
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      step="any"
-                      value={edits[parameter.id]?.min ?? ''}
-                      onChange={(e) =>
-                        setEdits((prev) => ({
-                          ...prev,
-                          [parameter.id]: {
-                            ...prev[parameter.id],
-                            min: e.target.value,
-                          },
-                        }))
-                      }
-                      onBlur={() => saveRange(parameter, 'ideal_min')}
-                      className="h-11 w-full min-w-0 rounded-lg border border-line bg-bg px-3 font-mono text-ink"
-                    />
-                  </label>
-                  <label className="flex min-w-0 flex-1 flex-col gap-1">
-                    <span className="text-xs text-ink-muted">Ideal max</span>
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      step="any"
-                      value={edits[parameter.id]?.max ?? ''}
-                      onChange={(e) =>
-                        setEdits((prev) => ({
-                          ...prev,
-                          [parameter.id]: {
-                            ...prev[parameter.id],
-                            max: e.target.value,
-                          },
-                        }))
-                      }
-                      onBlur={() => saveRange(parameter, 'ideal_max')}
-                      className="h-11 w-full min-w-0 rounded-lg border border-line bg-bg px-3 font-mono text-ink"
-                    />
-                  </label>
+              return (
+                <div
+                  key={parameter.id}
+                  className={`flex flex-col gap-3 rounded-tile p-4 ${
+                    parameter.active
+                      ? 'border border-line bg-surface shadow-tile'
+                      : 'border border-dashed border-line-2 bg-mist-2'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-heading font-sans text-ink">
+                      {parameter.name}
+                      {displayUnit && (
+                        <span className="ml-1 text-meta font-mono text-ink-3">
+                          ({displayUnit})
+                        </span>
+                      )}
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => toggleActive(parameter)}
+                      className={`h-9 shrink-0 rounded-full px-3 text-label-sm font-sans ${
+                        parameter.active
+                          ? 'bg-status-good-bg text-status-good-fg'
+                          : 'bg-status-overdue-bg text-status-overdue-fg'
+                      }`}
+                    >
+                      {parameter.active ? 'Active' : 'Inactive'}
+                    </button>
+                  </div>
+
+                  <RangeField
+                    label="Ideal range"
+                    unit={displayUnit || undefined}
+                    min={bounds.min}
+                    max={bounds.max}
+                    step={bounds.step}
+                    value={edits[parameter.id] ?? { min: null, max: null }}
+                    onChange={(next) =>
+                      setEdits((prev) => ({ ...prev, [parameter.id]: next }))
+                    }
+                    onCommit={(next) => commitRange(parameter, next)}
+                  />
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </section>
       )}
 
       {parameters && (
-        <section className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-4">
-          <h2 className="font-heading text-base font-medium text-ink">
+        <section className="flex flex-col gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile">
+          <h2 className="text-heading font-sans text-ink">
             Add a custom parameter
           </h2>
           <form onSubmit={handleAddParameter} className="flex flex-col gap-3">
-            <label className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-ink">Name</span>
-              <input
-                type="text"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                placeholder="Phosphate"
-                required
-                className="h-11 rounded-lg border border-line bg-bg px-3 text-ink placeholder:text-ink-muted"
-              />
-            </label>
-            <label className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-ink">
-                Unit (optional)
-              </span>
-              <input
-                type="text"
-                value={newUnit}
-                onChange={(e) => setNewUnit(e.target.value)}
-                placeholder="ppm"
-                className="h-11 rounded-lg border border-line bg-bg px-3 font-mono text-ink placeholder:font-sans placeholder:text-ink-muted"
-              />
-            </label>
-            <div className="flex gap-3">
-              <label className="flex min-w-0 flex-1 flex-col gap-1">
-                <span className="text-sm font-medium text-ink">
-                  Ideal min (optional)
-                </span>
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  step="any"
-                  value={newMin}
-                  onChange={(e) => setNewMin(e.target.value)}
-                  className="h-11 w-full min-w-0 rounded-lg border border-line bg-bg px-3 font-mono text-ink"
-                />
-              </label>
-              <label className="flex min-w-0 flex-1 flex-col gap-1">
-                <span className="text-sm font-medium text-ink">
-                  Ideal max (optional)
-                </span>
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  step="any"
-                  value={newMax}
-                  onChange={(e) => setNewMax(e.target.value)}
-                  className="h-11 w-full min-w-0 rounded-lg border border-line bg-bg px-3 font-mono text-ink"
-                />
-              </label>
-            </div>
+            <Input
+              label="Name"
+              value={newName}
+              onChange={setNewName}
+              placeholder="Phosphate"
+              required
+            />
+            <Input
+              label="Unit (optional)"
+              mono
+              value={newUnit}
+              onChange={setNewUnit}
+              placeholder="ppm"
+            />
+            <RangeField
+              label="Ideal range (optional)"
+              min={0}
+              max={100}
+              step={1}
+              value={newRange}
+              onChange={setNewRange}
+            />
 
-            {addError && (
-              <p className="rounded-lg bg-status-bad-bg p-3 text-sm text-status-bad-fg">
-                {addError}
-              </p>
-            )}
+            {addError && <Notice>{addError}</Notice>}
 
-            <button
+            <Button
               type="submit"
+              variant="ink"
+              size="md"
               disabled={!newName.trim() || adding}
-              className="h-11 rounded-xl bg-accent font-heading text-sm font-semibold text-white disabled:opacity-40"
             >
               {adding ? 'Adding…' : 'Add parameter'}
-            </button>
+            </Button>
           </form>
         </section>
       )}
 
-      <section className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-4">
-        <h2 className="font-heading text-base font-medium text-ink">
-          Backup
-        </h2>
+      <section className="flex flex-col gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile">
+        <h2 className="text-heading font-sans text-ink">Backup</h2>
 
-        <button
-          type="button"
-          onClick={handleExport}
-          className="h-11 rounded-lg border border-line font-heading text-sm font-medium text-ink"
-        >
+        <Button variant="outline" size="md" onClick={handleExport}>
           Export all readings to CSV
-        </button>
-        {exportError && (
-          <p className="rounded-lg bg-status-bad-bg p-3 text-sm text-status-bad-fg">
-            {exportError}
-          </p>
-        )}
+        </Button>
+        {exportError && <Notice>{exportError}</Notice>}
 
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          size="md"
           onClick={() => fileInputRef.current?.click()}
-          className="h-11 rounded-lg border border-line font-heading text-sm font-medium text-ink"
         >
           Import readings from CSV
-        </button>
+        </Button>
         <input
           ref={fileInputRef}
           type="file"
@@ -540,20 +503,12 @@ export function Settings() {
             e.target.value = ''
           }}
         />
-        <p className="text-xs text-ink-muted">
+        <p className="text-body-sm font-sans text-ink-3">
           Expects the same columns as the export: parameter, value, unit,
           tested_at, note.
         </p>
-        {importResult && (
-          <p className="rounded-lg bg-status-good-bg p-3 text-sm text-status-good-fg">
-            {importResult}
-          </p>
-        )}
-        {importError && (
-          <p className="rounded-lg bg-status-bad-bg p-3 text-sm text-status-bad-fg">
-            {importError}
-          </p>
-        )}
+        {importResult && <Notice tone="good">{importResult}</Notice>}
+        {importError && <Notice>{importError}</Notice>}
       </section>
     </main>
   )

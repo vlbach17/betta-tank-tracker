@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useId, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
-  CartesianGrid,
   Line,
   LineChart,
   ReferenceArea,
@@ -23,6 +22,7 @@ import {
   fetchParameter,
   fetchReadingsForParameter,
 } from '../lib/parameters'
+import { getReadingStatus } from '../lib/status'
 import { isWithinRange, type Range } from '../lib/range'
 import {
   TEMPERATURE_PARAMETER_NAME,
@@ -33,12 +33,18 @@ import {
 import { useTempUnit } from '../lib/useTempUnit'
 import type { Parameter, Reading } from '../types/database'
 import { BackLink } from './BackLink'
+import { Button } from './Button'
+import { IconButton } from './IconButton'
+import { Notice } from './Notice'
 import { RangeToggle } from './RangeToggle'
+import { StatusDot } from './StatusDot'
+import { StatusPill } from './StatusPill'
 import { makeStatusDot } from './StatusDot'
 
 export function ParameterHistory() {
   const { parameterId } = useParams<{ parameterId: string }>()
   const { tempUnit } = useTempUnit()
+  const gradientId = useId()
 
   const [parameter, setParameter] = useState<Parameter | null>(null)
   const [readings, setReadings] = useState<Reading[] | null>(null)
@@ -104,6 +110,27 @@ export function ParameterHistory() {
     () => [...displayReadingsDesc].reverse(),
     [displayReadingsDesc],
   )
+  const rowStatusesDesc = useMemo(
+    () =>
+      readingsDesc.map((r) =>
+        getReadingStatus(
+          r.value,
+          parameter?.ideal_min ?? null,
+          parameter?.ideal_max ?? null,
+        ),
+      ),
+    [readingsDesc, parameter],
+  )
+
+  const latest = readings?.[0] ?? null
+  const latestDisplayValue = latest
+    ? isTemperature
+      ? convertTempForDisplay(latest.value, tempUnit)
+      : latest.value
+    : null
+  const latestStatus = latest
+    ? getReadingStatus(latest.value, parameter?.ideal_min ?? null, parameter?.ideal_max ?? null)
+    : null
 
   const swing = isTemperature ? getLargestSwing(readingsAsc) : null
   const displaySwingDelta =
@@ -125,108 +152,143 @@ export function ParameterHistory() {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col px-4 pt-4 pb-8">
+    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-8">
       <BackLink to="/" label="Dashboard" />
 
-      {loadError && (
-        <p className="rounded-lg bg-status-bad-bg p-3 text-sm text-status-bad-fg">
-          Couldn't load history: {loadError}
-        </p>
-      )}
+      {loadError && <Notice>Couldn't load history: {loadError}</Notice>}
 
       {!loadError && !parameter && (
-        <p className="text-sm text-ink-muted">Loading…</p>
+        <p className="text-body font-sans text-ink-3">Loading…</p>
       )}
 
       {parameter && (
         <>
-          <h1 className="font-heading text-xl font-semibold text-ink">
-            {parameter.name}
-            {displayUnit && (
-              <span className="ml-1 font-mono text-base font-normal text-ink-muted">
-                ({displayUnit})
-              </span>
-            )}
-          </h1>
-          {formatIdealRange(displayIdealMin, displayIdealMax) && (
-            <p className="mb-4 font-mono text-xs text-ink-muted">
-              {formatIdealRange(displayIdealMin, displayIdealMax)}
-            </p>
-          )}
+          <div
+            className="flex flex-col gap-3 rounded-card p-5"
+            style={{ backgroundImage: 'var(--gradient-hero-wash)' }}
+          >
+            <div className="flex items-center gap-2">
+              <h1 className="text-title font-name text-ink">
+                {parameter.name}
+              </h1>
+              {latestStatus && <StatusPill status={latestStatus} size="sm" />}
+            </div>
 
-          <div className="mb-4">
-            <RangeToggle value={range} onChange={setRange} />
+            <div className="flex items-baseline gap-2">
+              <p className="text-display-xl font-mono tabular-nums tracking-[-0.03em] text-ink">
+                {latestDisplayValue != null
+                  ? formatReadingValue(latestDisplayValue)
+                  : '–'}
+              </p>
+              {displayUnit && (
+                <span className="text-meta font-mono text-ink-3">
+                  {displayUnit}
+                </span>
+              )}
+            </div>
+            {formatIdealRange(displayIdealMin, displayIdealMax) && (
+              <p className="text-meta font-mono text-ink-3">
+                {formatIdealRange(displayIdealMin, displayIdealMax)}
+              </p>
+            )}
+
+            {displayReadingsAsc.length === 0 && (
+              <p className="text-body-sm font-sans text-ink-3">
+                Not enough data in this range.
+              </p>
+            )}
+
+            {displayReadingsAsc.length > 0 && (
+              <div className="h-56 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={displayReadingsAsc}
+                    margin={{ top: 8, right: 8, left: -4, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient
+                        id={gradientId}
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="0"
+                      >
+                        <stop offset="0%" stopColor="#14b8c4" />
+                        <stop offset="50%" stopColor="#3b5bdb" />
+                        <stop offset="75%" stopColor="#8b3fd6" />
+                        <stop offset="100%" stopColor="#d63a8f" />
+                      </linearGradient>
+                    </defs>
+                    {displayIdealMin != null && displayIdealMax != null && (
+                      <ReferenceArea
+                        y1={displayIdealMin}
+                        y2={displayIdealMax}
+                        fill={CHART_COLORS.band}
+                        fillOpacity={0.18}
+                        stroke="none"
+                      />
+                    )}
+                    <XAxis
+                      dataKey="tested_at"
+                      tickFormatter={formatShortDate}
+                      stroke={CHART_COLORS.axis}
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={false}
+                      minTickGap={24}
+                    />
+                    <YAxis
+                      stroke={CHART_COLORS.axis}
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={false}
+                      width={44}
+                      domain={['auto', 'auto']}
+                    />
+                    <Tooltip
+                      formatter={(value) => formatReadingValue(Number(value))}
+                      labelFormatter={(label) => formatFullDate(String(label))}
+                      contentStyle={{
+                        fontSize: 12,
+                        fontFamily: 'var(--font-mono)',
+                        borderRadius: 12,
+                        border: '1px solid var(--color-line)',
+                        boxShadow: 'var(--shadow-tile)',
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="value"
+                      stroke={`url(#${gradientId})`}
+                      strokeWidth={3.5}
+                      strokeLinecap="round"
+                      isAnimationActive={false}
+                      dot={makeStatusDot(displayIdealMin, displayIdealMax, 5)}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {displayReadingsAsc.length > 0 && (
+              <div className="flex justify-between text-meta font-mono text-ink-3">
+                <span>{formatShortDate(displayReadingsAsc[0].tested_at)}</span>
+                <span>
+                  {formatShortDate(
+                    displayReadingsAsc[displayReadingsAsc.length - 1]
+                      .tested_at,
+                  )}
+                </span>
+              </div>
+            )}
           </div>
 
-          {displayReadingsAsc.length === 0 && (
-            <p className="mb-4 text-sm text-ink-muted">
-              No readings in this range.
-            </p>
-          )}
-
-          {displayReadingsAsc.length > 0 && (
-            <div className="mb-2 h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={displayReadingsAsc}
-                  margin={{ top: 8, right: 8, left: -4, bottom: 0 }}
-                >
-                  <CartesianGrid stroke={CHART_COLORS.grid} vertical={false} />
-                  {displayIdealMin != null && displayIdealMax != null && (
-                    <ReferenceArea
-                      y1={displayIdealMin}
-                      y2={displayIdealMax}
-                      fill={CHART_COLORS.band}
-                      fillOpacity={0.12}
-                      stroke="none"
-                    />
-                  )}
-                  <XAxis
-                    dataKey="tested_at"
-                    tickFormatter={formatShortDate}
-                    stroke={CHART_COLORS.axis}
-                    fontSize={11}
-                    tickLine={false}
-                    minTickGap={24}
-                  />
-                  <YAxis
-                    stroke={CHART_COLORS.axis}
-                    fontSize={11}
-                    tickLine={false}
-                    axisLine={false}
-                    width={44}
-                    domain={['auto', 'auto']}
-                  />
-                  <Tooltip
-                    formatter={(value) => formatReadingValue(Number(value))}
-                    labelFormatter={(label) => formatFullDate(String(label))}
-                    contentStyle={{
-                      fontSize: 12,
-                      fontFamily: 'var(--font-mono)',
-                      borderRadius: 8,
-                      borderColor: CHART_COLORS.grid,
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    stroke={CHART_COLORS.line}
-                    strokeWidth={2}
-                    isAnimationActive={false}
-                    dot={makeStatusDot(
-                      displayIdealMin,
-                      displayIdealMax,
-                    )}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          )}
+          <RangeToggle value={range} onChange={setRange} />
 
           {swing && (
-            <p className="mb-4 font-mono text-xs text-ink-muted">
+            <p className="text-meta font-mono text-ink-3">
               Largest swing in this range:{' '}
-              <span className="font-medium text-ink">
+              <span className="font-semibold text-ink">
                 {formatReadingValue(displaySwingDelta ?? swing.delta)}
                 {displayUnit}
               </span>{' '}
@@ -235,88 +297,77 @@ export function ParameterHistory() {
             </p>
           )}
 
-          {deleteError && (
-            <p className="mb-4 rounded-lg bg-status-bad-bg p-3 text-sm text-status-bad-fg">
-              {deleteError}
-            </p>
-          )}
+          {deleteError && <Notice>{deleteError}</Notice>}
 
-          <div className="flex flex-col divide-y divide-line rounded-lg border border-line bg-surface">
+          <div className="flex flex-col gap-2">
             {displayReadingsDesc.length === 0 && (
-              <p className="p-4 text-sm text-ink-muted">
+              <p className="text-body font-sans text-ink-3">
                 No readings logged yet.
               </p>
             )}
-            {displayReadingsDesc.map((reading) => (
-              <div key={reading.id} className="flex flex-col gap-1 p-4">
-                {confirmingId === reading.id ? (
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm text-ink">
-                      Delete this reading?
-                    </span>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setConfirmingId(null)}
-                        className="h-9 rounded-lg border border-line px-3 font-heading text-sm font-medium text-ink"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(reading.id)}
-                        className="h-9 rounded-lg bg-status-bad px-3 font-heading text-sm font-medium text-white"
-                      >
-                        Delete
-                      </button>
+            {displayReadingsDesc.map((reading, i) => {
+              const rowStatus = rowStatusesDesc[i]
+              return (
+                <div
+                  key={reading.id}
+                  className="flex flex-col gap-1 rounded-row border border-line bg-surface p-4"
+                >
+                  {confirmingId === reading.id ? (
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-body font-sans text-ink">
+                        Delete this reading?
+                      </span>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setConfirmingId(null)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDelete(reading.id)}
+                        >
+                          Delete
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <p className="font-mono text-lg tabular-nums text-ink">
-                        {formatReadingValue(reading.value)}
-                        {displayUnit && (
-                          <span className="ml-1 text-xs text-ink-muted">
-                            {displayUnit}
-                          </span>
-                        )}
-                      </p>
-                      <p className="font-mono text-xs text-ink-muted">
-                        {formatFullDate(reading.tested_at)}
-                      </p>
-                      {reading.note && (
-                        <p className="mt-1 text-sm text-ink">
-                          {reading.note}
-                        </p>
-                      )}
+                  ) : (
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <StatusDot status={rowStatus} />
+                        <div>
+                          <p className="text-num-sm font-mono tabular-nums text-ink">
+                            {formatReadingValue(reading.value)}
+                            {displayUnit && (
+                              <span className="ml-1 text-meta font-mono text-ink-3">
+                                {displayUnit}
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-meta font-mono text-ink-3">
+                            {formatFullDate(reading.tested_at)}
+                          </p>
+                          {reading.note && (
+                            <p className="mt-1 text-body-sm font-sans text-ink">
+                              {reading.note}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <IconButton
+                        icon="trash"
+                        label="Delete reading"
+                        tone="danger"
+                        onClick={() => setConfirmingId(reading.id)}
+                      />
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setConfirmingId(reading.id)}
-                      aria-label="Delete reading"
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-status-bad-fg"
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 18 18"
-                        fill="none"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M3.5 5h11M7.25 5V3.5a1 1 0 0 1 1-1h1.5a1 1 0 0 1 1 1V5M8.5 8v5M6.5 8.5v4M10.5 8.5v4M4.5 5l.6 8.4a1 1 0 0 0 1 .93h5.8a1 1 0 0 0 1-.93L13.5 5"
-                          stroke="currentColor"
-                          strokeWidth="1.4"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              )
+            })}
           </div>
         </>
       )}

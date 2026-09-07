@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600&family=Libre+Franklin:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Code+Pro:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&family=Syne:wght@500;700;800&family=Martian+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#ecebe7;color:#111;font-family:"IBM Plex Sans",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}a:hover{color:inherit}
+*{box-sizing:border-box}
+</style>
+</helmet>
+
+<section style="padding:48px 48px 24px;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;align-items:baseline;gap:16px">
+    <span style="font:600 12px/1 'Source Code Pro',monospace;letter-spacing:.12em;color:#666">TURN 1</span>
+    <h1 style="margin:0;font:500 22px/1.2 'IBM Plex Serif',serif;color:#111">Three design systems for Spunk's Bettabase</h1>
+    <span style="font:400 13px/1.4 'IBM Plex Sans',sans-serif;color:#666">Palette pulled from Spunk: royal blue body, teal sheen, magenta fin edges, pearl head. The current app is shown below for comparison (<a href="#0" style="color:#2447c9;text-decoration:underline">0</a>).</span>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:56px;align-items:flex-start">
+
+    <!-- ============ 1a LAB NOTEBOOK ============ -->
+    <div id="1a" style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font:600 12px/1 'Source Code Pro',monospace;background:#1c2330;color:#f6f4ee;padding:6px 8px">1a</span>
+        <span style="font:500 18px/1 'IBM Plex Serif',serif;color:#111">Lab Notebook</span>
+        <span style="font:400 13px/1 'IBM Plex Sans',sans-serif;color:#666">calm, clinical, paper-and-ink; Spunk shows up as a single blue and a magenta alarm</span>
+      </div>
+      <div style="display:flex;gap:24px;align-items:flex-start">
+
+        <!-- spec -->
+        <div style="flex-shrink:0;width:330px;background:#f6f4ee;border:1px solid #d9d6cd;padding:24px;display:flex;flex-direction:column;gap:22px;font-family:'IBM Plex Sans',sans-serif;color:#1c2330">
+          <div style="font:400 11px/1 'Source Code Pro',monospace;letter-spacing:.14em;color:#6f7378">PALETTE</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;background:#f6f4ee;border:1px solid #d9d6cd"></div><span style="font:400 10px/1.3 'Source Code Pro',monospace">paper<br>#F6F4EE</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;background:#1c2330"></div><span style="font:400 10px/1.3 'Source Code Pro',monospace">ink<br>#1C2330</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;background:#6f7378"></div><span style="font:400 10px/1.3 'Source Code Pro',monospace">muted<br>#6F7378</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;background:#d9d6cd"></div><span style="font:400 10px/1.3 'Source Code Pro',monospace">rule<br>#D9D6CD</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;background:#2447c9"></div><span style="font:400 10px/1.3 'Source Code Pro',monospace">spunk blue<br>#2447C9</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;background:#1f8a70"></div><span style="font:400 10px/1.3 'Source Code Pro',monospace">good<br>#1F8A70</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;background:#b7791f"></div><span style="font:400 10px/1.3 'Source Code Pro',monospace">watch<br>#B7791F</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;background:#b8236b"></div><span style="font:400 10px/1.3 'Source Code Pro',monospace">fin magenta<br>#B8236B</span></div>
+          </div>
+          <div style="font:400 11px/1 'Source Code Pro',monospace;letter-spacing:.14em;color:#6f7378">TYPE</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font:400 26px/1.1 'IBM Plex Serif',serif">Spunk's Bettabase <span style="font-style:italic;color:#6f7378">display</span></div>
+            <div style="font:400 15px/1.4 'IBM Plex Sans',sans-serif">IBM Plex Sans for labels and body copy</div>
+            <div style="font:500 28px/1 'Source Code Pro',monospace;font-variant-numeric:tabular-nums">7.2 <span style="font-size:13px;color:#6f7378">Source Code Pro, all numbers</span></div>
+          </div>
+          <div style="font:400 11px/1 'Source Code Pro',monospace;letter-spacing:.14em;color:#6f7378">STATUS</div>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;font:500 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase">
+            <span style="display:flex;align-items:center;gap:6px;color:#1f8a70"><span style="width:8px;height:8px;border-radius:50%;background:#1f8a70"></span>In range</span>
+            <span style="display:flex;align-items:center;gap:6px;color:#b7791f"><span style="width:8px;height:8px;border-radius:50%;background:#b7791f"></span>Watch</span>
+            <span style="display:flex;align-items:center;gap:6px;color:#b8236b"><span style="width:8px;height:8px;border-radius:50%;background:#b8236b"></span>Out of range</span>
+            <span style="display:flex;align-items:center;gap:6px;color:#6f7378"><span style="width:8px;height:8px;border-radius:50%;border:1.5px solid #6f7378"></span>Overdue</span>
+          </div>
+          <div style="font:400 11px/1 'Source Code Pro',monospace;letter-spacing:.14em;color:#6f7378">SHAPE</div>
+          <div style="font:400 13px/1.5 'IBM Plex Sans',sans-serif;color:#1c2330">No cards. Hairline rules, 0px radius, numbers right-aligned in a ledger column. One blue link color. Buttons are ink blocks.</div>
+        </div>
+
+        <!-- dashboard -->
+        <div data-screen-label="1a Dashboard" style="flex-shrink:0;width:390px;height:800px;background:#f6f4ee;border:1px solid #cfcbc0;border-radius:32px;overflow:hidden;position:relative;font-family:'IBM Plex Sans',sans-serif;color:#1c2330;display:flex;flex-direction:column">
+          <div style="padding:56px 24px 0;display:flex;flex-direction:column;gap:20px;flex:1">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="display:flex;align-items:center;gap:12px">
+                <img src="assets/spunk.png" alt="Spunk" style="width:36px;height:36px;border-radius:50%;object-fit:cover;object-position:35% 40%;border:1px solid #d9d6cd">
+                <h1 style="margin:0;font:400 24px/1 'IBM Plex Serif',serif">Spunk's <span style="font-style:italic">Bettabase</span></h1>
+              </div>
+              <div style="display:flex;gap:14px;font:500 13px/1 'IBM Plex Sans',sans-serif;color:#2447c9">
+                <span>Overview</span><span>Settings</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #1c2330;padding-bottom:8px">
+              <span style="font:400 11px/1 'Source Code Pro',monospace;letter-spacing:.14em;color:#6f7378">PARAMETER</span>
+              <span style="font:400 11px/1 'Source Code Pro',monospace;letter-spacing:.14em;color:#6f7378">LATEST · IDEAL</span>
+            </div>
+            <div style="display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #d9d6cd">
+                <div style="display:flex;flex-direction:column;gap:5px"><span style="font:500 16px/1 'IBM Plex Sans',sans-serif">pH</span><span style="display:flex;align-items:center;gap:6px;font:500 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#1f8a70"><span style="width:7px;height:7px;border-radius:50%;background:#1f8a70"></span>In range · 2 hours ago</span></div>
+                <div style="text-align:right;display:flex;flex-direction:column;gap:5px"><span style="font:500 28px/1 'Source Code Pro',monospace;font-variant-numeric:tabular-nums">7.2</span><span style="font:400 11px/1 'Source Code Pro',monospace;color:#6f7378">6.5–7.5</span></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #d9d6cd">
+                <div style="display:flex;flex-direction:column;gap:5px"><span style="font:500 16px/1 'IBM Plex Sans',sans-serif">Ammonia <span style="font:400 12px 'Source Code Pro',monospace;color:#6f7378">ppm</span></span><span style="display:flex;align-items:center;gap:6px;font:500 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#1f8a70"><span style="width:7px;height:7px;border-radius:50%;background:#1f8a70"></span>In range · 2 hours ago</span></div>
+                <div style="text-align:right;display:flex;flex-direction:column;gap:5px"><span style="font:500 28px/1 'Source Code Pro',monospace;font-variant-numeric:tabular-nums">0</span><span style="font:400 11px/1 'Source Code Pro',monospace;color:#6f7378">0</span></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #d9d6cd">
+                <div style="display:flex;flex-direction:column;gap:5px"><span style="font:500 16px/1 'IBM Plex Sans',sans-serif">Nitrite <span style="font:400 12px 'Source Code Pro',monospace;color:#6f7378">ppm</span></span><span style="display:flex;align-items:center;gap:6px;font:500 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#b8236b"><span style="width:7px;height:7px;border-radius:50%;background:#b8236b"></span>Out of range · 2 hours ago</span></div>
+                <div style="text-align:right;display:flex;flex-direction:column;gap:5px"><span style="font:500 28px/1 'Source Code Pro',monospace;font-variant-numeric:tabular-nums;color:#b8236b">0.25</span><span style="font:400 11px/1 'Source Code Pro',monospace;color:#6f7378">0</span></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #d9d6cd">
+                <div style="display:flex;flex-direction:column;gap:5px"><span style="font:500 16px/1 'IBM Plex Sans',sans-serif">Nitrate <span style="font:400 12px 'Source Code Pro',monospace;color:#6f7378">ppm</span></span><span style="display:flex;align-items:center;gap:6px;font:500 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#b7791f"><span style="width:7px;height:7px;border-radius:50%;background:#b7791f"></span>Watch · 2 hours ago</span></div>
+                <div style="text-align:right;display:flex;flex-direction:column;gap:5px"><span style="font:500 28px/1 'Source Code Pro',monospace;font-variant-numeric:tabular-nums">22</span><span style="font:400 11px/1 'Source Code Pro',monospace;color:#6f7378">0–20</span></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #d9d6cd">
+                <div style="display:flex;flex-direction:column;gap:5px"><span style="font:500 16px/1 'IBM Plex Sans',sans-serif">KH <span style="font:400 12px 'Source Code Pro',monospace;color:#6f7378">dKH</span></span><span style="display:flex;align-items:center;gap:6px;font:500 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#1f8a70"><span style="width:7px;height:7px;border-radius:50%;background:#1f8a70"></span>In range · 6 days ago</span></div>
+                <div style="text-align:right;display:flex;flex-direction:column;gap:5px"><span style="font:500 28px/1 'Source Code Pro',monospace;font-variant-numeric:tabular-nums">5</span><span style="font:400 11px/1 'Source Code Pro',monospace;color:#6f7378">3–8</span></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #d9d6cd">
+                <div style="display:flex;flex-direction:column;gap:5px"><span style="font:500 16px/1 'IBM Plex Sans',sans-serif;color:#6f7378">GH <span style="font:400 12px 'Source Code Pro',monospace">dGH</span></span><span style="display:flex;align-items:center;gap:6px;font:500 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6f7378"><span style="width:7px;height:7px;border-radius:50%;border:1.5px solid #6f7378"></span>Test overdue · 3 weeks ago</span></div>
+                <div style="text-align:right;display:flex;flex-direction:column;gap:5px"><span style="font:500 28px/1 'Source Code Pro',monospace;font-variant-numeric:tabular-nums;color:#6f7378">4</span><span style="font:400 11px/1 'Source Code Pro',monospace;color:#6f7378">3–8</span></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #d9d6cd">
+                <div style="display:flex;flex-direction:column;gap:5px"><span style="font:500 16px/1 'IBM Plex Sans',sans-serif">Temperature <span style="font:400 12px 'Source Code Pro',monospace;color:#6f7378">°F</span></span><span style="display:flex;align-items:center;gap:6px;font:500 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#1f8a70"><span style="width:7px;height:7px;border-radius:50%;background:#1f8a70"></span>In range · just now</span></div>
+                <div style="text-align:right;display:flex;flex-direction:column;gap:5px"><span style="font:500 28px/1 'Source Code Pro',monospace;font-variant-numeric:tabular-nums">79</span><span style="font:400 11px/1 'Source Code Pro',monospace;color:#6f7378">78–80</span></div>
+              </div>
+            </div>
+          </div>
+          <div style="padding:12px 24px 28px;border-top:1px solid #d9d6cd;background:#f6f4ee">
+            <div style="height:52px;background:#1c2330;color:#f6f4ee;display:flex;align-items:center;justify-content:center;font:500 16px/1 'IBM Plex Sans',sans-serif;letter-spacing:.02em">Log a test</div>
+          </div>
+        </div>
+
+        <!-- history -->
+        <div data-screen-label="1a History" style="flex-shrink:0;width:390px;height:800px;background:#f6f4ee;border:1px solid #cfcbc0;border-radius:32px;overflow:hidden;position:relative;font-family:'IBM Plex Sans',sans-serif;color:#1c2330;display:flex;flex-direction:column">
+          <div style="padding:56px 24px 0;display:flex;flex-direction:column;gap:18px">
+            <span style="font:500 13px/1 'IBM Plex Sans',sans-serif;color:#2447c9">← Dashboard</span>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid #1c2330;padding-bottom:10px">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <h1 style="margin:0;font:400 28px/1 'IBM Plex Serif',serif">Nitrate <span style="font:400 14px 'Source Code Pro',monospace;color:#6f7378">ppm</span></h1>
+                <span style="font:400 11px/1 'Source Code Pro',monospace;color:#6f7378">ideal 0–20</span>
+              </div>
+              <div style="text-align:right;display:flex;flex-direction:column;gap:6px">
+                <span style="font:500 34px/1 'Source Code Pro',monospace;font-variant-numeric:tabular-nums">22</span>
+                <span style="font:500 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#b7791f">Watch</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:18px;font:400 12px/1 'Source Code Pro',monospace;color:#6f7378;border-bottom:1px solid #d9d6cd;padding-bottom:8px">
+              <span style="color:#1c2330;border-bottom:2px solid #1c2330;padding-bottom:8px;margin-bottom:-9px">30 days</span><span>90 days</span><span>All time</span>
+            </div>
+            <svg viewBox="0 0 342 200" width="342" height="200" style="display:block;overflow:visible">
+              <defs><pattern id="hatch1a" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#1f8a70" stroke-width="1" opacity=".35"></line></pattern></defs>
+              <rect x="30" y="72" width="312" height="118" fill="url(#hatch1a)"></rect>
+              <line x1="30" y1="190" x2="342" y2="190" stroke="#d9d6cd"></line><line x1="30" y1="130" x2="342" y2="130" stroke="#d9d6cd" stroke-dasharray="2 3"></line><line x1="30" y1="72" x2="342" y2="72" stroke="#d9d6cd" stroke-dasharray="2 3"></line><line x1="30" y1="12" x2="342" y2="12" stroke="#d9d6cd" stroke-dasharray="2 3"></line>
+              <text x="24" y="194" font-family="Source Code Pro" font-size="10" fill="#6f7378" text-anchor="end">0</text><text x="24" y="134" font-family="Source Code Pro" font-size="10" fill="#6f7378" text-anchor="end">10</text><text x="24" y="76" font-family="Source Code Pro" font-size="10" fill="#6f7378" text-anchor="end">20</text><text x="24" y="16" font-family="Source Code Pro" font-size="10" fill="#6f7378" text-anchor="end">30</text>
+              <polyline points="40,160 90,142 140,148 190,118 240,100 290,84 335,60" fill="none" stroke="#2447c9" stroke-width="1.5"></polyline>
+              <circle cx="40" cy="160" r="3.5" fill="#1f8a70" stroke="#f6f4ee" stroke-width="1.5"></circle><circle cx="90" cy="142" r="3.5" fill="#1f8a70" stroke="#f6f4ee" stroke-width="1.5"></circle><circle cx="140" cy="148" r="3.5" fill="#1f8a70" stroke="#f6f4ee" stroke-width="1.5"></circle><circle cx="190" cy="118" r="3.5" fill="#1f8a70" stroke="#f6f4ee" stroke-width="1.5"></circle><circle cx="240" cy="100" r="3.5" fill="#1f8a70" stroke="#f6f4ee" stroke-width="1.5"></circle><circle cx="290" cy="84" r="3.5" fill="#1f8a70" stroke="#f6f4ee" stroke-width="1.5"></circle><circle cx="335" cy="60" r="3.5" fill="#b7791f" stroke="#f6f4ee" stroke-width="1.5"></circle>
+            </svg>
+            <div style="display:flex;justify-content:space-between;font:400 10px/1 'Source Code Pro',monospace;color:#6f7378;padding-left:30px"><span>Aug 7</span><span>Aug 17</span><span>Aug 27</span><span>Sep 5</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #1c2330;padding-bottom:8px;margin-top:8px">
+              <span style="font:400 11px/1 'Source Code Pro',monospace;letter-spacing:.14em;color:#6f7378">READINGS</span><span style="font:400 11px/1 'Source Code Pro',monospace;letter-spacing:.14em;color:#6f7378">7</span>
+            </div>
+            <div style="display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #d9d6cd"><div style="display:flex;flex-direction:column;gap:4px"><span style="font:400 12px/1 'Source Code Pro',monospace;color:#6f7378">Sep 5, 2026, 7:02 AM</span><span style="font:400 13px/1.3 'IBM Plex Sans',sans-serif">day after water change</span></div><span style="font:500 20px/1 'Source Code Pro',monospace;color:#b7791f">22</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #d9d6cd"><span style="font:400 12px/1 'Source Code Pro',monospace;color:#6f7378">Aug 30, 2026, 8:15 AM</span><span style="font:500 20px/1 'Source Code Pro',monospace">18</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #d9d6cd"><span style="font:400 12px/1 'Source Code Pro',monospace;color:#6f7378">Aug 24, 2026, 7:40 AM</span><span style="font:500 20px/1 'Source Code Pro',monospace">15</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 1b IRIDESCENT ============ -->
+    <div id="1b" style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font:600 12px/1 'Source Code Pro',monospace;background:linear-gradient(90deg,#14b8c4,#3b5bdb,#d63a8f);color:#fff;padding:6px 8px;border-radius:6px">1b</span>
+        <span style="font:700 18px/1 'Plus Jakarta Sans',sans-serif;color:#111">Iridescent</span>
+        <span style="font:400 13px/1 'IBM Plex Sans',sans-serif;color:#666">bold and vivid; Spunk's teal-to-magenta sheen as the signature, tile grid dashboard</span>
+      </div>
+      <div style="display:flex;gap:24px;align-items:flex-start">
+
+        <!-- spec -->
+        <div style="flex-shrink:0;width:330px;background:#fbfbfe;border:1px solid #e6e6f2;border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:22px;font-family:'Plus Jakarta Sans',sans-serif;color:#171a33">
+          <div style="font:600 11px/1 'Fira Code',monospace;letter-spacing:.14em;color:#7a7d99">PALETTE</div>
+          <div style="height:44px;border-radius:12px;background:linear-gradient(90deg,#14b8c4 0%,#3b5bdb 45%,#8b3fd6 75%,#d63a8f 100%)"></div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:40px;border-radius:10px;background:#fbfbfe;border:1px solid #e6e6f2"></div><span style="font:400 10px/1.3 'Fira Code',monospace">pearl<br>#FBFBFE</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:40px;border-radius:10px;background:#171a33"></div><span style="font:400 10px/1.3 'Fira Code',monospace">ink<br>#171A33</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:40px;border-radius:10px;background:#14b8c4"></div><span style="font:400 10px/1.3 'Fira Code',monospace">teal lead<br>#14B8C4</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:40px;border-radius:10px;background:#3b5bdb"></div><span style="font:400 10px/1.3 'Fira Code',monospace">royal<br>#3B5BDB</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:40px;border-radius:10px;background:#8b3fd6"></div><span style="font:400 10px/1.3 'Fira Code',monospace">violet<br>#8B3FD6</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:40px;border-radius:10px;background:#d63a8f"></div><span style="font:400 10px/1.3 'Fira Code',monospace">magenta<br>#D63A8F</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:40px;border-radius:10px;background:#1fb86f"></div><span style="font:400 10px/1.3 'Fira Code',monospace">good<br>#1FB86F</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="height:40px;border-radius:10px;background:#f2a51a"></div><span style="font:400 10px/1.3 'Fira Code',monospace">watch<br>#F2A51A</span></div>
+          </div>
+          <div style="font:600 11px/1 'Fira Code',monospace;letter-spacing:.14em;color:#7a7d99">TYPE</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font:800 26px/1.1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em">Spunk's Bettabase</div>
+            <div style="font:500 15px/1.4 'Plus Jakarta Sans',sans-serif">Plus Jakarta Sans, 500–800 weights only</div>
+            <div style="font:600 30px/1 'Fira Code',monospace;font-variant-numeric:tabular-nums">7.2 <span style="font-size:13px;font-weight:400;color:#7a7d99">Fira Code for numbers</span></div>
+          </div>
+          <div style="font:600 11px/1 'Fira Code',monospace;letter-spacing:.14em;color:#7a7d99">STATUS</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;font:700 12px/1 'Plus Jakarta Sans',sans-serif">
+            <span style="padding:7px 12px;border-radius:999px;background:#1fb86f;color:#fff">In range</span>
+            <span style="padding:7px 12px;border-radius:999px;background:#f2a51a;color:#171a33">Watch</span>
+            <span style="padding:7px 12px;border-radius:999px;background:#d63a8f;color:#fff">Out of range</span>
+            <span style="padding:7px 12px;border-radius:999px;background:#e6e6f2;color:#5d6080">Overdue</span>
+          </div>
+          <div style="font:600 11px/1 'Fira Code',monospace;letter-spacing:.14em;color:#7a7d99">SHAPE</div>
+          <div style="font:400 13px/1.5 'Plus Jakarta Sans',sans-serif;color:#171a33">20px radius tiles in a 2-column grid. The gradient is used once per screen: primary button, avatar ring, chart line. Status is solid fill, never tinted.</div>
+        </div>
+
+        <!-- dashboard -->
+        <div data-screen-label="1b Dashboard" style="flex-shrink:0;width:390px;height:800px;background:#fbfbfe;border:1px solid #dcdcea;border-radius:32px;overflow:hidden;position:relative;font-family:'Plus Jakarta Sans',sans-serif;color:#171a33;display:flex;flex-direction:column">
+          <div style="padding:52px 20px 0;display:flex;flex-direction:column;gap:20px;flex:1">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:48px;height:48px;border-radius:50%;padding:2.5px;background:linear-gradient(135deg,#14b8c4,#3b5bdb,#d63a8f)"><img src="assets/spunk.png" alt="Spunk" style="width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:35% 40%;border:2px solid #fbfbfe"></div>
+                <div style="display:flex;flex-direction:column;gap:3px"><h1 style="margin:0;font:800 22px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em">Spunk's Bettabase</h1><span style="font:500 12px/1 'Plus Jakarta Sans',sans-serif;color:#7a7d99">5 of 7 in range</span></div>
+              </div>
+              <div style="width:44px;height:44px;border-radius:50%;background:#eeeef8;display:flex;align-items:center;justify-content:center"><div style="display:flex;flex-direction:column;gap:3px"><span style="width:4px;height:4px;border-radius:50%;background:#171a33"></span><span style="width:4px;height:4px;border-radius:50%;background:#171a33"></span><span style="width:4px;height:4px;border-radius:50%;background:#171a33"></span></div></div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <span style="padding:9px 14px;border-radius:999px;background:#171a33;color:#fff;font:700 13px/1 'Plus Jakarta Sans',sans-serif">Now</span>
+              <span style="padding:9px 14px;border-radius:999px;background:#eeeef8;color:#5d6080;font:600 13px/1 'Plus Jakarta Sans',sans-serif">Overview</span>
+              <span style="padding:9px 14px;border-radius:999px;background:#eeeef8;color:#5d6080;font:600 13px/1 'Plus Jakarta Sans',sans-serif">Settings</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div style="grid-column:1/-1;border-radius:20px;padding:18px;background:#fff;border:1px solid #e6e6f2;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 12px rgba(23,26,51,.05)">
+                <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 14px/1 'Plus Jakarta Sans',sans-serif">Nitrite <span style="font:400 12px 'Fira Code',monospace;color:#7a7d99">ppm</span></span><span style="font:400 12px/1 'Fira Code',monospace;color:#7a7d99">ideal 0 · 2h ago</span><span style="align-self:flex-start;margin-top:4px;padding:6px 10px;border-radius:999px;background:#d63a8f;color:#fff;font:700 11px/1 'Plus Jakarta Sans',sans-serif">Out of range</span></div>
+                <span style="font:600 44px/1 'Fira Code',monospace;font-variant-numeric:tabular-nums;color:#d63a8f">0.25</span>
+              </div>
+              <div style="border-radius:20px;padding:16px;background:#fff;border:1px solid #e6e6f2;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 12px rgba(23,26,51,.05)"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font:600 14px/1 'Plus Jakarta Sans',sans-serif">pH</span><span style="width:10px;height:10px;border-radius:50%;background:#1fb86f"></span></div><span style="font:600 34px/1 'Fira Code',monospace;font-variant-numeric:tabular-nums">7.2</span><span style="font:400 11px/1 'Fira Code',monospace;color:#7a7d99">6.5–7.5 · 2h</span></div>
+              <div style="border-radius:20px;padding:16px;background:#fff;border:1px solid #e6e6f2;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 12px rgba(23,26,51,.05)"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font:600 14px/1 'Plus Jakarta Sans',sans-serif">Nitrate</span><span style="width:10px;height:10px;border-radius:50%;background:#f2a51a"></span></div><span style="font:600 34px/1 'Fira Code',monospace;font-variant-numeric:tabular-nums">22</span><span style="font:400 11px/1 'Fira Code',monospace;color:#7a7d99">0–20 ppm · 2h</span></div>
+              <div style="border-radius:20px;padding:16px;background:#fff;border:1px solid #e6e6f2;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 12px rgba(23,26,51,.05)"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font:600 14px/1 'Plus Jakarta Sans',sans-serif">Ammonia</span><span style="width:10px;height:10px;border-radius:50%;background:#1fb86f"></span></div><span style="font:600 34px/1 'Fira Code',monospace;font-variant-numeric:tabular-nums">0</span><span style="font:400 11px/1 'Fira Code',monospace;color:#7a7d99">0 ppm · 2h</span></div>
+              <div style="border-radius:20px;padding:16px;background:#fff;border:1px solid #e6e6f2;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 12px rgba(23,26,51,.05)"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font:600 14px/1 'Plus Jakarta Sans',sans-serif">Temp</span><span style="width:10px;height:10px;border-radius:50%;background:#1fb86f"></span></div><span style="font:600 34px/1 'Fira Code',monospace;font-variant-numeric:tabular-nums">79°</span><span style="font:400 11px/1 'Fira Code',monospace;color:#7a7d99">78–80 °F · now</span></div>
+              <div style="border-radius:20px;padding:16px;background:#fff;border:1px solid #e6e6f2;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 12px rgba(23,26,51,.05)"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font:600 14px/1 'Plus Jakarta Sans',sans-serif">KH</span><span style="width:10px;height:10px;border-radius:50%;background:#1fb86f"></span></div><span style="font:600 34px/1 'Fira Code',monospace;font-variant-numeric:tabular-nums">5</span><span style="font:400 11px/1 'Fira Code',monospace;color:#7a7d99">3–8 dKH · 6d</span></div>
+              <div style="border-radius:20px;padding:16px;background:#f1f1f7;border:1px dashed #c9c9dc;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font:600 14px/1 'Plus Jakarta Sans',sans-serif;color:#5d6080">GH</span><span style="padding:4px 8px;border-radius:999px;background:#e6e6f2;color:#5d6080;font:700 10px/1 'Plus Jakarta Sans',sans-serif">Overdue</span></div><span style="font:600 34px/1 'Fira Code',monospace;font-variant-numeric:tabular-nums;color:#7a7d99">4</span><span style="font:400 11px/1 'Fira Code',monospace;color:#7a7d99">3–8 dGH · 3w</span></div>
+            </div>
+          </div>
+          <div style="padding:12px 20px 28px">
+            <div style="height:56px;border-radius:999px;background:linear-gradient(90deg,#14b8c4,#3b5bdb 50%,#d63a8f);color:#fff;display:flex;align-items:center;justify-content:center;font:700 16px/1 'Plus Jakarta Sans',sans-serif;box-shadow:0 8px 24px rgba(59,91,219,.28)">Log a test</div>
+          </div>
+        </div>
+
+        <!-- history -->
+        <div data-screen-label="1b History" style="flex-shrink:0;width:390px;height:800px;background:#fbfbfe;border:1px solid #dcdcea;border-radius:32px;overflow:hidden;position:relative;font-family:'Plus Jakarta Sans',sans-serif;color:#171a33;display:flex;flex-direction:column">
+          <div style="padding:52px 20px 0;display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;align-items:center;gap:10px"><span style="width:44px;height:44px;border-radius:50%;background:#eeeef8;display:flex;align-items:center;justify-content:center;font:700 16px/1 'Plus Jakarta Sans',sans-serif">‹</span><span style="font:600 14px/1 'Plus Jakarta Sans',sans-serif;color:#5d6080">Dashboard</span></div>
+            <div style="border-radius:24px;padding:20px;background:linear-gradient(135deg,#eaf9fb,#eceefb 50%,#fbe9f3);display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:800 24px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em">Nitrate</span><span style="padding:7px 12px;border-radius:999px;background:#f2a51a;color:#171a33;font:700 12px/1 'Plus Jakarta Sans',sans-serif">Watch</span></div>
+              <div style="display:flex;align-items:baseline;gap:8px"><span style="font:600 56px/1 'Fira Code',monospace;font-variant-numeric:tabular-nums;letter-spacing:-.03em">22</span><span style="font:400 14px/1 'Fira Code',monospace;color:#5d6080">ppm · ideal 0–20</span></div>
+              <svg viewBox="0 0 310 120" width="310" height="120" style="display:block;overflow:visible">
+                <defs><linearGradient id="g1b" x1="0" x2="1"><stop offset="0" stop-color="#14b8c4"></stop><stop offset=".5" stop-color="#3b5bdb"></stop><stop offset="1" stop-color="#d63a8f"></stop></linearGradient></defs>
+                <rect x="0" y="40" width="310" height="80" rx="8" fill="#1fb86f" opacity=".12"></rect>
+                <polyline points="8,100 58,86 108,90 158,66 208,52 258,40 302,20" fill="none" stroke="url(#g1b)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                <circle cx="8" cy="100" r="5" fill="#1fb86f" stroke="#fff" stroke-width="2"></circle><circle cx="58" cy="86" r="5" fill="#1fb86f" stroke="#fff" stroke-width="2"></circle><circle cx="108" cy="90" r="5" fill="#1fb86f" stroke="#fff" stroke-width="2"></circle><circle cx="158" cy="66" r="5" fill="#1fb86f" stroke="#fff" stroke-width="2"></circle><circle cx="208" cy="52" r="5" fill="#1fb86f" stroke="#fff" stroke-width="2"></circle><circle cx="258" cy="40" r="5" fill="#1fb86f" stroke="#fff" stroke-width="2"></circle><circle cx="302" cy="20" r="6" fill="#f2a51a" stroke="#fff" stroke-width="2"></circle>
+              </svg>
+              <div style="display:flex;justify-content:space-between;font:400 11px/1 'Fira Code',monospace;color:#7a7d99"><span>Aug 7</span><span>Aug 17</span><span>Aug 27</span><span>Sep 5</span></div>
+            </div>
+            <div style="display:flex;gap:6px;padding:4px;border-radius:999px;background:#eeeef8">
+              <span style="flex:1;text-align:center;padding:10px 0;border-radius:999px;background:#fff;font:700 13px/1 'Plus Jakarta Sans',sans-serif;box-shadow:0 1px 4px rgba(23,26,51,.08)">30 days</span><span style="flex:1;text-align:center;padding:10px 0;font:600 13px/1 'Plus Jakarta Sans',sans-serif;color:#5d6080">90 days</span><span style="flex:1;text-align:center;padding:10px 0;font:600 13px/1 'Plus Jakarta Sans',sans-serif;color:#5d6080">All time</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="border-radius:16px;padding:14px 16px;background:#fff;border:1px solid #e6e6f2;display:flex;justify-content:space-between;align-items:center"><div style="display:flex;flex-direction:column;gap:4px"><span style="font:600 14px/1 'Plus Jakarta Sans',sans-serif">Sep 5 · 7:02 AM</span><span style="font:400 12px/1.3 'Plus Jakarta Sans',sans-serif;color:#7a7d99">day after water change</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font:600 22px/1 'Fira Code',monospace">22</span><span style="width:10px;height:10px;border-radius:50%;background:#f2a51a"></span></div></div>
+              <div style="border-radius:16px;padding:14px 16px;background:#fff;border:1px solid #e6e6f2;display:flex;justify-content:space-between;align-items:center"><span style="font:600 14px/1 'Plus Jakarta Sans',sans-serif">Aug 30 · 8:15 AM</span><div style="display:flex;align-items:center;gap:10px"><span style="font:600 22px/1 'Fira Code',monospace">18</span><span style="width:10px;height:10px;border-radius:50%;background:#1fb86f"></span></div></div>
+              <div style="border-radius:16px;padding:14px 16px;background:#fff;border:1px solid #e6e6f2;display:flex;justify-content:space-between;align-items:center"><span style="font:600 14px/1 'Plus Jakarta Sans',sans-serif">Aug 24 · 7:40 AM</span><div style="display:flex;align-items:center;gap:10px"><span style="font:600 22px/1 'Fira Code',monospace">15</span><span style="width:10px;height:10px;border-radius:50%;background:#1fb86f"></span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 1c INSTRUMENT ============ -->
+    <div id="1c" style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font:600 12px/1 'Source Code Pro',monospace;background:#0aa8a0;color:#0b0f14;padding:6px 8px;border:2px solid #0b0f14">1c</span>
+        <span style="font:800 18px/1 'Syne',sans-serif;color:#111;text-transform:uppercase;letter-spacing:.02em">Instrument</span>
+        <span style="font:400 13px/1 'IBM Plex Sans',sans-serif;color:#666">hard-edged test-kit panel; 2px ink rules, mono everything, Spunk as solid color blocks</span>
+      </div>
+      <div style="display:flex;gap:24px;align-items:flex-start">
+
+        <!-- spec -->
+        <div style="flex-shrink:0;width:330px;background:#eef0f2;border:2px solid #0b0f14;padding:24px;display:flex;flex-direction:column;gap:22px;font-family:'Martian Mono',monospace;color:#0b0f14">
+          <div style="font:500 10px/1 'Martian Mono',monospace;letter-spacing:.14em">PALETTE</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:2px solid #0b0f14">
+            <div style="height:48px;background:#eef0f2;border-right:2px solid #0b0f14"></div><div style="height:48px;background:#0b0f14;border-right:2px solid #0b0f14"></div><div style="height:48px;background:#0aa8a0;border-right:2px solid #0b0f14"></div><div style="height:48px;background:#1d3fd6"></div>
+            <div style="height:48px;background:#d61e8a;border-right:2px solid #0b0f14;border-top:2px solid #0b0f14"></div><div style="height:48px;background:#19b45a;border-right:2px solid #0b0f14;border-top:2px solid #0b0f14"></div><div style="height:48px;background:#ffb020;border-right:2px solid #0b0f14;border-top:2px solid #0b0f14"></div><div style="height:48px;background:#9aa3ab;border-top:2px solid #0b0f14"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font:400 9px/1.4 'Martian Mono',monospace;margin-top:-12px">
+            <span>pearl<br>#EEF0F2</span><span>ink<br>#0B0F14</span><span>teal lead<br>#0AA8A0</span><span>royal<br>#1D3FD6</span><span>fin magenta<br>#D61E8A</span><span>good<br>#19B45A</span><span>watch<br>#FFB020</span><span>overdue<br>#9AA3AB</span>
+          </div>
+          <div style="font:500 10px/1 'Martian Mono',monospace;letter-spacing:.14em">TYPE</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font:800 26px/1 'Syne',sans-serif;text-transform:uppercase;letter-spacing:-.01em">Spunk's Bettabase</div>
+            <div style="font:400 12px/1.5 'Martian Mono',monospace">Syne 800 for titles, Martian Mono for everything else including body copy</div>
+            <div style="font:700 30px/1 'Martian Mono',monospace;font-variant-numeric:tabular-nums">7.2 <span style="font-size:11px;font-weight:400">numbers, bold</span></div>
+          </div>
+          <div style="font:500 10px/1 'Martian Mono',monospace;letter-spacing:.14em">STATUS</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;font:700 10px/1 'Martian Mono',monospace;letter-spacing:.06em;text-transform:uppercase">
+            <span style="padding:6px 8px;background:#19b45a;color:#0b0f14;border:2px solid #0b0f14">OK</span>
+            <span style="padding:6px 8px;background:#ffb020;color:#0b0f14;border:2px solid #0b0f14">WATCH</span>
+            <span style="padding:6px 8px;background:#d61e8a;color:#fff;border:2px solid #0b0f14">OUT</span>
+            <span style="padding:6px 8px;background:#eef0f2;color:#0b0f14;border:2px dashed #0b0f14">OVERDUE</span>
+          </div>
+          <div style="font:500 10px/1 'Martian Mono',monospace;letter-spacing:.14em">SHAPE</div>
+          <div style="font:400 12px/1.5 'Martian Mono',monospace">0 radius. 2px ink borders share edges like a printed table. Teal is the action color, royal blue is the data line, magenta is only for out-of-range.</div>
+        </div>
+
+        <!-- dashboard -->
+        <div data-screen-label="1c Dashboard" style="flex-shrink:0;width:390px;height:800px;background:#eef0f2;border:2px solid #0b0f14;border-radius:32px;overflow:hidden;position:relative;font-family:'Martian Mono',monospace;color:#0b0f14;display:flex;flex-direction:column">
+          <div style="padding:52px 16px 0;display:flex;flex-direction:column;gap:16px;flex:1">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <div style="display:flex;align-items:center;gap:12px">
+                <img src="assets/spunk.png" alt="Spunk" style="width:44px;height:44px;object-fit:cover;object-position:35% 40%;border:2px solid #0b0f14">
+                <div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font:800 17px/1 'Syne',sans-serif;text-transform:uppercase">Spunk's<br>Bettabase</h1></div>
+              </div>
+              <div style="display:flex;border:2px solid #0b0f14">
+                <span style="padding:12px 8px;font:500 9px/1 'Martian Mono',monospace;letter-spacing:.04em;border-right:2px solid #0b0f14">TRENDS</span><span style="padding:12px 8px;font:500 9px/1 'Martian Mono',monospace;letter-spacing:.04em">SETUP</span>
+              </div>
+            </div>
+            <div style="display:flex;border:2px solid #0b0f14;background:#fff">
+              <div style="flex:1;padding:10px 12px;border-right:2px solid #0b0f14;display:flex;flex-direction:column;gap:4px"><span style="font:400 9px/1 'Martian Mono',monospace;letter-spacing:.1em">IN RANGE</span><span style="font:700 22px/1 'Martian Mono',monospace">5<span style="font-size:11px;font-weight:400">/7</span></span></div>
+              <div style="flex:1;padding:10px 12px;border-right:2px solid #0b0f14;display:flex;flex-direction:column;gap:4px;background:#d61e8a;color:#fff"><span style="font:400 9px/1 'Martian Mono',monospace;letter-spacing:.1em">OUT</span><span style="font:700 22px/1 'Martian Mono',monospace">1</span></div>
+              <div style="flex:1;padding:10px 12px;display:flex;flex-direction:column;gap:4px"><span style="font:400 9px/1 'Martian Mono',monospace;letter-spacing:.1em">OVERDUE</span><span style="font:700 22px/1 'Martian Mono',monospace">1</span></div>
+            </div>
+            <div style="display:flex;flex-direction:column;border:2px solid #0b0f14;background:#fff">
+              <div style="display:grid;grid-template-columns:1fr 84px 76px;border-bottom:2px solid #0b0f14"><span style="padding:8px 12px;font:400 9px/1 'Martian Mono',monospace;letter-spacing:.1em">PARAMETER</span><span style="padding:8px 12px;font:400 9px/1 'Martian Mono',monospace;letter-spacing:.1em;border-left:2px solid #0b0f14;text-align:right">VALUE</span><span style="padding:8px 12px;font:400 9px/1 'Martian Mono',monospace;letter-spacing:.1em;border-left:2px solid #0b0f14">STATE</span></div>
+              <div style="display:grid;grid-template-columns:1fr 84px 76px;border-bottom:2px solid #0b0f14"><div style="padding:12px;display:flex;flex-direction:column;gap:5px"><span style="font:700 13px/1 'Martian Mono',monospace">pH</span><span style="font:400 9px/1 'Martian Mono',monospace;color:#4d565e">6.5–7.5 · 2H AGO</span></div><span style="padding:12px;font:700 22px/1 'Martian Mono',monospace;border-left:2px solid #0b0f14;text-align:right;display:flex;align-items:center;justify-content:flex-end">7.2</span><span style="border-left:2px solid #0b0f14;background:#19b45a;display:flex;align-items:center;justify-content:center;font:700 10px/1 'Martian Mono',monospace;letter-spacing:.06em">OK</span></div>
+              <div style="display:grid;grid-template-columns:1fr 84px 76px;border-bottom:2px solid #0b0f14"><div style="padding:12px;display:flex;flex-direction:column;gap:5px"><span style="font:700 13px/1 'Martian Mono',monospace">AMMONIA <span style="font-weight:400;font-size:10px">ppm</span></span><span style="font:400 9px/1 'Martian Mono',monospace;color:#4d565e">0 · 2H AGO</span></div><span style="padding:12px;font:700 22px/1 'Martian Mono',monospace;border-left:2px solid #0b0f14;text-align:right;display:flex;align-items:center;justify-content:flex-end">0</span><span style="border-left:2px solid #0b0f14;background:#19b45a;display:flex;align-items:center;justify-content:center;font:700 10px/1 'Martian Mono',monospace;letter-spacing:.06em">OK</span></div>
+              <div style="display:grid;grid-template-columns:1fr 84px 76px;border-bottom:2px solid #0b0f14"><div style="padding:12px;display:flex;flex-direction:column;gap:5px"><span style="font:700 13px/1 'Martian Mono',monospace">NITRITE <span style="font-weight:400;font-size:10px">ppm</span></span><span style="font:400 9px/1 'Martian Mono',monospace;color:#4d565e">0 · 2H AGO</span></div><span style="padding:12px;font:700 22px/1 'Martian Mono',monospace;border-left:2px solid #0b0f14;text-align:right;display:flex;align-items:center;justify-content:flex-end;color:#d61e8a">0.25</span><span style="border-left:2px solid #0b0f14;background:#d61e8a;color:#fff;display:flex;align-items:center;justify-content:center;font:700 10px/1 'Martian Mono',monospace;letter-spacing:.06em">OUT</span></div>
+              <div style="display:grid;grid-template-columns:1fr 84px 76px;border-bottom:2px solid #0b0f14"><div style="padding:12px;display:flex;flex-direction:column;gap:5px"><span style="font:700 13px/1 'Martian Mono',monospace">NITRATE <span style="font-weight:400;font-size:10px">ppm</span></span><span style="font:400 9px/1 'Martian Mono',monospace;color:#4d565e">0–20 · 2H AGO</span></div><span style="padding:12px;font:700 22px/1 'Martian Mono',monospace;border-left:2px solid #0b0f14;text-align:right;display:flex;align-items:center;justify-content:flex-end">22</span><span style="border-left:2px solid #0b0f14;background:#ffb020;display:flex;align-items:center;justify-content:center;font:700 10px/1 'Martian Mono',monospace;letter-spacing:.06em">WATCH</span></div>
+              <div style="display:grid;grid-template-columns:1fr 84px 76px;border-bottom:2px solid #0b0f14"><div style="padding:12px;display:flex;flex-direction:column;gap:5px"><span style="font:700 13px/1 'Martian Mono',monospace">KH <span style="font-weight:400;font-size:10px">dKH</span></span><span style="font:400 9px/1 'Martian Mono',monospace;color:#4d565e">3–8 · 6D AGO</span></div><span style="padding:12px;font:700 22px/1 'Martian Mono',monospace;border-left:2px solid #0b0f14;text-align:right;display:flex;align-items:center;justify-content:flex-end">5</span><span style="border-left:2px solid #0b0f14;background:#19b45a;display:flex;align-items:center;justify-content:center;font:700 10px/1 'Martian Mono',monospace;letter-spacing:.06em">OK</span></div>
+              <div style="display:grid;grid-template-columns:1fr 84px 76px;border-bottom:2px solid #0b0f14;background:#e3e6e9"><div style="padding:12px;display:flex;flex-direction:column;gap:5px"><span style="font:700 13px/1 'Martian Mono',monospace;color:#4d565e">GH <span style="font-weight:400;font-size:10px">dGH</span></span><span style="font:400 9px/1 'Martian Mono',monospace;color:#4d565e">3–8 · 3W AGO</span></div><span style="padding:12px;font:700 22px/1 'Martian Mono',monospace;border-left:2px solid #0b0f14;text-align:right;display:flex;align-items:center;justify-content:flex-end;color:#4d565e">4</span><span style="border-left:2px solid #0b0f14;display:flex;align-items:center;justify-content:center;font:700 9px/1 'Martian Mono',monospace;letter-spacing:.04em;background:repeating-linear-gradient(45deg,#e3e6e9 0 4px,#c9ced3 4px 6px)">OVERDUE</span></div>
+              <div style="display:grid;grid-template-columns:1fr 84px 76px"><div style="padding:12px;display:flex;flex-direction:column;gap:5px"><span style="font:700 13px/1 'Martian Mono',monospace">TEMP <span style="font-weight:400;font-size:10px">°F</span></span><span style="font:400 9px/1 'Martian Mono',monospace;color:#4d565e">78–80 · NOW</span></div><span style="padding:12px;font:700 22px/1 'Martian Mono',monospace;border-left:2px solid #0b0f14;text-align:right;display:flex;align-items:center;justify-content:flex-end">79</span><span style="border-left:2px solid #0b0f14;background:#19b45a;display:flex;align-items:center;justify-content:center;font:700 10px/1 'Martian Mono',monospace;letter-spacing:.06em">OK</span></div>
+            </div>
+          </div>
+          <div style="padding:12px 16px 28px;border-top:2px solid #0b0f14;background:#eef0f2">
+            <div style="height:56px;background:#0aa8a0;color:#0b0f14;border:2px solid #0b0f14;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font:800 15px/1 'Syne',sans-serif;text-transform:uppercase;letter-spacing:.04em"><span>Log a test</span><span style="font:700 14px 'Martian Mono',monospace">→</span></div>
+          </div>
+        </div>
+
+        <!-- history -->
+        <div data-screen-label="1c History" style="flex-shrink:0;width:390px;height:800px;background:#eef0f2;border:2px solid #0b0f14;border-radius:32px;overflow:hidden;position:relative;font-family:'Martian Mono',monospace;color:#0b0f14;display:flex;flex-direction:column">
+          <div style="padding:52px 16px 0;display:flex;flex-direction:column;gap:16px">
+            <span style="font:500 11px/1 'Martian Mono',monospace;letter-spacing:.06em">← DASHBOARD</span>
+            <div style="display:flex;border:2px solid #0b0f14;background:#fff">
+              <div style="flex:1;padding:14px;display:flex;flex-direction:column;gap:8px;border-right:2px solid #0b0f14"><h1 style="margin:0;font:800 24px/1 'Syne',sans-serif;text-transform:uppercase">Nitrate</h1><span style="font:400 10px/1 'Martian Mono',monospace;color:#4d565e">ppm · IDEAL 0–20</span></div>
+              <div style="width:120px;padding:14px;display:flex;flex-direction:column;gap:8px;align-items:flex-end;background:#ffb020"><span style="font:700 32px/1 'Martian Mono',monospace">22</span><span style="font:700 10px/1 'Martian Mono',monospace;letter-spacing:.06em">WATCH</span></div>
+            </div>
+            <div style="display:flex;border:2px solid #0b0f14;background:#fff">
+              <span style="flex:1;text-align:center;padding:12px 0;font:700 10px/1 'Martian Mono',monospace;letter-spacing:.06em;background:#0b0f14;color:#fff">30D</span><span style="flex:1;text-align:center;padding:12px 0;font:500 10px/1 'Martian Mono',monospace;letter-spacing:.06em;border-left:2px solid #0b0f14">90D</span><span style="flex:1;text-align:center;padding:12px 0;font:500 10px/1 'Martian Mono',monospace;letter-spacing:.06em;border-left:2px solid #0b0f14">ALL</span>
+            </div>
+            <div style="border:2px solid #0b0f14;background:#fff;padding:14px 12px 10px">
+              <svg viewBox="0 0 330 190" width="330" height="190" style="display:block;overflow:visible">
+                <rect x="30" y="66" width="300" height="114" fill="#19b45a" opacity=".18"></rect>
+                <line x1="30" y1="180" x2="330" y2="180" stroke="#0b0f14" stroke-width="2"></line><line x1="30" y1="123" x2="330" y2="123" stroke="#0b0f14" stroke-width="1" opacity=".25"></line><line x1="30" y1="66" x2="330" y2="66" stroke="#0b0f14" stroke-width="1" opacity=".25"></line><line x1="30" y1="9" x2="330" y2="9" stroke="#0b0f14" stroke-width="1" opacity=".25"></line>
+                <text x="22" y="184" font-family="Martian Mono" font-size="9" fill="#0b0f14" text-anchor="end">0</text><text x="22" y="127" font-family="Martian Mono" font-size="9" fill="#0b0f14" text-anchor="end">10</text><text x="22" y="70" font-family="Martian Mono" font-size="9" fill="#0b0f14" text-anchor="end">20</text><text x="22" y="13" font-family="Martian Mono" font-size="9" fill="#0b0f14" text-anchor="end">30</text>
+                <polyline points="40,152 40,134 88,134 88,140 136,140 136,112 184,112 184,94 232,94 232,78 280,78 280,54 322,54" fill="none" stroke="#1d3fd6" stroke-width="2.5"></polyline>
+                <rect x="36" y="148" width="8" height="8" fill="#19b45a" stroke="#0b0f14" stroke-width="1.5"></rect><rect x="84" y="130" width="8" height="8" fill="#19b45a" stroke="#0b0f14" stroke-width="1.5"></rect><rect x="132" y="136" width="8" height="8" fill="#19b45a" stroke="#0b0f14" stroke-width="1.5"></rect><rect x="180" y="108" width="8" height="8" fill="#19b45a" stroke="#0b0f14" stroke-width="1.5"></rect><rect x="228" y="90" width="8" height="8" fill="#19b45a" stroke="#0b0f14" stroke-width="1.5"></rect><rect x="276" y="74" width="8" height="8" fill="#19b45a" stroke="#0b0f14" stroke-width="1.5"></rect><rect x="318" y="50" width="8" height="8" fill="#ffb020" stroke="#0b0f14" stroke-width="1.5"></rect>
+              </svg>
+              <div style="display:flex;justify-content:space-between;font:400 9px/1 'Martian Mono',monospace;color:#4d565e;padding:8px 0 0 30px"><span>AUG 07</span><span>AUG 17</span><span>AUG 27</span><span>SEP 05</span></div>
+            </div>
+            <div style="display:flex;flex-direction:column;border:2px solid #0b0f14;background:#fff">
+              <div style="display:grid;grid-template-columns:1fr 64px 44px;border-bottom:2px solid #0b0f14"><div style="padding:10px 12px;display:flex;flex-direction:column;gap:4px"><span style="font:500 11px/1 'Martian Mono',monospace">2026-09-05 07:02</span><span style="font:400 10px/1.3 'Martian Mono',monospace;color:#4d565e">day after water change</span></div><span style="padding:10px 12px;font:700 18px/1 'Martian Mono',monospace;text-align:right;border-left:2px solid #0b0f14;display:flex;align-items:center;justify-content:flex-end">22</span><span style="border-left:2px solid #0b0f14;background:#ffb020"></span></div>
+              <div style="display:grid;grid-template-columns:1fr 64px 44px;border-bottom:2px solid #0b0f14"><span style="padding:14px 12px;font:500 11px/1 'Martian Mono',monospace">2026-08-30 08:15</span><span style="padding:10px 12px;font:700 18px/1 'Martian Mono',monospace;text-align:right;border-left:2px solid #0b0f14;display:flex;align-items:center;justify-content:flex-end">18</span><span style="border-left:2px solid #0b0f14;background:#19b45a"></span></div>
+              <div style="display:grid;grid-template-columns:1fr 64px 44px"><span style="padding:14px 12px;font:500 11px/1 'Martian Mono',monospace">2026-08-24 07:40</span><span style="padding:10px 12px;font:700 18px/1 'Martian Mono',monospace;text-align:right;border-left:2px solid #0b0f14;display:flex;align-items:center;justify-content:flex-end">15</span><span style="border-left:2px solid #0b0f14;background:#19b45a"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 0 CURRENT APP (recreated from src/) ============ -->
+<section id="0" style="padding:24px 48px 64px;display:flex;flex-direction:column;gap:16px;border-top:1px solid #d6d4cf">
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font:600 12px/1 'Source Code Pro',monospace;background:#666;color:#fff;padding:6px 8px">0</span>
+    <span style="font:500 18px/1 'IBM Plex Serif',serif;color:#111">Current app, recreated from source</span>
+    <span style="font:400 13px/1 'IBM Plex Sans',sans-serif;color:#666">Raleway / Libre Franklin / IBM Plex Mono · tokens from src/index.css · Dashboard.tsx, LogTest.tsx, ParameterHistory.tsx</span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+
+    <div data-screen-label="Current Dashboard" style="flex-shrink:0;width:390px;height:800px;background:#f5fafa;border:1px solid #cfd8d8;border-radius:32px;overflow:hidden;position:relative;font-family:Raleway,sans-serif;color:#10282b;display:flex;flex-direction:column">
+      <div style="padding:52px 16px 0;display:flex;flex-direction:column;gap:16px;flex:1;min-height:0;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <h1 style="margin:0;font:600 20px/28px 'Libre Franklin',sans-serif">Spunk's Bettabase</h1>
+          <div style="display:flex;align-items:center"><span style="height:44px;display:flex;align-items:center;padding:0 8px;font:500 14px/20px 'Libre Franklin',sans-serif;color:#146b7d">Overview</span><span style="height:44px;display:flex;align-items:center;padding:0 8px;font:500 14px/20px 'Libre Franklin',sans-serif;color:#146b7d">Settings</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;overflow:hidden;border-radius:12px;border:1px solid #dce6e7;background:#fff"><div style="width:6px;flex-shrink:0;background:#2e9e5b"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px;padding:16px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><h2 style="margin:0;font:500 16px/24px 'Libre Franklin',sans-serif">pH</h2><span style="display:inline-flex;align-items:center;border-radius:999px;padding:4px 10px;font:500 12px/16px 'Libre Franklin',sans-serif;background:#e6f6ec;color:#1b7f45">In range</span></div><p style="margin:0;font:500 30px/36px 'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums">7.2</p><p style="margin:0;font:400 12px/16px 'IBM Plex Mono',monospace;color:#62797c">ideal 6.5–7.5</p><p style="margin:0;font:400 12px/16px 'IBM Plex Mono',monospace;color:#62797c">2 hours ago</p></div></div>
+          <div style="display:flex;overflow:hidden;border-radius:12px;border:1px solid #dce6e7;background:#fff"><div style="width:6px;flex-shrink:0;background:#d64f3e"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px;padding:16px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><h2 style="margin:0;font:500 16px/24px 'Libre Franklin',sans-serif">Nitrite <span style="margin-left:4px;font:400 14px/20px 'IBM Plex Mono',monospace;color:#62797c">(ppm)</span></h2><span style="display:inline-flex;align-items:center;border-radius:999px;padding:4px 10px;font:500 12px/16px 'Libre Franklin',sans-serif;background:#fbe9e6;color:#b23a2e">Out of range</span></div><p style="margin:0;font:500 30px/36px 'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums">0.25</p><p style="margin:0;font:400 12px/16px 'IBM Plex Mono',monospace;color:#62797c">ideal 0</p><p style="margin:0;font:400 12px/16px 'IBM Plex Mono',monospace;color:#62797c">2 hours ago</p></div></div>
+          <div style="display:flex;overflow:hidden;border-radius:12px;border:1px solid #dce6e7;background:#fff"><div style="width:6px;flex-shrink:0;background:#d98f0b"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px;padding:16px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><h2 style="margin:0;font:500 16px/24px 'Libre Franklin',sans-serif">Nitrate <span style="margin-left:4px;font:400 14px/20px 'IBM Plex Mono',monospace;color:#62797c">(ppm)</span></h2><span style="display:inline-flex;align-items:center;border-radius:999px;padding:4px 10px;font:500 12px/16px 'Libre Franklin',sans-serif;background:#fdf3dc;color:#9a6400">Watch</span></div><p style="margin:0;font:500 30px/36px 'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums">22</p><p style="margin:0;font:400 12px/16px 'IBM Plex Mono',monospace;color:#62797c">ideal 0–20</p><p style="margin:0;font:400 12px/16px 'IBM Plex Mono',monospace;color:#62797c">2 hours ago</p></div></div>
+          <div style="display:flex;overflow:hidden;border-radius:12px;border:1px solid #dce6e7;background:rgba(238,242,242,.5)"><div style="width:6px;flex-shrink:0;background:#a9b4b4"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px;padding:16px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><h2 style="margin:0;font:500 16px/24px 'Libre Franklin',sans-serif">GH <span style="margin-left:4px;font:400 14px/20px 'IBM Plex Mono',monospace;color:#62797c">(dGH)</span></h2><span style="display:inline-flex;align-items:center;border-radius:999px;padding:4px 10px;font:500 12px/16px 'Libre Franklin',sans-serif;background:#e6f6ec;color:#1b7f45">In range</span></div><p style="margin:0;font:500 30px/36px 'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums">4</p><p style="margin:0;font:400 12px/16px 'IBM Plex Mono',monospace;color:#62797c">ideal 3–8</p><p style="margin:0;font:500 12px/16px 'IBM Plex Mono',monospace;color:#667070">3 weeks ago · Test overdue</p></div></div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #dce6e7;background:#fff;padding:12px 16px 28px"><div style="height:48px;border-radius:12px;background:#146b7d;color:#fff;display:flex;align-items:center;justify-content:center;font:600 16px/24px 'Libre Franklin',sans-serif">Log a test</div></div>
+    </div>
+
+    <div data-screen-label="Current Log a test" style="flex-shrink:0;width:390px;height:800px;background:#f5fafa;border:1px solid #cfd8d8;border-radius:32px;overflow:hidden;position:relative;font-family:Raleway,sans-serif;color:#10282b;display:flex;flex-direction:column">
+      <div style="padding:44px 16px 0;display:flex;flex-direction:column;flex:1">
+        <span style="margin:0 0 8px -8px;height:44px;display:flex;align-items:center;gap:4px;padding:0 8px;font:500 14px/20px 'Libre Franklin',sans-serif;color:#146b7d"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Dashboard</span>
+        <h1 style="margin:0 0 16px;font:600 20px/28px 'Libre Franklin',sans-serif">Log a test</h1>
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 14px/20px Raleway,sans-serif">Tested at</span><div style="height:44px;border-radius:8px;border:1px solid #dce6e7;background:#fff;padding:0 12px;display:flex;align-items:center;font:400 16px Raleway,sans-serif">09/05/2026, 07:02 AM</div></div>
+          <div style="display:flex;flex-direction:column;border-radius:8px;border:1px solid #dce6e7;background:#fff">
+            <div style="display:flex;flex-direction:column;gap:4px;padding:12px 16px;border-bottom:1px solid #dce6e7"><span style="font:500 14px/20px 'Libre Franklin',sans-serif">pH</span><div style="height:44px;border-radius:8px;border:1px solid #dce6e7;background:#f5fafa;padding:0 12px;display:flex;align-items:center;font:400 18px 'IBM Plex Mono',monospace">7.2</div></div>
+            <div style="display:flex;flex-direction:column;gap:4px;padding:12px 16px;border-bottom:1px solid #dce6e7"><span style="font:500 14px/20px 'Libre Franklin',sans-serif">Ammonia <span style="margin-left:4px;font:400 14px 'IBM Plex Mono',monospace;color:#62797c">(ppm)</span></span><div style="height:44px;border-radius:8px;border:1px solid #dce6e7;background:#f5fafa;padding:0 12px;display:flex;align-items:center;font:400 14px 'IBM Plex Mono',monospace;color:#62797c">ideal 0</div></div>
+            <div style="display:flex;flex-direction:column;gap:4px;padding:12px 16px;border-bottom:1px solid #dce6e7"><span style="font:500 14px/20px 'Libre Franklin',sans-serif">Nitrite <span style="margin-left:4px;font:400 14px 'IBM Plex Mono',monospace;color:#62797c">(ppm)</span></span><div style="height:44px;border-radius:8px;border:1px solid #dce6e7;background:#f5fafa;padding:0 12px;display:flex;align-items:center;font:400 14px 'IBM Plex Mono',monospace;color:#62797c">ideal 0</div></div>
+            <div style="display:flex;flex-direction:column;gap:4px;padding:12px 16px"><span style="font:500 14px/20px 'Libre Franklin',sans-serif">Nitrate <span style="margin-left:4px;font:400 14px 'IBM Plex Mono',monospace;color:#62797c">(ppm)</span></span><div style="height:44px;border-radius:8px;border:1px solid #dce6e7;background:#f5fafa;padding:0 12px;display:flex;align-items:center;font:400 14px 'IBM Plex Mono',monospace;color:#62797c">ideal 0–20</div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 14px/20px Raleway,sans-serif">Note (optional)</span><div style="height:44px;border-radius:8px;border:1px solid #dce6e7;background:#fff;padding:0 12px;display:flex;align-items:center;font:400 16px Raleway,sans-serif;color:#62797c">day after water change</div></div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #dce6e7;background:#fff;padding:12px 16px 28px"><div style="height:48px;border-radius:12px;background:#146b7d;color:#fff;display:flex;align-items:center;justify-content:center;font:600 16px/24px 'Libre Franklin',sans-serif">Save readings</div></div>
+    </div>
+
+    <div data-screen-label="Current History" style="flex-shrink:0;width:390px;height:800px;background:#f5fafa;border:1px solid #cfd8d8;border-radius:32px;overflow:hidden;position:relative;font-family:Raleway,sans-serif;color:#10282b;display:flex;flex-direction:column">
+      <div style="padding:44px 16px 0;display:flex;flex-direction:column">
+        <span style="margin:0 0 8px -8px;height:44px;display:flex;align-items:center;gap:4px;padding:0 8px;font:500 14px/20px 'Libre Franklin',sans-serif;color:#146b7d"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Dashboard</span>
+        <h1 style="margin:0;font:600 20px/28px 'Libre Franklin',sans-serif">Nitrate <span style="margin-left:4px;font:400 16px/24px 'IBM Plex Mono',monospace;color:#62797c">(ppm)</span></h1>
+        <p style="margin:0 0 16px;font:400 12px/16px 'IBM Plex Mono',monospace;color:#62797c">ideal 0–20</p>
+        <div style="display:flex;gap:4px;border-radius:8px;border:1px solid #dce6e7;background:#fff;padding:4px;margin-bottom:16px"><span style="flex:1;height:36px;border-radius:6px;background:#146b7d;color:#fff;display:flex;align-items:center;justify-content:center;font:500 14px 'Libre Franklin',sans-serif">30 days</span><span style="flex:1;height:36px;display:flex;align-items:center;justify-content:center;font:500 14px 'Libre Franklin',sans-serif;color:#62797c">90 days</span><span style="flex:1;height:36px;display:flex;align-items:center;justify-content:center;font:500 14px 'Libre Franklin',sans-serif;color:#62797c">All time</span></div>
+        <svg viewBox="0 0 358 256" width="358" height="256" style="display:block;margin-bottom:8px">
+          <rect x="40" y="96" width="310" height="140" fill="#2e9e5b" opacity=".12"></rect>
+          <line x1="40" y1="236" x2="350" y2="236" stroke="#dce6e7"></line><line x1="40" y1="166" x2="350" y2="166" stroke="#dce6e7"></line><line x1="40" y1="96" x2="350" y2="96" stroke="#dce6e7"></line><line x1="40" y1="26" x2="350" y2="26" stroke="#dce6e7"></line>
+          <line x1="40" y1="236" x2="350" y2="236" stroke="#62797c"></line>
+          <text x="34" y="240" font-family="IBM Plex Mono" font-size="11" fill="#62797c" text-anchor="end">0</text><text x="34" y="170" font-family="IBM Plex Mono" font-size="11" fill="#62797c" text-anchor="end">10</text><text x="34" y="100" font-family="IBM Plex Mono" font-size="11" fill="#62797c" text-anchor="end">20</text><text x="34" y="30" font-family="IBM Plex Mono" font-size="11" fill="#62797c" text-anchor="end">30</text>
+          <text x="50" y="252" font-family="IBM Plex Mono" font-size="11" fill="#62797c">Aug 7</text><text x="150" y="252" font-family="IBM Plex Mono" font-size="11" fill="#62797c">Aug 17</text><text x="250" y="252" font-family="IBM Plex Mono" font-size="11" fill="#62797c">Aug 27</text><text x="322" y="252" font-family="IBM Plex Mono" font-size="11" fill="#62797c">Sep 5</text>
+          <polyline points="50,200 100,180 150,186 200,152 250,132 300,110 342,82" fill="none" stroke="#146b7d" stroke-width="2"></polyline>
+          <circle cx="50" cy="200" r="4" fill="#2e9e5b" stroke="#fff" stroke-width="1.5"></circle><circle cx="100" cy="180" r="4" fill="#2e9e5b" stroke="#fff" stroke-width="1.5"></circle><circle cx="150" cy="186" r="4" fill="#2e9e5b" stroke="#fff" stroke-width="1.5"></circle><circle cx="200" cy="152" r="4" fill="#2e9e5b" stroke="#fff" stroke-width="1.5"></circle><circle cx="250" cy="132" r="4" fill="#2e9e5b" stroke="#fff" stroke-width="1.5"></circle><circle cx="300" cy="110" r="4" fill="#2e9e5b" stroke="#fff" stroke-width="1.5"></circle><circle cx="342" cy="82" r="4" fill="#d98f0b" stroke="#fff" stroke-width="1.5"></circle>
+        </svg>
+        <div style="display:flex;flex-direction:column;border-radius:8px;border:1px solid #dce6e7;background:#fff">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:16px;border-bottom:1px solid #dce6e7"><div><p style="margin:0;font:400 18px/28px 'IBM Plex Mono',monospace">22<span style="margin-left:4px;font-size:12px;color:#62797c">ppm</span></p><p style="margin:0;font:400 12px/16px 'IBM Plex Mono',monospace;color:#62797c">Sep 5, 2026, 7:02 AM</p><p style="margin:4px 0 0;font:400 14px/20px Raleway,sans-serif">day after water change</p></div><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:#b23a2e"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.5 5h11M7.25 5V3.5a1 1 0 0 1 1-1h1.5a1 1 0 0 1 1 1V5M8.5 8v5M6.5 8.5v4M10.5 8.5v4M4.5 5l.6 8.4a1 1 0 0 0 1 .93h5.8a1 1 0 0 0 1-.93L13.5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:16px"><div><p style="margin:0;font:400 18px/28px 'IBM Plex Mono',monospace">18<span style="margin-left:4px;font-size:12px;color:#62797c">ppm</span></p><p style="margin:0;font:400 12px/16px 'IBM Plex Mono',monospace;color:#62797c">Aug 30, 2026, 8:15 AM</p></div><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:#b23a2e"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.5 5h11M7.25 5V3.5a1 1 0 0 1 1-1h1.5a1 1 0 0 1 1 1V5M8.5 8v5M6.5 8.5v4M10.5 8.5v4M4.5 5l.6 8.4a1 1 0 0 0 1 .93h5.8a1 1 0 0 0 1-.93L13.5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+</body>
+</html>

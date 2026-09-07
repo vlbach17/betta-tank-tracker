@@ -1,0 +1,2 @@
+export interface SparklineProps { points: { value: number; tested_at?: string }[]; idealMin?: number | null; idealMax?: number | null; width?: number; height?: number; /** per-point status for dot color */ statuses?: string[]; showTicks?: boolean; dotRadius?: number; /** gradient stroke counts as the screen's gradient use; false = royal blue */ gradient?: boolean; style?: React.CSSProperties }
+export function Sparkline(props: SparklineProps): JSX.Element;

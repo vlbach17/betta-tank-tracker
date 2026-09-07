@@ -1,0 +1,2 @@
+export interface AvatarProps { src?: string; alt?: string; size?: number; /** gradient ring — counts as the screen's one gradient use */ ring?: boolean; square?: boolean; style?: React.CSSProperties }
+export function Avatar(props: AvatarProps): JSX.Element;

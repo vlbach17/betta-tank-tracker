@@ -9,12 +9,14 @@ _Nothing right now._
 Real unfinished work — known gaps against the v1 spec, not ideas.
 
 - **On-device install verification.** PWA install-to-home-screen and offline app-shell loading have only been verified via desktop browser devtools (service worker registration, cache contents, manifest resolution) — not yet confirmed on an actual phone.
-- **Icon family support** install Tabler icon support for use throughout app.
+- **Usability review of the Iridescent nav restructure.** `NavChips` replaced Dashboard's header text links and Overview/Settings dropped `BackLink` in favor of it — this shipped as spec'd, but a deliberate usability pass on the new navigation pattern was deferred rather than done up front.
 
 ## Someday
 
 Feature ideas and maybes, including things set aside while building. Nothing here is committed.
 
+- **Design a bespoke custom SVG icon set to fully replace `@phosphor-icons/react`.** Phosphor was installed as an interim/placeholder icon library for net-new iconography; a fully bespoke set (or another library kept as documented fallback) is the intended end state.
+- **Design a real Spunk-derived app icon/favicon.** The current favicon/PWA icon shape is legacy and unrelated to the Iridescent brand (only its color was updated during the re-skin) — no brand logo exists yet, only Spunk's photo.
 - Bottom mobile navigation bar with icons for dashboard, history, add a log, settings
 - Multiple aquarium support
 - Tracking fish/specicies in each tank

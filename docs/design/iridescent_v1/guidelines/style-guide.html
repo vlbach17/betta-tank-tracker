@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iridescent — style guide · Spunk's Bettabase</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-app);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 500;
+    }
+
+    a {
+      color: var(--royal);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--violet);
+    }
+
+    .wrap {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 48px;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 48px 32px 96px;
+    }
+
+    nav {
+      position: sticky;
+      top: 48px;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    nav a {
+      padding: 8px 12px;
+      border-radius: var(--radius-pill);
+      font: var(--text-caption);
+      color: var(--text-secondary);
+    }
+
+    nav a:hover {
+      background: var(--bg-control);
+      color: var(--text-primary);
+    }
+
+    nav .navhead {
+      padding: 16px 12px 6px;
+      font: var(--text-eyebrow);
+      letter-spacing: var(--tracking-eyebrow);
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+    }
+
+    section {
+      padding: 40px 0;
+      border-top: 1px solid var(--border-default);
+    }
+
+    section:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    h2 {
+      margin: 0 0 6px;
+      font: var(--text-page-title);
+      text-transform: lowercase;
+    }
+
+    h3 {
+      margin: 28px 0 10px;
+      font: var(--text-heading);
+    }
+
+    .lede {
+      margin: 0 0 24px;
+      max-width: 62ch;
+      font: var(--text-body);
+      color: var(--text-secondary);
+      text-wrap: pretty;
+    }
+
+    p {
+      max-width: 62ch;
+      font: var(--text-body);
+      color: var(--text-secondary);
+      text-wrap: pretty;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .c4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .c3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .c2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-tile);
+      box-shadow: var(--shadow-tile);
+      padding: 20px;
+    }
+
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .swatch .chip {
+      height: 64px;
+      border-radius: 14px;
+      display: flex;
+      align-items: flex-end;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .swatch code,
+    code {
+      font: var(--text-meta);
+      color: var(--text-secondary);
+    }
+
+    code.tok {
+      background: var(--bg-control);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: var(--text-primary);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-default);
+      vertical-align: top;
+    }
+
+    th {
+      font: var(--text-eyebrow);
+      letter-spacing: var(--tracking-eyebrow);
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+    }
+
+    td {
+      font: var(--text-body-sm);
+      color: var(--text-secondary);
+    }
+
+    td b,
+    td strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    td.mono,
+    .mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .rule {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 12px;
+      max-width: 62ch;
+    }
+
+    .rule .m {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font: var(--text-label-sm);
+    }
+
+    .do .m {
+      background: var(--status-good-fill);
+      color: var(--status-good-fg);
+    }
+
+    .dont .m {
+      background: var(--status-bad-fill);
+      color: #fff;
+    }
+
+    .rule span {
+      font: var(--text-body-sm);
+      color: var(--text-secondary);
+    }
+
+    .demo {
+      background: var(--bg-app);
+      border: 1px dashed var(--border-dashed);
+      border-radius: var(--radius-tile);
+      padding: 20px;
+    }
+
+    .phone {
+      width: 390px;
+      max-width: 100%;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+      background: var(--ink);
+      color: var(--pearl);
+      border-radius: var(--radius-input);
+      padding: 16px;
+      font: var(--text-meta-md);
+      line-height: 1.6;
+    }
+
+    .kv {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .kv b {
+      font: var(--text-heading);
+    }
+
+    .kv b.mono {
+      font-family: var(--font-mono);
+    }
+
+    .kv span {
+      font: var(--text-body-sm);
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 900px) {
+      .wrap {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 24px 20px 64px;
+      }
+
+      nav {
+        position: static;
+        flex-flow: row wrap;
+      }
+
+      nav .navhead {
+        display: none;
+      }
+
+      .c4,
+      .c3,
+      .c2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="../components/loader.js?v=5"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <nav>
+      <div class="navhead">Foundations</div>
+      <a href="#start">Start here</a>
+      <a href="#color">Color</a>
+      <a href="#type">Type</a>
+      <a href="#shape">Shape &amp; space</a>
+      <a href="#motion">Motion &amp; states</a>
+      <div class="navhead">Building</div>
+      <a href="#components">Components</a>
+      <a href="#patterns">Patterns</a>
+      <a href="#charts">Charts</a>
+      <a href="#copy">Copy</a>
+      <div class="navhead">Reference</div>
+      <a href="#checklist">Checklist</a>
+      <a href="#code">Using the tokens</a>
+    </nav>
+
+    <main>
+      <section id="start">
+        <h2><span style="font: var(--text-name); margin-right: 8px; text-transform: none;">Spunk's</span>bettabase —
+          iridescent</h2>
+        <p class="lede">A style guide for building screens in this system. Spunk's Bettabase is a single-user
+          water-parameter log for one betta aquarium, used from a phone as an installed PWA. The palette is lifted from
+          Spunk himself: royal blue body, teal sheen, violet-to-magenta fin edges, pearl head.</p>
+        <div class="grid c3">
+          <div class="panel kv"><b>Primary light theme</b><span>Pearl ground, white surfaces, slate ink.</span></div>
+          <div class="panel kv"><b>Numbers are the content</b><span>Every value, unit, range and timestamp is Fira Code,
+              tabular.</span></div>
+          <div class="panel kv"><b>One gradient per screen</b><span>The signature appears once — CTA, avatar ring, or
+              chart line.</span></div>
+        </div>
+        <h3>Non-negotiables</h3>
+        <div class="do rule"><span class="m">✓</span><span>The gradient appears exactly once per screen.</span></div>
+        <div class="do rule"><span class="m">✓</span><span>Numbers, units and timestamps use <code
+              class="tok">--font-mono</code>; UI text uses <code class="tok">--font-sans</code> at 500–800.</span></div>
+        <div class="do rule"><span class="m">✓</span><span>Status is a solid fill. Tinted pastel backgrounds are not
+            part of this system.</span></div>
+        <div class="do rule"><span class="m">✓</span><span>Nothing is square: every surface and control carries a
+            radius.</span></div>
+        <div class="dont rule"><span class="m">✕</span><span>No emoji. Custom icons are used with icon library
+            support.</span></div>
+        <div class="dont rule"><span class="m">✕</span><span>No gradient on text, and never on two elements in one
+            view.</span></div>
+      </section>
+
+      <section id="color">
+        <h2>Color</h2>
+        <p class="lede">Four Spunk hues over a near-white ground, inked in slate. Teal leads accents; magenta doubles as
+          out-of-range, which is why alarm states feel like part of the brand rather than an interruption.</p>
+        <h3>Spunk hues</h3>
+        <div class="grid c4">
+          <div class="swatch">
+            <div class="chip" style="background: var(--teal);"></div><code>--teal · #14B8C4 · lead accent</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--royal);"></div><code>--royal · #3B5BDB · data, focus</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--violet);"></div><code>--violet · #8B3FD6 · gradient only</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--magenta);"></div><code>--magenta · #D63A8F · alarm</code>
+          </div>
+        </div>
+        <h3>Neutrals</h3>
+        <div class="grid c4">
+          <div class="swatch">
+            <div class="chip" style="background: var(--pearl); border: 1px solid var(--line);"></div>
+            <code>--bg-app · #FBFBFE</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--white); border: 1px solid var(--line);"></div>
+            <code>--bg-surface · #FFFFFF</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--mist);"></div><code>--bg-control · #EEEEF8</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--line);"></div><code>--border-default · #E6E6F2</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--ink-3);"></div><code>--text-tertiary · #66697F</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--ink-2);"></div><code>--text-secondary · #5D6080</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--ink);"></div><code>--text-primary · #293132</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--mist-2);"></div><code>--bg-surface-muted · #F1F1F7</code>
+          </div>
+        </div>
+        <h3>Status</h3>
+        <p>Two greens and two magentas exist on purpose. The pill fills carry text — lime and amber always take <code
+            class="tok">--text-primary</code>, deep magenta takes white — while the deeper variants are for dots and
+          chart points, where nothing sits on top.</p>
+        <div class="grid c3">
+          <div class="swatch">
+            <div class="chip"
+              style="background: var(--status-good-fill); color: var(--status-good-fg); font: var(--text-label-sm);">In
+              range</div><code>--status-good-fill · #CDFB89 · ink text</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--good);"></div><code>--good · #6DA82E · dots, charts</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: #FFCF57; color: var(--status-watch-fg); font: var(--text-label-sm);">
+              Watch</div><code>--watch · #ffcf57· ink text</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--status-bad-fill); color: #fff; font: var(--text-label-sm);">Out
+              of range</div><code>--status-bad-fill · #B8256F</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--overdue); color: var(--overdue-fg); font: var(--text-label-sm);">
+              Overdue</div><code>--overdue · #E6E6F2</code>
+          </div>
+        </div>
+        <h3>Gradient set</h3>
+        <p>Three gradients, in priority order. Primary carries actions, secondary carries emphasis and the primary
+          button's hover end, tertiary is a data accent only — it never sits under white text.</p>
+        <div class="grid c3" style="margin: 16px 0 20px;">
+          <div class="swatch">
+            <div class="chip"
+              style="background: var(--gradient-primary); color: var(--ink); font: var(--text-label-sm);">Primary</div>
+            <code>--gradient-primary · teal → royal · white text only past the royal half</code>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: var(--gradient-secondary); color: #fff; font: var(--text-label-sm);">
+              Secondary</div><code>--gradient-secondary · violet → magenta · holds white text throughout</code>
+          </div>
+          <div class="swatch">
+            <div class="chip"
+              style="background: var(--gradient-tertiary); color: var(--ink); font: var(--text-label-sm);">Tertiary
+            </div><code>--gradient-tertiary · in-range lime → watch · ink text only</code>
+          </div>
+        </div>
+        <div class="grid c3" style="margin: 0 0 20px;">
+          <div class="swatch">
+            <div class="chip"
+              style="background: var(--gradient-tertiary-cool); color: var(--ink); font: var(--text-label-sm);">Tertiary
+              — cool</div>
+            <code>--gradient-tertiary-cool · teal → lime · alternate when tertiary sits near status pills</code>
+          </div>
+        </div>
+
+        <h3>The gradient rule</h3>
+        <p>Pick the one element the screen leads with and give it the gradient. Everything else uses flat color. The
+          primary button is a special case: it shows only the teal→royal half of the track at rest and pans to
+          violet→magenta on hover, so the full four hues are never on screen at once.</p>
+        <div class="grid c2" style="margin: 16px 0 20px;">
+          <div class="swatch">
+            <div class="chip"
+              style="background-image: var(--gradient-cta-track); background-size: 200% 100%; background-position: 0 0;">
+            </div><code>Rest — teal → royal</code>
+          </div>
+          <div class="swatch">
+            <div class="chip"
+              style="background-image: var(--gradient-cta-track); background-size: 200% 100%; background-position: 100% 0;">
+            </div><code>Hover — violet → magenta</code>
+          </div>
+        </div>
+        <table>
+          <tr>
+            <th>Screen</th>
+            <th>Gradient goes on</th>
+          </tr>
+          <tr>
+            <td><b>Dashboard</b></td>
+            <td>The "Log a test" CTA (<code class="tok">--gradient-spunk</code>). The avatar ring is a permitted second
+              use only because the CTA sits in a separate fixed bar.</td>
+          </tr>
+          <tr>
+            <td><b>Parameter history</b></td>
+            <td>The chart line. The hero card behind it uses the light wash, not the full gradient.</td>
+          </tr>
+          <tr>
+            <td><b>Overview</b></td>
+            <td>The avatar ring. Mini charts drop to royal blue — twelve gradient sparklines would read as decoration.
+            </td>
+          </tr>
+          <tr>
+            <td><b>Log a test / Settings</b></td>
+            <td>The primary button.</td>
+          </tr>
+        </table>
+      </section>
+
+      <section id="type">
+        <h2>Type</h2>
+        <p class="lede">Three faces with strict jobs. DynaPuff carries the personality, Plus Jakarta Sans carries the
+          interface, Fira Code carries the data.</p>
+        <div class="grid c3">
+          <div class="panel kv"><b style="font: var(--text-page-title);">DynaPuff 400</b><span><code
+                class="tok">--font-name</code> — the word "Spunk's" and every child-page title. Nowhere else.</span>
+          </div>
+          <div class="panel kv"><b>Plus Jakarta Sans 500–800</b><span><code class="tok">--font-sans</code> — labels,
+              body, buttons. Never weight 400.</span></div>
+          <div class="panel kv"><b class="mono">Fira Code 400–600</b><span><code class="tok">--font-mono</code> — all
+              numbers, units, ranges, timestamps, eyebrows.</span></div>
+        </div>
+        <h3>Scale</h3>
+        <table>
+          <tr>
+            <th>Token</th>
+            <th>Specimen</th>
+            <th>Use</th>
+          </tr>
+          <tr>
+            <td class="mono">--text-page-title</td>
+            <td style="font: var(--text-page-title); text-transform: lowercase;">overview</td>
+            <td>Child-page titles, always lowercase — "log a test", "overview", "settings".</td>
+          </tr>
+          <tr>
+            <td class="mono">--text-title</td>
+            <td style="font: var(--text-title); letter-spacing: var(--tracking-tight);">Spunk's bettabase</td>
+            <td>The dashboard wordmark: lowercase, 800, −0.05em.</td>
+          </tr>
+          <tr>
+            <td class="mono">--text-heading</td>
+            <td style="font: var(--text-heading);">Nitrate</td>
+            <td>Tile names, row labels, field labels. 16px — a step above body, never below it.</td>
+          </tr>
+          <tr>
+            <td class="mono">--text-body</td>
+            <td style="font: var(--text-body);">Fill in whatever you tested.</td>
+            <td>The 14px baseline the rest of the scale is measured against.</td>
+          </tr>
+          <tr>
+            <td class="mono">--text-body-sm</td>
+            <td style="font: var(--text-body-sm);">day after water change</td>
+            <td>Captions and helper text, 12px.</td>
+          </tr>
+          <tr>
+            <td class="mono">--text-label</td>
+            <td style="font: var(--text-label);">Log a test</td>
+            <td>Buttons, pills, chips.</td>
+          </tr>
+          <tr>
+            <td class="mono">--text-num-xl</td>
+            <td style="font: var(--text-num-xl); font-variant-numeric: tabular-nums;">0.25</td>
+            <td>Hero tile reading.</td>
+          </tr>
+          <tr>
+            <td class="mono">--text-num-lg</td>
+            <td style="font: var(--text-num-lg); font-variant-numeric: tabular-nums;">7.2</td>
+            <td>Standard tile reading.</td>
+          </tr>
+          <tr>
+            <td class="mono">--text-num-md</td>
+            <td style="font: var(--text-num-md); font-variant-numeric: tabular-nums;">22</td>
+            <td>List rows, Overview values.</td>
+          </tr>
+          <tr>
+            <td class="mono">--text-meta</td>
+            <td style="font: var(--text-meta);">6.5–7.5 · 2h</td>
+            <td>Ideal range and relative time, always mono.</td>
+          </tr>
+          <tr>
+            <td class="mono">--text-eyebrow</td>
+            <td style="font: var(--text-eyebrow); letter-spacing: var(--tracking-eyebrow); text-transform: uppercase;">
+              PARAMETERS</td>
+            <td>Section dividers in Settings.</td>
+          </tr>
+        </table>
+        <h3>Rules</h3>
+        <div class="do rule"><span class="m">✓</span><span>Set <code
+              class="tok">font-variant-numeric: tabular-nums</code> on anything a user compares down a column.</span>
+        </div>
+        <div class="do rule"><span class="m">✓</span><span>Units follow the value as a quieter mono span: <span
+              class="mono">22 <span style="color: var(--text-tertiary);">ppm</span></span>.</span></div>
+        <div class="dont rule"><span class="m">✕</span><span>Don't set a number in Plus Jakarta Sans, even in a button
+            label like "3 overdue".</span></div>
+        <div class="dont rule"><span class="m">✕</span><span>Don't use DynaPuff for body copy, buttons, or anything
+            under 20px.</span></div>
+      </section>
+
+      <section id="shape">
+        <h2>Shape &amp; space</h2>
+        <p class="lede">A 4px spacing base and five radii. The radius tells you what kind of thing you are looking at.
+        </p>
+        <div class="grid c4" id="radii"></div>
+        <h3>Spacing</h3>
+        <table>
+          <tr>
+            <th>Where</th>
+            <th>Value</th>
+          </tr>
+          <tr>
+            <td>Screen gutter</td>
+            <td class="mono">20px · --screen-gutter</td>
+          </tr>
+          <tr>
+            <td>Column max width</td>
+            <td class="mono">448px · --screen-max</td>
+          </tr>
+          <tr>
+            <td>Tile grid gap</td>
+            <td class="mono">10px</td>
+          </tr>
+          <tr>
+            <td>Tile padding / hero padding</td>
+            <td class="mono">16px / 18–20px</td>
+          </tr>
+          <tr>
+            <td>Stack between blocks</td>
+            <td class="mono">18px</td>
+          </tr>
+          <tr>
+            <td>Minimum tap target</td>
+            <td class="mono">44px · --tap-min</td>
+          </tr>
+          <tr>
+            <td>Primary button height</td>
+            <td class="mono">56px · --button-h</td>
+          </tr>
+        </table>
+        <h3>Elevation</h3>
+        <p>Two shadows. <code class="tok">--shadow-tile</code> lifts white cards off the pearl ground so they read as
+          objects; <code class="tok">--shadow-cta</code> is a royal-blue glow reserved for the primary button. A third
+          shadow would flatten the difference.</p>
+      </section>
+
+      <section id="motion">
+        <h2>Motion &amp; states</h2>
+        <p class="lede">Motion confirms a touch and nothing else. There are no page transitions, no entrance animations,
+          no bounces.</p>
+        <table>
+          <tr>
+            <th>State</th>
+            <th>Treatment</th>
+          </tr>
+          <tr>
+            <td><b>Press</b></td>
+            <td><code class="tok">scale(0.98)</code> plus opacity 0.9, over <code class="tok">--dur-fast</code> (120ms)
+              <code class="tok">--ease-out</code>. Applies to buttons and tiles.
+            </td>
+          </tr>
+          <tr>
+            <td><b>Hover</b></td>
+            <td>Surface darkens one step (mist → line). Pointer-only; never the sole affordance.</td>
+          </tr>
+          <tr>
+            <td><b>Focus</b></td>
+            <td>Border becomes <code class="tok">--royal</code>. No glow, no outline offset.</td>
+          </tr>
+          <tr>
+            <td><b>Selected</b></td>
+            <td>Ink fill for chips; white raised thumb with <code class="tok">--shadow-segment</code> for segmented
+              controls.</td>
+          </tr>
+          <tr>
+            <td><b>Disabled</b></td>
+            <td>40% opacity, shadow removed, cursor default.</td>
+          </tr>
+          <tr>
+            <td><b>Overdue</b></td>
+            <td>The one state that changes a surface: mist background, dashed border, grey text.</td>
+          </tr>
+          <tr>
+            <td><b>State change</b></td>
+            <td>200ms <code class="tok">--dur-base</code> ease-out on color and background.</td>
+          </tr>
+        </table>
+      </section>
+
+      <section id="components">
+        <h2>Components</h2>
+        <p class="lede">Twelve primitives live in <code class="tok">components/core/</code>. Each has a
+          <code>.d.ts</code> for its props and a <code>.prompt.md</code> for when to reach for it. Compose screens from
+          these rather than restyling raw elements.
+        </p>
+        <div id="components-demo"></div>
+      </section>
+
+      <section id="patterns">
+        <h2>Patterns</h2>
+        <h3>Dashboard: one urgent thing, then the grid</h3>
+        <p>Tiles sit in a two-column grid. Sort by severity — out of range, watch, overdue, in range — and give the
+          single worst parameter the <code class="tok">hero</code> variant so it spans the row with a 44px number and a
+          labelled pill. If everything is in range, no hero tile: the grid alone is the good news.</p>
+        <div class="demo" id="pattern-dashboard"></div>
+        <h3>Ranges are one control, not two fields</h3>
+        <p>Anywhere a user sets an ideal min and max, use <b>RangeField</b>: two 84px mono inputs and a two-thumb slider
+          bounded to what a hobbyist test kit can actually report. Thumbs can't cross, typed values clamp to the
+          opposite end, and each parameter declares its own bounds and step (pH 5–9 step 0.1; Nitrate 0–80 step 1;
+          Temperature 65–90 step 1).</p>
+        <div class="demo" id="pattern-range"></div>
+        <h3>Destructive actions confirm in place</h3>
+        <p>Deleting a reading swaps the row's contents for "Delete this reading?" with Cancel and Delete. No dialogs, no
+          toasts — the row you are acting on is the thing that changes.</p>
+        <h3>The primary action is pinned</h3>
+        <p>"Log a test" lives in a bottom bar with a fade from the pearl ground, padded by <code
+            class="tok">env(safe-area-inset-bottom)</code>. One primary action per screen, full width, 56px.</p>
+      </section>
+
+      <section id="charts">
+        <h2>Charts</h2>
+        <p class="lede">A chart here answers one question: is this parameter drifting out of its band? Everything that
+          does not serve that is removed.</p>
+        <table>
+          <tr>
+            <th>Element</th>
+            <th>Treatment</th>
+          </tr>
+          <tr>
+            <td>Line</td>
+            <td>3.5px, round caps and joins. Gradient on the history hero; <code class="tok">--royal</code> everywhere
+              else.</td>
+          </tr>
+          <tr>
+            <td>Points</td>
+            <td>5px filled with the reading's status color, 2px white stroke. The latest point is 1px larger.</td>
+          </tr>
+          <tr>
+            <td>Ideal band</td>
+            <td><code class="tok">--good</code> (#6DA82E) at 18% opacity, 8px radius. No border.</td>
+          </tr>
+          <tr>
+            <td>Axes</td>
+            <td>No axis lines, no vertical gridlines. Mono tick labels only where a value must be read.</td>
+          </tr>
+          <tr>
+            <td>Empty</td>
+            <td>"Not enough data in this range" in tertiary text at the chart's height — never a zero line.</td>
+          </tr>
+        </table>
+        <div class="demo" id="chart-demo" style="margin-top: 20px;"></div>
+      </section>
+
+      <section id="copy">
+        <h2>Copy</h2>
+        <p class="lede">Plain, second person, sentence case. The app is a log, not a coach: it reports what the water is
+          doing and leaves the judgment to the owner.</p>
+        <div class="grid c2">
+          <div class="panel">
+            <h3 style="margin-top: 0;">Write</h3>
+            <div class="do rule"><span class="m">✓</span><span>"Log a test" · "No readings yet" · "Test overdue"</span>
+            </div>
+            <div class="do rule"><span class="m">✓</span><span>"Couldn't load your tank data" — errors start with
+                "Couldn't" and name the thing.</span></div>
+            <div class="do rule"><span class="m">✓</span><span>"Imported 12 readings, skipped 1 row." — say the
+                count.</span></div>
+            <div class="do rule"><span class="m">✓</span><span>Terse time on tiles (<span class="mono">2h</span>, <span
+                  class="mono">6d</span>, <span class="mono">3w</span>), full time in lists (<span class="mono">Sep 5 ·
+                  7:02 AM</span>).</span></div>
+          </div>
+          <div class="panel">
+            <h3 style="margin-top: 0;">Avoid</h3>
+            <div class="dont rule"><span class="m">✕</span><span>Exclamation marks, emoji, and cheer ("Nice
+                work!").</span></div>
+            <div class="dont rule"><span class="m">✕</span><span>Alarm language beyond the status word — "Out of range",
+                not "Danger".</span></div>
+            <div class="dont rule"><span class="m">✕</span><span>Title Case in buttons and headings.</span></div>
+            <div class="dont rule"><span class="m">✕</span><span>Calling Spunk "your fish". He has a name.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="checklist">
+        <h2>Checklist before you ship a screen</h2>
+        <div class="do rule"><span class="m">1</span><span>Exactly one gradient element, and it's the thing the screen
+            is for.</span></div>
+        <div class="do rule"><span class="m">2</span><span>Every number is Fira Code and tabular; every unit is a
+            quieter mono span.</span></div>
+        <div class="do rule"><span class="m">3</span><span>One primary button, full width, in the bottom bar.</span>
+        </div>
+        <div class="do rule"><span class="m">4</span><span>Every tappable thing is at least 44px, and numeric inputs set
+            <code class="tok">inputMode="decimal"</code>.</span></div>
+        <div class="do rule"><span class="m">5</span><span>Status colors come from the tokens — deep fills under white
+            text, bright hues for dots.</span></div>
+        <div class="do rule"><span class="m">6</span><span>Overdue surfaces are mist with a dashed border, not
+            red.</span></div>
+        <div class="do rule"><span class="m">7</span><span>Copy is sentence case, no emoji, and the empty state says
+            what to do next.</span></div>
+        <div class="do rule"><span class="m">8</span><span>The layout survives 390px wide with the bottom bar and the
+            safe-area inset.</span></div>
+      </section>
+
+      <section id="code">
+        <h2>Using the tokens</h2>
+        <p class="lede">Link one stylesheet and reference variables. Do not hardcode hexes, and do not add a token
+          without adding it to <code>tokens/</code>.</p>
+        <pre>&lt;link rel="stylesheet" href="styles.css"&gt;
+
+/* styles.css imports, in order: */
+tokens/fonts.css       @import of DynaPuff, Plus Jakarta Sans, Fira Code
+tokens/colors.css      base hues, gradients, semantic aliases
+tokens/typography.css  font stacks and the type scale
+tokens/shape.css       radius, spacing, sizes, shadows, motion</pre>
+        <pre style="margin-top: 12px;">.tile {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-tile);
+  box-shadow: var(--shadow-tile);
+  padding: var(--space-4);
+}
+.tile__value {
+  font: var(--text-num-lg);
+  font-variant-numeric: tabular-nums;
+}
+.tile__meta { font: var(--text-meta); color: var(--text-tertiary); }</pre>
+        <p style="margin-top: 20px;">For a working reference, open <a href="../ui_kits/bettabase/index.html">the
+            Bettabase UI kit</a> — five click-through screens built entirely from these components — and read <a
+            href="../readme.md">readme.md</a> for the full brand notes.</p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (async () => {
+      const DS = await loadBettabase('../components/core/');
+      const { Button, IconButton, Input, RangeField, StatusPill, StatusDot, RangeToggle, NavChips, BackLink, Avatar, ParameterTile, Sparkline } = DS;
+      const h = React.createElement;
+      const mount = (id, el) => { const n = document.getElementById(id); if (n) ReactDOM.createRoot(n).render(el); };
+
+      const radii = [['--radius-card', 'Card 24', 'Hero cards'], ['--radius-tile', 'Tile 20', 'Tiles, panels'], ['--radius-row', 'Row 16', 'List rows'], ['--radius-input', 'Input 14', 'Fields, notices']];
+      document.getElementById('radii').innerHTML = radii.map(([v, l, u]) =>
+        '<div class="swatch"><div style="height:64px;background:var(--bg-surface);border:1px solid var(--border-default);box-shadow:var(--shadow-tile);border-radius:var(' + v + ')"></div><code>' + l + ' · ' + u + '</code></div>'
+      ).join('') + '<div class="swatch"><div style="height:64px;background:var(--bg-control);border-radius:var(--radius-pill)"></div><code>Pill · buttons, chips, pills</code></div>';
+
+      const block = (title, ...kids) => h('div', { style: { display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 28 } },
+        h('h3', { style: { margin: 0 } }, title), h('div', { className: 'demo', style: { display: 'flex', flexDirection: 'column', gap: 14 } }, ...kids));
+      const row = (...kids) => h('div', { style: { display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' } }, ...kids);
+      const note = (t) => h('span', { style: { font: 'var(--text-body-sm)', color: 'var(--text-secondary)', maxWidth: '62ch' } }, t);
+
+      function ComponentsDemo() {
+        const [range, setRange] = React.useState('30');
+        const [nav, setNav] = React.useState('now');
+        const [val, setVal] = React.useState('');
+        return h('div', null,
+          block('Button — one primary per screen',
+            row(h(Button, { size: 'lg' }, 'Log a test'), h(Button, { variant: 'ink', size: 'md' }, 'Add parameter'), h(Button, { variant: 'secondary', size: 'md' }, 'Cancel')),
+            row(h(Button, { variant: 'outline', size: 'md' }, 'Export all readings to CSV'), h(Button, { variant: 'danger', size: 'sm' }, 'Delete'), h(Button, { size: 'md', disabled: true }, 'Saving…')),
+            note('primary shows teal→royal and slides to violet→magenta on hover — hover it. Ink is for secondary commits, outline for reversible utilities, danger only for destructive confirms.')),
+          block('IconButton — three glyphs, nothing more',
+            row(h(IconButton, { icon: 'kebab', label: 'Menu' }), h(IconButton, { icon: 'chevronLeft', label: 'Back' }), h(IconButton, { icon: 'trash', label: 'Delete reading', tone: 'danger' })),
+            note('44px round, mist by default. Adding a glyph means adding it to Icon.jsx, not drawing one inline.')),
+          block('Status — pills when labelled, dots when tight',
+            row(h(StatusPill, { status: 'in-range' }), h(StatusPill, { status: 'watch' }), h(StatusPill, { status: 'out-of-range' }), h(StatusPill, { status: 'overdue' })),
+            row(h(StatusPill, { status: 'in-range', size: 'sm' }), h(StatusPill, { status: 'overdue', size: 'sm' }), note('sm sits inside hero tiles')),
+            row(h(StatusDot, { status: 'in-range' }), h(StatusDot, { status: 'watch' }), h(StatusDot, { status: 'out-of-range' }), h(StatusDot, { status: 'overdue' }), note('10px, used in the tile corner and on list rows'))),
+          block('Navigation',
+            h(NavChips, { items: [{ value: 'now', label: 'Now' }, { value: 'overview', label: 'Overview' }, { value: 'settings', label: 'Settings' }], value: nav, onChange: setNav }),
+            h(RangeToggle, { value: range, onChange: setRange }),
+            h(BackLink, { label: 'Dashboard' }),
+            note('Chips for top-level views, segmented toggle for time ranges, back link at the top of every child page.')),
+          block('Fields',
+            row(h(Input, { label: 'Nitrate', hint: 'ppm', mono: true, inputMode: 'decimal', placeholder: '0–20', value: val, onChange: setVal, style: { flex: 1 } }), h(Input, { label: 'Note', hint: 'optional', placeholder: 'day after water change', style: { flex: 1 } })),
+            note('Labels are 600/14. The placeholder shows the ideal range in mono, so the field teaches the target before anything is typed.')),
+          block('Avatar — the mascot slot',
+            row(h(Avatar, { src: '../assets/spunk.png' }), h(Avatar, { src: '../assets/spunk.png', size: 40 }), h(Avatar, { size: 48 }), note('Spunk sits in the header of every top-level screen. The gradient ring counts as a gradient use.')))
+        );
+      }
+      mount('components-demo', h(ComponentsDemo));
+
+      const tiles = [
+        { name: 'pH', value: '7.2', rangeText: '6.5–7.5', ago: '2h', status: 'in-range' },
+        { name: 'Ammonia', value: '0', rangeText: 'ideal 0 ppm', ago: '2h', status: 'in-range' },
+        { name: 'Nitrate', value: '22', rangeText: '0–20 ppm', ago: '2h', status: 'watch' },
+        { name: 'GH', value: '4', rangeText: '3–8 dGH', ago: '3w', status: 'overdue' },
+      ];
+      mount('pattern-dashboard', h('div', { className: 'phone', style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 } },
+        h(ParameterTile, { hero: true, name: 'Nitrite', unit: 'ppm', value: '0.25', rangeText: 'ideal 0', ago: '2 hours ago', status: 'out-of-range' }),
+        ...tiles.map((t, i) => h(ParameterTile, { key: i, ...t }))));
+
+      function RangeDemo() {
+        const [a, setA] = React.useState({ min: 6.5, max: 7.5 });
+        const [b, setB] = React.useState({ min: 0, max: 20 });
+        return h('div', { className: 'phone', style: { display: 'flex', flexDirection: 'column', gap: 18 } },
+          h(RangeField, { label: 'Ideal range', min: 5, max: 9, step: 0.1, hint: 'range 5–9', value: a, onChange: setA }),
+          h(RangeField, { label: 'Ideal range', unit: 'ppm', min: 0, max: 80, step: 1, hint: 'range 0–80', value: b, onChange: setB }));
+      }
+      mount('pattern-range', h(RangeDemo));
+
+      const pts = [5, 8, 7, 12, 15, 18, 22].map((v) => ({ value: v }));
+      const st = pts.map((p) => (p.value > 20 ? 'watch' : 'in-range'));
+      mount('chart-demo', h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 } },
+        h('div', { style: { display: 'flex', flexDirection: 'column', gap: 8 } },
+          h(Sparkline, { points: pts, idealMin: 0, idealMax: 20, statuses: st, showTicks: true, height: 130 }),
+          note('History hero: gradient line, ticks, ideal band')),
+        h('div', { style: { display: 'flex', flexDirection: 'column', gap: 8 } },
+          h(Sparkline, { points: pts, idealMin: 0, idealMax: 20, statuses: st, gradient: false, dotRadius: 3.5, height: 64 }),
+          note('Overview mini: royal line, no ticks'))));
+    })().catch((e) => { console.error(e); });
+  </script>
+</body>
+
+</html>

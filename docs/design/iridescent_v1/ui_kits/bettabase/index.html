@@ -1,0 +1,29 @@
+<!-- @dsCard group="Bettabase app" viewport="430x860" subtitle="Click-through: dashboard → log, history, overview, settings" name="Bettabase (PWA)" -->
+<!-- @startingPoint section="Screens" subtitle="Spunk's Bettabase dashboard" viewport="430x860" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Spunk's Bettabase</title>
+<link rel="stylesheet" href="../../styles.css">
+<style>html,body{margin:0;height:100%;background:var(--bg-app)}#root{min-height:100%}input::placeholder{color:var(--text-tertiary);font-family:var(--font-mono);font-size:13px;font-weight:400}button{font-family:var(--font-sans)}</style>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="../../components/loader.js?v=5"></script>
+<script src="./data.js"></script>
+</head><body><div id="root"></div>
+<script>
+(async () => {
+  const ns = await loadBettabase('../../components/core/');
+  await loadJsx('./', ['Shell', 'Dashboard', 'LogTest', 'ParameterHistory', 'Overview', 'Settings'], ns);
+  const h = React.createElement;
+  function App() {
+    const [route, setRoute] = React.useState(location.hash.slice(1) || '/');
+    React.useEffect(() => { const f = () => setRoute(location.hash.slice(1) || '/'); window.addEventListener('hashchange', f); return () => window.removeEventListener('hashchange', f); }, []);
+    const go = (r) => { location.hash = r; window.scrollTo(0, 0); };
+    if (route === '/log') return h(ns.LogTest, { go });
+    if (route === '/overview') return h(ns.Overview, { go });
+    if (route === '/settings') return h(ns.Settings, { go });
+    if (route.startsWith('/parameter/')) return h(ns.ParameterHistory, { id: route.split('/')[2], go });
+    return h(ns.Dashboard, { go });
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+})().catch((e) => { document.getElementById('root').textContent = 'Error: ' + (e.stack || e); });
+</script></body></html>

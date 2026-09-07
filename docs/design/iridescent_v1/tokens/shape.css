@@ -1,0 +1,37 @@
+:root {
+  /* Radius */
+  --radius-tile: 20px;
+  --radius-card: 24px;
+  --radius-row: 16px;
+  --radius-input: 14px;
+  --radius-pill: 999px;
+
+  /* Spacing (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --screen-gutter: 20px;
+  --screen-max: 448px;
+
+  /* Sizes */
+  --tap-min: 44px;
+  --control-h: 44px;
+  --button-h: 56px;
+  --avatar: 48px;
+  --avatar-ring: 2.5px;
+  --dot: 10px;
+
+  /* Elevation */
+  --shadow-tile: 0 2px 12px rgba(41, 49, 50, 0.06);
+  --shadow-segment: 0 1px 4px rgba(41, 49, 50, 0.1);
+  --shadow-cta: 0 8px 24px rgba(59, 91, 219, 0.28);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+}

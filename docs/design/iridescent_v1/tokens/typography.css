@@ -1,0 +1,32 @@
+:root {
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "Fira Code", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-name: "DynaPuff", "Plus Jakarta Sans", sans-serif;   /* Spunk's name only, weight 400 */
+  --text-name: 400 22px/1 var(--font-name);
+  --text-page-title: 400 24px/28px var(--font-name);   /* child-page titles, always lowercase */
+
+  /* Display (Plus Jakarta Sans 800, tight tracking) */
+  --text-display-xl: 800 56px/1 var(--font-mono);      /* hero reading — mono, letter-spacing -0.03em */
+  --text-title: 800 24px/1 var(--font-sans);           /* screen title, letter-spacing -0.02em */
+  --text-title-lg: 800 28px/1 var(--font-sans);        /* hero card title */
+  /* Body baseline is 14px. Headings step up from it; nothing labelled a heading is smaller than body. */
+  --text-heading: 600 16px/1.25 var(--font-sans);      /* tile name, row label, field label */
+  --text-body: 500 14px/1.5 var(--font-sans);          /* baseline */
+  --text-body-sm: 400 12px/1.4 var(--font-sans);       /* captions, helper text */
+  --text-label: 600 14px/1 var(--font-sans);           /* buttons, pills, nav chips */
+  --text-label-sm: 600 12px/1 var(--font-sans);        /* small pill */
+  --text-caption: 500 12px/1 var(--font-sans);
+  --text-eyebrow: 600 11px/1 var(--font-mono);         /* letter-spacing .14em, uppercase */
+
+  /* Numbers — always Fira Code, tabular */
+  --text-num-xl: 600 44px/1 var(--font-mono);
+  --text-num-lg: 600 34px/1 var(--font-mono);
+  --text-num-md: 600 22px/1 var(--font-mono);
+  --text-num-sm: 600 18px/1 var(--font-mono);
+  --text-meta: 400 11px/1 var(--font-mono);            /* ideal range · relative time */
+  --text-meta-md: 400 12px/1 var(--font-mono);
+
+  --tracking-tight: -0.02em;
+  --tracking-tighter: -0.03em;
+  --tracking-eyebrow: 0.14em;
+}

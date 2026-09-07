@@ -2,37 +2,145 @@
 
 @theme {
   --font-sans:
-    "Raleway Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    sans-serif;
-  --font-heading:
-    "Libre Franklin Variable", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
+    "Plus Jakarta Sans Variable", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
   --font-mono:
-    "IBM Plex Mono", ui-monospace, "SF Mono", "Cascadia Mono",
-    "Segoe UI Mono", Consolas, monospace;
+    "Fira Code", ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono",
+    Consolas, monospace;
+  --font-name: "DynaPuff", "Plus Jakarta Sans Variable", sans-serif;
 
-  --color-bg: #f5fafa;
+  /* Base palette */
+  --color-bg: #fbfbfe;
   --color-surface: #ffffff;
-  --color-ink: #10282b;
-  --color-ink-muted: #62797c;
-  --color-line: #dce6e7;
-  --color-accent: #146b7d;
+  --color-ink: #293132;
+  --color-ink-muted: #5d6080;
+  --color-ink-3: #66697f;
+  --color-line: #e6e6f2;
+  --color-line-2: #c9c9dc;
+  --color-mist: #eeeef8;
+  --color-mist-2: #f1f1f7;
 
-  --color-status-good: #2e9e5b;
-  --color-status-good-bg: #e6f6ec;
-  --color-status-good-fg: #1b7f45;
+  --color-accent: #14b8c4;
+  --color-accent-strong: #3b5bdb;
+  --color-lime: #cdfb89;
+  --color-bad-deep: #b8256f;
 
-  --color-status-watch: #d98f0b;
-  --color-status-watch-bg: #fdf3dc;
-  --color-status-watch-fg: #9a6400;
+  /* Status */
+  --color-status-good: #6da82e;
+  --color-status-good-bg: #cdfb89;
+  --color-status-good-fg: #293132;
 
-  --color-status-bad: #d64f3e;
-  --color-status-bad-bg: #fbe9e6;
-  --color-status-bad-fg: #b23a2e;
+  --color-status-watch: #f2a51a;
+  --color-status-watch-bg: #f2a51a;
+  --color-status-watch-fg: #293132;
 
-  --color-status-overdue: #a9b4b4;
-  --color-status-overdue-bg: #eef2f2;
-  --color-status-overdue-fg: #667070;
+  --color-status-bad: #d63a8f;
+  --color-status-bad-bg: #b8256f;
+  --color-status-bad-fg: #ffffff;
+
+  --color-status-overdue: #e6e6f2;
+  --color-status-overdue-bg: #e6e6f2;
+  --color-status-overdue-fg: #5d6080;
+
+  /* Gradients — one source of truth (--gradient-cta-track); ring/wash share its stops at different angles */
+  /* Teal stop is darkened from the brand teal (#14b8c4) specifically here —
+     white button-label text over pure brand teal fails contrast (~2.4:1);
+     this darker teal clears ~4.9:1 while the rest of the gradient (and the
+     brand teal everywhere else: avatar ring, chart line) stays untouched. */
+  --gradient-cta-track: linear-gradient(
+    90deg,
+    #0d7d87 0%,
+    #3b5bdb 50%,
+    #8b3fd6 75%,
+    #d63a8f 100%
+  );
+  --gradient-avatar-ring: linear-gradient(
+    135deg,
+    #14b8c4,
+    #3b5bdb,
+    #d63a8f
+  );
+  --gradient-hero-wash: linear-gradient(
+    135deg,
+    #eaf9fb,
+    #eceefb 50%,
+    #fbe9f3
+  );
+
+  /* Shape */
+  --radius-tile: 20px;
+  --radius-card: 24px;
+  --radius-row: 16px;
+  --radius-input: 14px;
+
+  /* Elevation */
+  --shadow-tile: 0 2px 12px rgba(41, 49, 50, 0.06);
+  --shadow-segment: 0 1px 4px rgba(41, 49, 50, 0.1);
+  --shadow-cta: 0 8px 24px rgba(59, 91, 219, 0.28);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Type scale — bundles size/line-height/weight per Tailwind v4's --text-* sub-keys */
+  --text-heading: 16px;
+  --text-heading--line-height: 1.25;
+  --text-heading--font-weight: 600;
+
+  --text-body: 14px;
+  --text-body--line-height: 1.5;
+  --text-body--font-weight: 500;
+
+  --text-body-sm: 12px;
+  --text-body-sm--line-height: 1.4;
+  --text-body-sm--font-weight: 400;
+
+  --text-label: 14px;
+  --text-label--line-height: 1;
+  --text-label--font-weight: 600;
+
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 1;
+  --text-label-sm--font-weight: 600;
+
+  --text-caption: 12px;
+  --text-caption--line-height: 1;
+  --text-caption--font-weight: 500;
+
+  --text-eyebrow: 11px;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--font-weight: 600;
+
+  --text-title: 24px;
+  --text-title--line-height: 1;
+  --text-title--font-weight: 800;
+
+  --text-title-lg: 28px;
+  --text-title-lg--line-height: 1;
+  --text-title-lg--font-weight: 800;
+
+  --text-display-xl: 56px;
+  --text-display-xl--line-height: 1;
+  --text-display-xl--font-weight: 800;
+
+  --text-num-xl: 44px;
+  --text-num-xl--line-height: 1;
+  --text-num-xl--font-weight: 600;
+
+  --text-num-lg: 34px;
+  --text-num-lg--line-height: 1;
+  --text-num-lg--font-weight: 600;
+
+  --text-num-md: 22px;
+  --text-num-md--line-height: 1;
+  --text-num-md--font-weight: 600;
+
+  --text-num-sm: 18px;
+  --text-num-sm--line-height: 1;
+  --text-num-sm--font-weight: 600;
+
+  --text-meta: 11px;
+  --text-meta--line-height: 1;
+  --text-meta--font-weight: 400;
 }
 
 body {
@@ -41,4 +149,11 @@ body {
 
 .recharts-wrapper text {
   font-family: var(--font-mono);
+}
+
+/* Fira Code's code ligatures (e.g. "!=", "->") can visually mangle plain
+   numerals/punctuation in non-code UI text — always off here. */
+.font-mono {
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0, 'calt' 0;
 }

@@ -5,6 +5,10 @@ All notable changes to this project are documented here. Newest release first.
 ## [Unreleased]
 
 ### Added
+- Re-skinned the entire app on a new "Iridescent" design system (Plus Jakarta Sans / Fira Code / DynaPuff, teal→royal→violet→magenta brand gradient, solid-fill status pills, 20px-radius tiles) — colors, type, spacing/radius/shadow tokens, and every screen's visual treatment changed; data model, routing, and Supabase logic unchanged
+- Added a header avatar (Spunk's photo) with a gradient ring to Dashboard/Overview/Settings, a "N of M in range" summary line to Dashboard, a severity-ranked hero tile for the most urgent out-of-range/watch/overdue parameter on Dashboard, and a dual-thumb `RangeField` slider replacing Settings' bare min/max number inputs
+- Replaced Dashboard's header text links ("Overview"/"Settings") with a kebab menu button plus a pill-style `NavChips` row, also added to Overview and Settings (both drop `BackLink` in favor of it — a navigation-structure change, not just a restyle)
+- Installed `@phosphor-icons/react` as an interim icon library for net-new iconography; the app's 3 existing hand-drawn glyphs (back chevron, trash, kebab) are unchanged and centralized into a shared `Icon`/`IconButton` component
 - °F / °C display toggle in Settings — temperature readings, ideal range, and the largest-swing callout convert on the way out only; the stored value is always Fahrenheit
 
 ### Changed
@@ -13,6 +17,7 @@ All notable changes to this project are documented here. Newest release first.
 
 ### Fixed
 - Cloudflare deploy step (`npx wrangler versions upload`) failing with "Missing entry-point to Worker script or to assets directory" — added `wrangler.jsonc` specifying the Worker name and `./dist` as the assets directory, which earlier deploys had been missing without issue until the first `dev`-branch build surfaced it
+- Added missing `role="tablist"`/`aria-selected` to the 30/90/all-time range toggle and a visible focus state to buttons/inputs — neither existed before the Iridescent re-skin
 
 ## [1.0.0] - 2026-09-05
 

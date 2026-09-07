@@ -1,0 +1,2 @@
+export interface RangeToggleProps { value?: string; onChange?: (v: string) => void; options?: { value: string; label: string }[]; style?: React.CSSProperties }
+export function RangeToggle(props: RangeToggleProps): JSX.Element;

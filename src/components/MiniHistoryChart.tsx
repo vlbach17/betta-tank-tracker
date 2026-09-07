@@ -62,15 +62,17 @@ export function MiniHistoryChart({
   return (
     <Link
       to={`/parameter/${parameter.id}`}
-      className={`flex flex-col gap-2 rounded-xl border border-line p-4 active:opacity-80 ${
-        overdue ? 'bg-status-overdue-bg/50' : 'bg-surface'
+      className={`flex flex-col gap-2 rounded-tile p-4 active:opacity-80 ${
+        overdue
+          ? 'border border-dashed border-line-2 bg-mist-2'
+          : 'border border-line bg-surface shadow-tile'
       }`}
     >
       <div className="flex items-center justify-between gap-2">
-        <h2 className="font-heading text-base font-medium text-ink">
+        <h2 className="text-heading font-sans text-ink">
           {name}
           {displayUnit && (
-            <span className="ml-1 font-mono text-sm font-normal text-ink-muted">
+            <span className="ml-1 text-meta font-mono text-ink-3">
               ({displayUnit})
             </span>
           )}
@@ -79,7 +81,7 @@ export function MiniHistoryChart({
       </div>
 
       {displayChartReadings.length === 0 ? (
-        <div className="flex h-28 items-center justify-center text-sm text-ink-muted">
+        <div className="flex h-28 items-center justify-center text-body-sm font-sans text-ink-3">
           Not enough data in this range
         </div>
       ) : (
@@ -94,7 +96,7 @@ export function MiniHistoryChart({
                   y1={displayIdealMin}
                   y2={displayIdealMax}
                   fill={CHART_COLORS.band}
-                  fillOpacity={0.12}
+                  fillOpacity={0.18}
                   stroke="none"
                 />
               )}
@@ -120,8 +122,8 @@ export function MiniHistoryChart({
       )}
 
       <p
-        className={`font-mono text-xs ${
-          overdue ? 'font-medium text-status-overdue-fg' : 'text-ink-muted'
+        className={`text-meta font-mono ${
+          overdue ? 'font-semibold text-status-overdue-fg' : 'text-ink-3'
         }`}
       >
         {displayLatestValue != null

@@ -1,0 +1,34 @@
+<!-- @dsCard group="Components" viewport="700x400" subtitle="Core primitives: button, pill, dot, toggle, chips, input, avatar, tile, sparkline" name="Core" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<style>body{margin:0;padding:16px;background:var(--bg-app);font-family:var(--font-sans);color:var(--text-primary)}.g{display:grid;grid-template-columns:1fr 1fr;gap:16px}.b{display:flex;flex-direction:column;gap:10px}.b h4{margin:0;font:var(--text-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)}.r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}</style>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="../loader.js?v=5"></script>
+</head><body><div id="root"></div>
+<script>
+loadBettabase('./').then((DS) => {
+  const { Button, IconButton, StatusPill, StatusDot, RangeToggle, NavChips, BackLink, Input, Avatar, ParameterTile, Sparkline, RangeField } = DS;
+  const h = React.createElement;
+  const block = (t, ...kids) => h('div', { className: 'b' }, h('h4', null, t), ...kids);
+  const row = (...kids) => h('div', { className: 'r' }, ...kids);
+  const pts = [14, 11, 12, 16, 18, 19, 22].map((v) => ({ value: v }));
+  function RangeFieldDemo() {
+    const [a, setA] = React.useState({ min: 0, max: 20 });
+    const [b, setB] = React.useState({ min: 6.5, max: 7.5 });
+    return h('div', { style: { display: 'flex', flexDirection: 'column', gap: 14 } },
+      h(RangeField, { label: 'Ideal range', unit: 'ppm', min: 0, max: 80, step: 1, hint: 'range 0–80', value: a, onChange: setA }),
+      h(RangeField, { label: 'Ideal range', min: 5, max: 9, step: 0.1, hint: 'range 5–9', value: b, onChange: setB }));
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'g' },
+      block('Button', row(h(Button, { size: 'md' }, 'Log a test'), h(Button, { variant: 'ink', size: 'md' }, 'Now'), h(Button, { variant: 'secondary', size: 'md' }, 'Overview')), row(h(Button, { variant: 'outline', size: 'md' }, 'Export CSV'), h(Button, { variant: 'danger', size: 'sm' }, 'Delete'), h(Button, { size: 'md', disabled: true }, 'Saving…'), h(IconButton, { icon: 'kebab', label: 'Menu' }), h(IconButton, { icon: 'trash', label: 'Delete', tone: 'danger' }))),
+      block('Status', row(h(StatusPill, { status: 'in-range' }), h(StatusPill, { status: 'watch' }), h(StatusPill, { status: 'out-of-range' }), h(StatusPill, { status: 'overdue' })), row(h(StatusPill, { status: 'in-range', size: 'sm' }), h(StatusPill, { status: 'overdue', size: 'sm' }), h(StatusDot, { status: 'in-range' }), h(StatusDot, { status: 'watch' }), h(StatusDot, { status: 'out-of-range' }), h(StatusDot, { status: 'overdue' }))),
+      block('Range toggle · Nav chips', h(RangeToggle, { value: '30' }), h(NavChips, { items: [{ value: 'now', label: 'Now' }, { value: 'ov', label: 'Overview' }, { value: 'st', label: 'Settings' }], value: 'now' })),
+      block('Input · Back link · Avatar', row(h(Input, { label: 'Nitrate', hint: 'ppm', mono: true, placeholder: '0–20', style: { flex: 1 } }), h(Avatar, { src: '../../assets/spunk.png' })), h(BackLink, { label: 'Dashboard' })),
+      block('Range field', h(RangeFieldDemo)),
+      block('Parameter tile', h('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 } }, h(ParameterTile, { name: 'pH', value: '7.2', rangeText: '6.5–7.5', ago: '2h', status: 'in-range' }), h(ParameterTile, { name: 'GH', value: '4', rangeText: '3–8', unit: 'dGH', ago: '3w', status: 'overdue' }))),
+      block('Hero tile · Sparkline', h(ParameterTile, { hero: true, name: 'Nitrite', unit: 'ppm', value: '0.25', rangeText: 'ideal 0', ago: '2h ago', status: 'out-of-range' }), h(Sparkline, { points: pts, idealMin: 0, idealMax: 20, height: 70, statuses: pts.map((p) => (p.value > 20 ? 'watch' : 'in-range')) }))
+    ));
+}).catch((e) => { document.getElementById('root').textContent = 'Loader error: ' + (e && e.stack || e); });
+</script></body></html>

@@ -1,0 +1,2 @@
+export interface StatusDotProps { status?: "in-range" | "watch" | "out-of-range" | "overdue" | "unknown"; size?: number; style?: React.CSSProperties }
+export function StatusDot(props: StatusDotProps): JSX.Element;

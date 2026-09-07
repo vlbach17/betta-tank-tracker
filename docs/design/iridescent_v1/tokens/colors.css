@@ -1,0 +1,74 @@
+:root {
+  /* Base — pulled from Spunk (royal blue body, teal sheen, violet-to-magenta fin edges, pearl head) */
+  --pearl: #fbfbfe;
+  --white: #ffffff;
+  --ink: #293132;
+  --ink-2: #5d6080;
+  --ink-3: #66697f;
+  --mist: #eeeef8;
+  --mist-2: #f1f1f7;
+  --line: #e6e6f2;
+  --line-2: #c9c9dc;
+
+  --teal: #14b8c4;
+  --royal: #3b5bdb;
+  --violet: #8b3fd6;
+  --magenta: #d63a8f;
+
+  --lime: #cdfb89;     /* Spunk-adjacent lime — pill fills, takes ink text */
+  --good: #6da82e;     /* deeper lime sibling — dots, chart points, bands */
+  --watch: #f2a51a;
+  --bad: #d63a8f;      /* out-of-range shares fin magenta */
+  /* Pill fills: --good-deep is a light lime that takes INK text; --bad-deep is deep magenta that takes white */
+  --good-deep: var(--lime);
+  --bad-deep: #b8256f;
+  --overdue: #e6e6f2;
+  --overdue-fg: #5d6080;
+
+  /* Primary button: a teal→royal face that slides to violet→magenta on hover.
+     One 4-stop track at 200% width, panned by background-position. */
+  --gradient-cta-track: linear-gradient(90deg, #14b8c4 0%, #3b5bdb 50%, #8b3fd6 75%, #d63a8f 100%);
+
+  /* Gradient set — primary / secondary / tertiary.
+     Primary carries actions. Secondary carries emphasis + hover states.
+     Tertiary is a data/status accent only: both ends are light, so it takes INK text, never white. */
+  --gradient-primary: linear-gradient(90deg, var(--teal), var(--royal));
+  --gradient-secondary: linear-gradient(90deg, var(--violet), var(--magenta));
+  --gradient-tertiary: linear-gradient(90deg, var(--status-good-fill), var(--watch));
+
+  /* Tertiary alternate — swap in place of --gradient-tertiary if the specced pair
+     reads too close to the status palette. */
+  --gradient-tertiary-cool: linear-gradient(90deg, var(--teal), var(--lime));
+
+  /* The signature. Used ONCE per screen: primary button, avatar ring, or chart line. */
+  --gradient-spunk: linear-gradient(90deg, #14b8c4 0%, #3b5bdb 45%, #8b3fd6 75%, #d63a8f 100%);
+  --gradient-spunk-diag: linear-gradient(135deg, #14b8c4, #3b5bdb, #d63a8f);
+  --gradient-spunk-wash: linear-gradient(135deg, #eaf9fb, #eceefb 50%, #fbe9f3);
+
+  /* Semantic */
+  --bg-app: var(--pearl);
+  --bg-surface: var(--white);
+  --bg-surface-muted: var(--mist-2);
+  --bg-control: var(--mist);
+  --bg-hero: var(--gradient-spunk-wash);
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-2);
+  --text-tertiary: var(--ink-3);
+  --text-on-accent: var(--white);
+  --border-default: var(--line);
+  --border-dashed: var(--line-2);
+  --accent: var(--teal);
+  --accent-strong: var(--royal);
+  --chart-line: var(--gradient-spunk);
+  --chart-band: var(--good);
+  --chart-band-opacity: 0.18;
+  --status-good: var(--good);
+  --status-watch: var(--watch);
+  --status-bad: var(--bad);
+  --status-good-fill: var(--good-deep);
+  --status-good-fg: var(--text-primary);   /* lime is light: it always takes primary ink text */
+  --status-bad-fill: var(--bad-deep);
+  --status-overdue: var(--overdue);
+  --status-overdue-fg: var(--overdue-fg);
+  --status-watch-fg: var(--text-primary);
+}

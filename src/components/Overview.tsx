@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { fetchAllHistories, type ParameterWithReadings } from '../lib/parameters'
 import { isWithinRange, type Range } from '../lib/range'
-import { BackLink } from './BackLink'
+import { Avatar } from './Avatar'
 import { MiniHistoryChart } from './MiniHistoryChart'
+import { NavChips } from './NavChips'
+import { Notice } from './Notice'
 import { RangeToggle } from './RangeToggle'
 
 export function Overview() {
@@ -42,34 +44,35 @@ export function Overview() {
   }, [parameters, range])
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col px-4 pt-4 pb-8">
-      <BackLink to="/" label="Dashboard" />
+    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-8">
+      <div className="flex items-center gap-3">
+        <Avatar />
+        <h1 className="text-title font-sans text-ink">Overview</h1>
+      </div>
 
-      <h1 className="mb-4 font-heading text-xl font-semibold text-ink">
-        Overview
-      </h1>
+      <NavChips
+        items={[
+          { to: '/', label: 'Now' },
+          { to: '/overview', label: 'Overview' },
+          { to: '/settings', label: 'Settings' },
+        ]}
+      />
 
-      {error && (
-        <p className="rounded-lg bg-status-bad-bg p-3 text-sm text-status-bad-fg">
-          Couldn't load your tank data: {error}
-        </p>
-      )}
+      {error && <Notice>Couldn't load your tank data: {error}</Notice>}
 
       {!error && !filtered && (
-        <p className="text-sm text-ink-muted">Loading…</p>
+        <p className="text-body font-sans text-ink-3">Loading…</p>
       )}
 
       {filtered && filtered.length === 0 && (
-        <p className="text-sm text-ink-muted">
+        <p className="text-body font-sans text-ink-3">
           No active parameters yet. Add one in Settings.
         </p>
       )}
 
       {filtered && filtered.length > 0 && (
         <>
-          <div className="mb-4">
-            <RangeToggle value={range} onChange={setRange} />
-          </div>
+          <RangeToggle value={range} onChange={setRange} />
 
           <div className="flex flex-col gap-3">
             {filtered.map(({ parameter, chartReadings, latestReading }) => (

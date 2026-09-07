@@ -1,0 +1,2 @@
+export interface NavChipsProps { items?: { value: string; label: string }[]; value?: string; onChange?: (v: string) => void; style?: React.CSSProperties }
+export function NavChips(props: NavChipsProps): JSX.Element;

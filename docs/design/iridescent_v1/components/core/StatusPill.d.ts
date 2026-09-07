@@ -1,0 +1,2 @@
+export interface StatusPillProps { status?: "in-range" | "watch" | "out-of-range" | "overdue" | "unknown"; size?: "md" | "sm"; children?: React.ReactNode; style?: React.CSSProperties }
+export function StatusPill(props: StatusPillProps): JSX.Element;

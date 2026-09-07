@@ -14,10 +14,20 @@ const STATUS_CLASSES: Record<ReadingStatus, string> = {
   unknown: 'bg-status-overdue-bg text-status-overdue-fg',
 }
 
-export function StatusPill({ status }: { status: ReadingStatus }) {
+export function StatusPill({
+  status,
+  size = 'md',
+}: {
+  status: ReadingStatus
+  size?: 'md' | 'sm'
+}) {
   return (
     <span
-      className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-1 font-heading text-xs font-medium ${STATUS_CLASSES[status]}`}
+      className={`inline-flex shrink-0 items-center rounded-full lowercase ${
+        size === 'sm'
+          ? 'px-2 py-0.5 text-label-sm font-sans'
+          : 'px-2.5 py-1 text-label font-sans'
+      } ${STATUS_CLASSES[status]}`}
     >
       {STATUS_LABEL[status]}
     </span>

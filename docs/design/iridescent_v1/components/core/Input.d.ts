@@ -1,0 +1,2 @@
+export interface InputProps { label?: string; /** quiet mono suffix after the label, e.g. "ppm" */ hint?: string; /** Fira Code value (numbers) */ mono?: boolean; value?: string; onChange?: (v: string) => void; placeholder?: string; type?: string; inputMode?: string; id?: string; style?: React.CSSProperties }
+export function Input(props: InputProps): JSX.Element;

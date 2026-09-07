@@ -1,0 +1,39 @@
+<!-- @dsCard group="Colors" viewport="700x480" subtitle="Primary, secondary, tertiary — plus tertiary alternates" name="Gradient set" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css"><style>
+body{margin:0;padding:18px;background:var(--bg-app);font-family:var(--font-sans);color:var(--text-primary)}
+h4{font:var(--text-label-sm);margin:0 0 8px;text-transform:none;letter-spacing:.25px;color:var(--text-secondary)}
+.stack{display:flex;flex-direction:column;gap:20px}
+.set{display:flex;flex-direction:column;gap:12px}
+.g{display:flex;flex-direction:column;gap:6px}
+.bar{height:44px;border-radius:12px;display:flex;align-items:center;padding:0 14px;font:var(--text-label-sm)}
+.meta{font:var(--text-meta);color:var(--text-secondary);line-height:1.45}
+.alts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.alts .bar{height:36px}
+</style></head><body>
+<div class="stack">
+  <div class="set">
+    <div class="g">
+      <div class="bar" style="background:var(--gradient-primary);color:var(--ink)">Primary — actions</div>
+      <span class="meta">--gradient-primary · teal → royal · buttons, active nav, focus ring. White text only clears 4.5:1 past the royal half — labels sitting over the teal end take ink.</span>
+    </div>
+    <div class="g">
+      <div class="bar" style="background:var(--gradient-secondary);color:var(--white)">Secondary — emphasis</div>
+      <span class="meta">--gradient-secondary · violet → magenta · primary-button hover end, avatar rings, highlight cards. Holds white text across the whole run.</span>
+    </div>
+    <div class="g">
+      <div class="bar" style="background:var(--gradient-tertiary);color:var(--ink)">Tertiary — data accent</div>
+      <span class="meta">--gradient-tertiary · --status-good-fill → --watch · chart bands, progress fills, in-range meters. Both ends are light: <strong>ink text only</strong>, never white.</span>
+    </div>
+  </div>
+
+  <div>
+    <h4>tertiary alternate</h4>
+    <div class="alts">
+      <div class="g">
+        <div class="bar" style="background:var(--gradient-tertiary-cool);color:var(--ink)">cool</div>
+        <span class="meta">--gradient-tertiary-cool · teal → lime. Keeps tertiary inside the brand's cool half instead of borrowing the status palette, so a chart fill never reads as a "watch" state.</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

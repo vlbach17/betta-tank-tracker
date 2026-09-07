@@ -12,7 +12,7 @@ export default defineConfig({
     maskable: {
       ...preset.maskable,
       padding: 0.2,
-      resizeOptions: { background: '#146b7d' },
+      resizeOptions: { background: '#14b8c4' },
     },
   },
   images: ['public/favicon.svg'],

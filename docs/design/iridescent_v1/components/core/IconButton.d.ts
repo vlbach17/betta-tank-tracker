@@ -1,0 +1,2 @@
+export interface IconButtonProps { icon?: "chevronLeft" | "trash" | "kebab"; label: string; onClick?: () => void; tone?: "default" | "plain" | "danger"; style?: React.CSSProperties }
+export function IconButton(props: IconButtonProps): JSX.Element;
