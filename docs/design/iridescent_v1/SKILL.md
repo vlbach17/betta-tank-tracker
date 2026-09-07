@@ -7,5 +7,3 @@ user-invocable: true
 Read the readme.md file within this skill, and explore the other available files (tokens/, components/core/, ui_kits/bettabase/, guidelines/).
 If creating visual artifacts (slides, mocks, throwaway prototypes, etc), copy assets out and create static HTML files for the user to view. If working on production code, you can copy assets and read the rules here to become an expert in designing with this brand.
 If the user invokes this skill without any other guidance, ask them what they want to build or design, ask some questions, and act as an expert designer who outputs HTML artifacts _or_ production code, depending on the need.
-
-Non-negotiables: the gradient appears once per screen; every number is Fira Code; status fills are solid; nothing is square; no emoji; sentence case.
