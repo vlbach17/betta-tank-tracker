@@ -24,13 +24,13 @@ The brand is named after and colored by Spunk, a blue/teal betta with violet-to-
 - **Type.** DynaPuff 400 (`--font-name`) sets the word "Spunk's" in the wordmark and every child-page title (`--text-page-title`, 24/28, always lowercase): "log a test", "overview", "settings", and the parameter name on history. The dashboard wordmark is the one exception — "bettabase" stays Plus Jakarta 800, lowercase, −0.05em. Plus Jakarta Sans in 500–800 only (no regular weight for UI). The scale is built on a 14px body baseline: body 14/1.5, heading 16/1.25 (a step above body, never below), captions 12, labels 14, titles 24. Fira Code for every number, unit, range and timestamp, tabular. Titles 800 with −0.02em tracking.
 - **Shape.** Tiles 20px, hero cards 24px, list rows 16px, inputs 14px, everything else a full pill. Nothing square.
 - **Cards.** White, 1px `--line` border, `--shadow-tile` (barely there). Overdue tiles go mist-grey with a dashed border and grey text — the only tile state that changes the surface.
-- **Status.** Solid fills, never tinted. In-range pills are lime (`--status-good-fill` #CDFB89) and always take `--text-primary` via `--status-good-fg`; out-of-range pills are deep magenta (`--status-bad-fill` #B8256F) with white; amber keeps ink text. Dots, chart points and ideal bands use the deeper lime sibling `--good` (#6DA82E) and `--bad`, which hold up on white where the lime would disappear. Overdue is a light grey pill.
+- **Status.** Solid fills, never tinted. In-range pills are lime (`--status-good-fill` #CDFB89) and always take `--text-primary` via `--status-good-fg`; (`--status-bad-fill` #B8256F) with white; amber keeps ink text. Dots, chart points and ideal bands use the deeper lime sibling `--good` (#6DA82E) and `--bad`, which hold up on white where the lime would disappear. Overdue is a light grey pill.
 - **Layout.** Mobile-first, 390–448px column, 20px gutters. Dashboard is a 2-column tile grid; the single most urgent parameter (out of range, else watch, else overdue) spans both columns at the top. The primary action lives in a fixed bottom bar.
 - **Controls.** Ranges are always collected with **RangeField** — two 84px mono inputs and a two-thumb slider with a royal-blue filled span; never two loose number inputs. Pill nav chips (ink = selected, mist = idle). Segmented range toggle is a mist track with a white raised thumb.
 - **Elevation.** Two shadows only: tile shadow and a colored CTA glow (`--shadow-cta`).
-- **Motion.** 200ms ease-out for state changes; CTA and tiles scale to 0.98 on press. No bounces, no page transitions.
+- **Motion.** 200ms ease-out for state changes; CTA and tiles scale to 0.98 on press. 
 - **Hover/press.** Hover darkens surfaces 3% (mist → line); press = scale 0.98 + opacity 0.9.
-- **Imagery.** Only Spunk's photo, cropped to a circle in the header with the gradient ring. No illustration, no icons beyond a chevron, kebab dots and a trash glyph.
+- **Imagery.** Only Spunk's photo, cropped to a circle in the header with the gradient ring. 
 - **Charts.** Line = gradient stroke 3.5px round caps; dots 5px filled with status color, white 2px stroke; ideal band = green at 12% with 8px radius. No axes lines; mono tick labels.
 
 ## Iconography - In progress
