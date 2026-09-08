@@ -28,3 +28,6 @@ dist-ssr
 
 # Folders
 scrap_notes
+
+# Local tool state (impeccable skill: live-server lockfile/token, critique run output)
+.impeccable

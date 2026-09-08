@@ -49,7 +49,29 @@ Components
 * Alert - 10 Alert Exclamation
 * Warning - 11 Warning Symbol
 
+\----
+
 
 
 Next steps with credits: add inspo images to create 3 icons then create full set.
+
+
+
+\---
+
+Final outcome: 3 icon set concepts varying in style
+
+
+
+Shown at 32px size
+
+1 accent color per icon
+
+Fish fins should include magenta
+
+Accent can fill shapes
+
+Icons must follow best practice and work as black, white, and include solid alternatives.
+
+2px stroke weight
 

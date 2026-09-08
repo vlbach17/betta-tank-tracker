@@ -4,15 +4,11 @@ import React from 'react'
  * Iridescent icon set v1 — Spunk's Bettabase
  *
  * Monoline, single-color. Every glyph is authored on a 24x24 grid and rendered
- * with `currentColor`, so color comes from the surrounding text color.
+ * with \`currentColor\`, so color comes from the surrounding text color.
  *
  * Optical sizing: stroke weight is NOT scaled with the icon. It is chosen per
  * size tier so the glyph holds its weight at small sizes. Some glyphs also swap
  * to a simplified geometry at 18px (detail is REMOVED, never thinned).
- *
- * `chevronLeft` is not part of the Iridescent set yet — it keeps its
- * pre-Iridescent geometry (own viewBox, fixed stroke) until design draws a
- * replacement to the 24x24 optical-sizing rules.
  */
 
 export type IconName =
@@ -32,7 +28,6 @@ export type IconName =
   | 'trash'
   | 'envelope'
   | 'bell'
-  | 'chevronLeft'
 
 export type IconSize = 18 | 20 | 24 | 32
 
@@ -44,7 +39,7 @@ const STROKE: Record<IconSize, number> = {
   18: 2.0,
 }
 
-/** Primitive shapes. All coordinates are in the glyph's authoring grid. */
+/** Primitive shapes. All coordinates are in the 24x24 authoring grid. */
 type Prim =
   | { t: 'path'; d: string; join?: boolean; w?: number }
   | { t: 'circle'; cx: number; cy: number; r: number; fill?: boolean }
@@ -53,12 +48,8 @@ type Prim =
 type Glyph = {
   /** Default geometry, used at 20 / 24 / 32. */
   base: Prim[]
-  /** Optional simplified geometry used at 18. Falls back to `base`. */
+  /** Optional simplified geometry used at 18. Falls back to \`base\`. */
   sm?: Prim[]
-  /** Authoring viewBox. Defaults to the Iridescent 24x24 grid. */
-  viewBox?: string
-  /** Overrides the tiered stroke weight with a single fixed width. */
-  fixedStroke?: number
 }
 
 const GLYPHS: Record<IconName, Glyph> = {
@@ -190,12 +181,6 @@ const GLYPHS: Record<IconName, Glyph> = {
       { t: 'path', d: 'M4.4 16.6h15.2' },
     ],
   },
-  // Pre-Iridescent glyph, kept as-is until design draws a replacement to the 24x24 rules.
-  chevronLeft: {
-    viewBox: '0 0 20 20',
-    fixedStroke: 1.6,
-    base: [{ t: 'path', d: 'M12.5 15L7.5 10L12.5 5' }],
-  },
 }
 
 function nearestTier(size: number): IconSize {
@@ -228,13 +213,13 @@ export function Icon({
   const tier = nearestTier(size)
   const glyph = GLYPHS[name]
   const prims = tier === 18 && glyph.sm ? glyph.sm : glyph.base
-  const sw = glyph.fixedStroke ?? STROKE[tier]
+  const sw = STROKE[tier]
 
   return (
     <svg
       width={size}
       height={size}
-      viewBox={glyph.viewBox ?? '0 0 24 24'}
+      viewBox="0 0 24 24"
       fill="none"
       className={className}
       style={style}

@@ -11,6 +11,7 @@ import {
 } from 'recharts'
 import { getLargestSwing } from '../lib/analysis'
 import { CHART_COLORS } from '../lib/chartColors'
+import { getDisplayUnit, toDisplayValue } from '../lib/displayUnit'
 import {
   formatFullDate,
   formatIdealRange,
@@ -22,18 +23,16 @@ import {
   fetchParameter,
   fetchReadingsForParameter,
 } from '../lib/parameters'
+import { getParameterIcon } from '../lib/parameterIcons'
 import { getReadingStatus } from '../lib/status'
 import { isWithinRange, type Range } from '../lib/range'
-import {
-  TEMPERATURE_PARAMETER_NAME,
-  convertTempDeltaForDisplay,
-  convertTempForDisplay,
-  tempUnitLabel,
-} from '../lib/temperature'
+import { TEMPERATURE_PARAMETER_NAME, convertTempDeltaForDisplay } from '../lib/temperature'
+import { useHardnessUnit } from '../lib/useHardnessUnit'
 import { useTempUnit } from '../lib/useTempUnit'
 import type { Parameter, Reading } from '../types/database'
 import { BackLink } from './BackLink'
 import { Button } from './Button'
+import { Icon } from './Icon'
 import { IconButton } from './IconButton'
 import { Notice } from './Notice'
 import { RangeToggle } from './RangeToggle'
@@ -44,6 +43,7 @@ import { makeStatusDot } from './StatusDot'
 export function ParameterHistory() {
   const { parameterId } = useParams<{ parameterId: string }>()
   const { tempUnit } = useTempUnit()
+  const { hardnessUnit } = useHardnessUnit()
   const gradientId = useId()
 
   const [parameter, setParameter] = useState<Parameter | null>(null)
@@ -78,14 +78,17 @@ export function ParameterHistory() {
   }, [parameterId])
 
   const isTemperature = parameter?.name === TEMPERATURE_PARAMETER_NAME
-  const displayUnit = isTemperature ? tempUnitLabel(tempUnit) : parameter?.unit
+  const icon = parameter ? getParameterIcon(parameter.name) : undefined
+  const displayUnit = parameter
+    ? getDisplayUnit(parameter, tempUnit, hardnessUnit)
+    : undefined
   const displayIdealMin =
-    isTemperature && parameter?.ideal_min != null
-      ? convertTempForDisplay(parameter.ideal_min, tempUnit)
+    parameter && parameter.ideal_min != null
+      ? toDisplayValue(parameter.ideal_min, parameter, tempUnit, hardnessUnit)
       : (parameter?.ideal_min ?? null)
   const displayIdealMax =
-    isTemperature && parameter?.ideal_max != null
-      ? convertTempForDisplay(parameter.ideal_max, tempUnit)
+    parameter && parameter.ideal_max != null
+      ? toDisplayValue(parameter.ideal_max, parameter, tempUnit, hardnessUnit)
       : (parameter?.ideal_max ?? null)
 
   const readingsDesc = useMemo(
@@ -98,13 +101,13 @@ export function ParameterHistory() {
   )
   const displayReadingsDesc = useMemo(
     () =>
-      isTemperature
+      parameter
         ? readingsDesc.map((r) => ({
             ...r,
-            value: convertTempForDisplay(r.value, tempUnit),
+            value: toDisplayValue(r.value, parameter, tempUnit, hardnessUnit),
           }))
         : readingsDesc,
-    [readingsDesc, isTemperature, tempUnit],
+    [readingsDesc, parameter, tempUnit, hardnessUnit],
   )
   const displayReadingsAsc = useMemo(
     () => [...displayReadingsDesc].reverse(),
@@ -123,11 +126,10 @@ export function ParameterHistory() {
   )
 
   const latest = readings?.[0] ?? null
-  const latestDisplayValue = latest
-    ? isTemperature
-      ? convertTempForDisplay(latest.value, tempUnit)
-      : latest.value
-    : null
+  const latestDisplayValue =
+    latest && parameter
+      ? toDisplayValue(latest.value, parameter, tempUnit, hardnessUnit)
+      : (latest?.value ?? null)
   const latestStatus = latest
     ? getReadingStatus(latest.value, parameter?.ideal_min ?? null, parameter?.ideal_max ?? null)
     : null
@@ -167,8 +169,9 @@ export function ParameterHistory() {
             className="flex flex-col gap-3 rounded-card p-5"
             style={{ backgroundImage: 'var(--gradient-hero-wash)' }}
           >
-            <div className="flex items-center gap-2">
-              <h1 className="text-title font-name text-ink">
+            <div className="flex min-w-0 items-center gap-2">
+              {icon && <Icon name={icon} size={24} className="shrink-0 text-ink-3" />}
+              <h1 className="min-w-0 truncate text-title font-name text-ink">
                 {parameter.name}
               </h1>
               {latestStatus && <StatusPill status={latestStatus} size="sm" />}

@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { buildCsv, parseCsv } from '../lib/csv'
+import { getDisplayUnit, toDisplayValue, toStorageValue } from '../lib/displayUnit'
+import {
+  convertHardnessForDisplay,
+  convertHardnessForStorage,
+  hardnessUnitLabel,
+  isHardnessUnit,
+  type HardnessUnit,
+} from '../lib/hardness'
 import {
   createParameter,
   fetchAllParameters,
@@ -10,11 +18,10 @@ import {
 } from '../lib/parameters'
 import {
   TEMPERATURE_PARAMETER_NAME,
-  convertTempForDisplay,
-  convertTempForStorage,
   tempUnitLabel,
   type TempUnit,
 } from '../lib/temperature'
+import { useHardnessUnit } from '../lib/useHardnessUnit'
 import { useTempUnit } from '../lib/useTempUnit'
 import type { Parameter } from '../types/database'
 import { Avatar } from './Avatar'
@@ -26,8 +33,13 @@ import { RangeField, type RangeFieldValue } from './RangeField'
 
 type RangeEdits = Record<string, RangeFieldValue>
 
+const UNIT_PRESETS = ['ppm', 'dKH', 'dGH'] as const
+type UnitPreset = (typeof UNIT_PRESETS)[number] | 'other'
+
 // Tuned slider bounds for the 6 seed parameters + Temperature. Any other
-// (custom) parameter falls back to a generic bounds formula below.
+// (custom) parameter falls back to a generic bounds formula below. Hardness
+// bounds are in degrees (dKH/dGH), the storage unit — converted for display
+// below when the ppm toggle is on.
 const KNOWN_BOUNDS: Record<string, { min: number; max: number; step: number }> =
   {
     pH: { min: 5, max: 9, step: 0.1 },
@@ -39,13 +51,20 @@ const KNOWN_BOUNDS: Record<string, { min: number; max: number; step: number }> =
     [TEMPERATURE_PARAMETER_NAME]: { min: 65, max: 90, step: 1 },
   }
 
-function getRangeFieldBounds(parameter: Parameter, tempUnit: TempUnit) {
+function getRangeFieldBounds(
+  parameter: Parameter,
+  tempUnit: TempUnit,
+  hardnessUnit: HardnessUnit,
+) {
   const known = KNOWN_BOUNDS[parameter.name]
   if (known) {
-    if (parameter.name === TEMPERATURE_PARAMETER_NAME) {
+    if (
+      parameter.name === TEMPERATURE_PARAMETER_NAME ||
+      isHardnessUnit(parameter.unit)
+    ) {
       return {
-        min: convertTempForDisplay(known.min, tempUnit),
-        max: convertTempForDisplay(known.max, tempUnit),
+        min: toDisplayValue(known.min, parameter, tempUnit, hardnessUnit),
+        max: toDisplayValue(known.max, parameter, tempUnit, hardnessUnit),
         step: known.step,
       }
     }
@@ -54,22 +73,47 @@ function getRangeFieldBounds(parameter: Parameter, tempUnit: TempUnit) {
   if (parameter.ideal_min != null && parameter.ideal_max != null) {
     const span = parameter.ideal_max - parameter.ideal_min
     const padding = Math.max(1, span * 0.5)
-    return {
-      min: Math.max(0, parameter.ideal_min - padding),
-      max: parameter.ideal_max + padding,
-      step: 0.1,
+    const min = Math.max(0, parameter.ideal_min - padding)
+    const max = parameter.ideal_max + padding
+    if (isHardnessUnit(parameter.unit)) {
+      return {
+        min: toDisplayValue(min, parameter, tempUnit, hardnessUnit),
+        max: toDisplayValue(max, parameter, tempUnit, hardnessUnit),
+        step: 0.1,
+      }
     }
+    return { min, max, step: 0.1 }
   }
   return { min: 0, max: 100, step: 0.1 }
 }
 
-function toEdit(parameter: Parameter, tempUnit: TempUnit): RangeFieldValue {
-  const isTemperature = parameter.name === TEMPERATURE_PARAMETER_NAME
+function getNewParameterBounds(unitPreset: UnitPreset, hardnessUnit: HardnessUnit) {
+  if (unitPreset === 'dKH' || unitPreset === 'dGH') {
+    const degrees = { min: 0, max: 20, step: 1 }
+    return hardnessUnit === 'ppm'
+      ? {
+          min: convertHardnessForDisplay(degrees.min, hardnessUnit),
+          max: convertHardnessForDisplay(degrees.max, hardnessUnit),
+          step: degrees.step,
+        }
+      : degrees
+  }
+  return { min: 0, max: 100, step: 1 }
+}
+
+function toEdit(
+  parameter: Parameter,
+  tempUnit: TempUnit,
+  hardnessUnit: HardnessUnit,
+): RangeFieldValue {
+  const roundToOneDecimal =
+    parameter.name === TEMPERATURE_PARAMETER_NAME ||
+    isHardnessUnit(parameter.unit)
   const displayValue = (value: number | null) => {
     if (value == null) return null
-    if (!isTemperature) return value
+    const converted = toDisplayValue(value, parameter, tempUnit, hardnessUnit)
     // Allow one decimal place, per spec, instead of a long float tail.
-    return Math.round(convertTempForDisplay(value, tempUnit) * 10) / 10
+    return roundToOneDecimal ? Math.round(converted * 10) / 10 : converted
   }
 
   return {
@@ -80,12 +124,14 @@ function toEdit(parameter: Parameter, tempUnit: TempUnit): RangeFieldValue {
 
 export function Settings() {
   const { tempUnit, setTempUnit } = useTempUnit()
+  const { hardnessUnit, setHardnessUnit } = useHardnessUnit()
   const [parameters, setParameters] = useState<Parameter[] | null>(null)
   const [edits, setEdits] = useState<RangeEdits>({})
   const [loadError, setLoadError] = useState<string | null>(null)
   const [rowError, setRowError] = useState<string | null>(null)
 
   const [newName, setNewName] = useState('')
+  const [newUnitPreset, setNewUnitPreset] = useState<UnitPreset>('other')
   const [newUnit, setNewUnit] = useState('')
   const [newRange, setNewRange] = useState<RangeFieldValue>({
     min: null,
@@ -112,7 +158,9 @@ export function Settings() {
         if (cancelled) return
         setParameters(data)
         setEdits(
-          Object.fromEntries(data.map((p) => [p.id, toEdit(p, tempUnit)])),
+          Object.fromEntries(
+            data.map((p) => [p.id, toEdit(p, tempUnit, hardnessUnit)]),
+          ),
         )
       })
       .catch((err: unknown) => {
@@ -124,26 +172,27 @@ export function Settings() {
     return () => {
       cancelled = true
     }
-    // Only load once; the tempUnit used here is whatever it is at mount time.
+    // Only load once; the units used here are whatever they are at mount time.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Re-derive the edit values (but only these, not the rest of the row
-  // state) when the display unit changes, without clobbering edits the user
+  // state) when a display unit changes, without clobbering edits the user
   // is mid-typing in other rows when `parameters` updates for other reasons.
   useEffect(() => {
     const current = parametersRef.current
     if (!current) return
     setEdits(
-      Object.fromEntries(current.map((p) => [p.id, toEdit(p, tempUnit)])),
+      Object.fromEntries(
+        current.map((p) => [p.id, toEdit(p, tempUnit, hardnessUnit)]),
+      ),
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tempUnit])
+  }, [tempUnit, hardnessUnit])
 
   async function commitRange(parameter: Parameter, next: RangeFieldValue) {
-    const isTemperature = parameter.name === TEMPERATURE_PARAMETER_NAME
     const toStorage = (v: number | null) =>
-      v == null ? null : isTemperature ? convertTempForStorage(v, tempUnit) : v
+      v == null ? null : toStorageValue(v, parameter, tempUnit, hardnessUnit)
 
     const newMin = toStorage(next.min)
     const newMax = toStorage(next.max)
@@ -164,7 +213,7 @@ export function Settings() {
       setRowError(err instanceof Error ? err.message : 'Failed to save')
       setEdits((e) => ({
         ...e,
-        [parameter.id]: toEdit(parameter, tempUnit),
+        [parameter.id]: toEdit(parameter, tempUnit, hardnessUnit),
       }))
     }
   }
@@ -194,18 +243,27 @@ export function Settings() {
     const name = newName.trim()
     if (!name || adding) return
 
+    const unit = newUnit.trim()
+    const isHardness = isHardnessUnit(unit)
+    const toStorage = (v: number | null) =>
+      v == null ? null : isHardness ? convertHardnessForStorage(v, hardnessUnit) : v
+
     setAdding(true)
     setAddError(null)
     try {
       const created = await createParameter({
         name,
-        unit: newUnit.trim(),
-        ideal_min: newRange.min,
-        ideal_max: newRange.max,
+        unit,
+        ideal_min: toStorage(newRange.min),
+        ideal_max: toStorage(newRange.max),
       })
       setParameters((ps) => [...(ps ?? []), created])
-      setEdits((e) => ({ ...e, [created.id]: toEdit(created, tempUnit) }))
+      setEdits((e) => ({
+        ...e,
+        [created.id]: toEdit(created, tempUnit, hardnessUnit),
+      }))
       setNewName('')
+      setNewUnitPreset('other')
       setNewUnit('')
       setNewRange({ min: null, max: null })
     } catch (err) {
@@ -313,6 +371,8 @@ export function Settings() {
     }
   }
 
+  const newParamBounds = getNewParameterBounds(newUnitPreset, hardnessUnit)
+
   return (
     <main className="mx-auto flex min-h-svh max-w-md flex-col gap-6 px-5 pt-5 pb-8">
       <div className="flex items-center justify-between gap-3">
@@ -362,6 +422,32 @@ export function Settings() {
           Temperature is always stored in °F — this only changes how it's
           displayed.
         </p>
+
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-body font-sans text-ink">
+            Hardness unit (KH/GH)
+          </span>
+          <div className="flex gap-1 rounded-full bg-mist p-1">
+            {(['degrees', 'ppm'] as const).map((unit) => (
+              <button
+                key={unit}
+                type="button"
+                onClick={() => setHardnessUnit(unit)}
+                className={`h-9 rounded-full px-3 text-label font-sans ${
+                  hardnessUnit === unit
+                    ? 'bg-surface text-ink shadow-segment'
+                    : 'text-ink-muted'
+                }`}
+              >
+                {unit === 'ppm' ? 'ppm' : 'dKH / dGH'}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p className="text-body-sm font-sans text-ink-3">
+          KH and GH readings are always stored in degrees — this only
+          changes how they're displayed.
+        </p>
       </section>
 
       {loadError && <Notice>Couldn't load parameters: {loadError}</Notice>}
@@ -378,11 +464,16 @@ export function Settings() {
 
           <div className="flex flex-col gap-3">
             {parameters.map((parameter) => {
-              const bounds = getRangeFieldBounds(parameter, tempUnit)
-              const displayUnit =
-                parameter.name === TEMPERATURE_PARAMETER_NAME
-                  ? tempUnitLabel(tempUnit)
-                  : parameter.unit
+              const bounds = getRangeFieldBounds(
+                parameter,
+                tempUnit,
+                hardnessUnit,
+              )
+              const displayUnit = getDisplayUnit(
+                parameter,
+                tempUnit,
+                hardnessUnit,
+              )
 
               return (
                 <div
@@ -447,18 +538,68 @@ export function Settings() {
               placeholder="Phosphate"
               required
             />
-            <Input
-              label="Unit (optional)"
-              mono
-              value={newUnit}
-              onChange={setNewUnit}
-              placeholder="ppm"
-            />
+            <div className="flex flex-col gap-1.5">
+              <span className="text-heading font-sans text-ink">
+                Unit (optional)
+              </span>
+              <div className="flex flex-wrap gap-1 rounded-full bg-mist p-1">
+                {UNIT_PRESETS.map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => {
+                      setNewUnitPreset(preset)
+                      setNewUnit(preset)
+                    }}
+                    className={`h-9 rounded-full px-3 text-label font-sans ${
+                      newUnitPreset === preset
+                        ? 'bg-surface text-ink shadow-segment'
+                        : 'text-ink-muted'
+                    }`}
+                  >
+                    {preset}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNewUnitPreset('other')
+                    setNewUnit('')
+                  }}
+                  className={`h-9 rounded-full px-3 text-label font-sans ${
+                    newUnitPreset === 'other'
+                      ? 'bg-surface text-ink shadow-segment'
+                      : 'text-ink-muted'
+                  }`}
+                >
+                  Other
+                </button>
+              </div>
+              {newUnitPreset === 'other' && (
+                <Input
+                  mono
+                  value={newUnit}
+                  onChange={setNewUnit}
+                  placeholder="ppm"
+                />
+              )}
+              {(newUnitPreset === 'dKH' || newUnitPreset === 'dGH') && (
+                <p className="text-caption font-sans text-ink-3">
+                  Gets the same ppm / dKH-dGH display toggle as KH and GH,
+                  above.
+                </p>
+              )}
+            </div>
             <RangeField
               label="Ideal range (optional)"
-              min={0}
-              max={100}
-              step={1}
+              unit={
+                isHardnessUnit(newUnit)
+                  ? hardnessUnitLabel(newUnit, hardnessUnit)
+                  : newUnit || undefined
+              }
+              min={newParamBounds.min}
+              max={newParamBounds.max}
+              step={newParamBounds.step}
               value={newRange}
               onChange={setNewRange}
             />

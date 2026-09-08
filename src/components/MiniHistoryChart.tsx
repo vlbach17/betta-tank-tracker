@@ -7,15 +7,14 @@ import {
   YAxis,
 } from 'recharts'
 import { CHART_COLORS } from '../lib/chartColors'
+import { getDisplayUnit, toDisplayValue } from '../lib/displayUnit'
 import { formatIdealRange, formatReadingValue } from '../lib/format'
+import { getParameterIcon } from '../lib/parameterIcons'
 import { getReadingStatus, isOverdue } from '../lib/status'
-import {
-  TEMPERATURE_PARAMETER_NAME,
-  convertTempForDisplay,
-  tempUnitLabel,
-} from '../lib/temperature'
+import { useHardnessUnit } from '../lib/useHardnessUnit'
 import { useTempUnit } from '../lib/useTempUnit'
 import type { Parameter, Reading } from '../types/database'
+import { Icon } from './Icon'
 import { makeStatusDot } from './StatusDot'
 import { StatusPill } from './StatusPill'
 
@@ -31,33 +30,31 @@ export function MiniHistoryChart({
   latestReading: Reading | null
 }) {
   const { tempUnit } = useTempUnit()
-  const { name, unit, ideal_min, ideal_max } = parameter
+  const { hardnessUnit } = useHardnessUnit()
+  const { name, ideal_min, ideal_max } = parameter
   const overdue = isOverdue(name, latestReading?.tested_at ?? null)
   const status = latestReading
     ? getReadingStatus(latestReading.value, ideal_min, ideal_max)
     : null
 
-  const isTemperature = name === TEMPERATURE_PARAMETER_NAME
-  const displayUnit = isTemperature ? tempUnitLabel(tempUnit) : unit
+  const displayUnit = getDisplayUnit(parameter, tempUnit, hardnessUnit)
   const displayIdealMin =
-    isTemperature && ideal_min != null
-      ? convertTempForDisplay(ideal_min, tempUnit)
+    ideal_min != null
+      ? toDisplayValue(ideal_min, parameter, tempUnit, hardnessUnit)
       : ideal_min
   const displayIdealMax =
-    isTemperature && ideal_max != null
-      ? convertTempForDisplay(ideal_max, tempUnit)
+    ideal_max != null
+      ? toDisplayValue(ideal_max, parameter, tempUnit, hardnessUnit)
       : ideal_max
-  const displayChartReadings = isTemperature
-    ? chartReadings.map((r) => ({
-        ...r,
-        value: convertTempForDisplay(r.value, tempUnit),
-      }))
-    : chartReadings
-  const displayLatestValue =
-    isTemperature && latestReading
-      ? convertTempForDisplay(latestReading.value, tempUnit)
-      : (latestReading?.value ?? null)
+  const displayChartReadings = chartReadings.map((r) => ({
+    ...r,
+    value: toDisplayValue(r.value, parameter, tempUnit, hardnessUnit),
+  }))
+  const displayLatestValue = latestReading
+    ? toDisplayValue(latestReading.value, parameter, tempUnit, hardnessUnit)
+    : null
   const rangeText = formatIdealRange(displayIdealMin, displayIdealMax)
+  const icon = getParameterIcon(name)
 
   return (
     <Link
@@ -68,14 +65,17 @@ export function MiniHistoryChart({
           : 'border border-line bg-surface shadow-tile'
       }`}
     >
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="text-heading font-sans text-ink">
-          {name}
-          {displayUnit && (
-            <span className="ml-1 text-meta font-mono text-ink-3">
-              ({displayUnit})
-            </span>
-          )}
+      <div className="flex min-w-0 items-center justify-between gap-2">
+        <h2 className="flex min-w-0 items-center gap-1.5 truncate text-heading font-sans text-ink">
+          {icon && <Icon name={icon} size={18} className="shrink-0 text-ink-3" />}
+          <span className="truncate">
+            {name}
+            {displayUnit && (
+              <span className="ml-1 text-meta font-mono text-ink-3">
+                ({displayUnit})
+              </span>
+            )}
+          </span>
         </h2>
         {status && <StatusPill status={status} />}
       </div>

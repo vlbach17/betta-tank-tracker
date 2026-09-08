@@ -10,6 +10,8 @@ All notable changes to this project are documented here. Newest release first.
 - Replaced Dashboard's header text links ("Overview"/"Settings") with a kebab menu button plus a pill-style `NavChips` row, also added to Overview and Settings (both drop `BackLink` in favor of it — a navigation-structure change, not just a restyle)
 - Installed `@phosphor-icons/react` as an interim icon library for net-new iconography; the app's 3 existing hand-drawn glyphs (back chevron, trash, kebab) are unchanged and centralized into a shared `Icon`/`IconButton` component
 - °F / °C display toggle in Settings — temperature readings, ideal range, and the largest-swing callout convert on the way out only; the stored value is always Fahrenheit
+- Bespoke Iridescent icon set (monoline, `currentColor`, optically-sized per-tier stroke weight) replacing `@phosphor-icons/react` in every screen; each parameter now shows a matching glyph (pH → beaker, Ammonia → beaker-plus, Nitrite → bubbles, Nitrate → wave, KH → fish bowl, GH → fish, Temp → thermometer) via a new `getParameterIcon` lookup, with custom parameters rendering without an icon
+- dGH / dKH ↔ ppm display toggle in Settings for hardness readings, mirroring the existing °F/°C toggle — stored values are unchanged, only the display conversion is new
 
 ### Changed
 - Renamed the app from "Betta Tank Tracker" to "Spunk's Bettabase" — updated the page title, PWA manifest name/short name, home-screen title, in-app dashboard header, and README

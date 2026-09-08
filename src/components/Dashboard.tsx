@@ -85,14 +85,14 @@ export function Dashboard() {
               <span className="lowercase tracking-[-0.05em]">bettabase</span>
             </h1>
             {parameters && parameters.length > 0 && (
-              <p className="text-caption font-sans text-ink-3">
+              <p className="text-caption font-sans text-ink-3 mt-2">
                 {goodCount} of {parameters.length} in range
               </p>
             )}
           </div>
         </div>
         <IconButton
-          icon="kebab"
+          icon="settings"
           label="Settings"
           onClick={() => navigate('/settings')}
         />
@@ -132,6 +132,12 @@ export function Dashboard() {
             ))}
         </div>
       )}
+
+      <div className="flex-1 text-center text-meta font-mono">
+        <span>
+          Last update: functionality not implemented yet. In a real app, this would show the last time a log was submitted.
+        </span>
+      </div>
 
       <div className="fixed inset-x-0 bottom-0 bg-gradient-to-t from-bg from-40% to-transparent px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+16px)]">
         <div className="mx-auto max-w-md">

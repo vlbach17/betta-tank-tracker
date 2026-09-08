@@ -4,14 +4,14 @@ import {
   formatReadingValue,
   formatRelativeTime,
 } from '../lib/format'
+import { getDisplayUnit, toDisplayValue } from '../lib/displayUnit'
+import { useHardnessUnit } from '../lib/useHardnessUnit'
 import type { ParameterWithLatestReading } from '../lib/parameters'
+import { getParameterIcon } from '../lib/parameterIcons'
 import { getReadingStatus, isOverdue } from '../lib/status'
-import {
-  TEMPERATURE_PARAMETER_NAME,
-  convertTempForDisplay,
-  tempUnitLabel,
-} from '../lib/temperature'
+import { TEMPERATURE_PARAMETER_NAME } from '../lib/temperature'
 import { useTempUnit } from '../lib/useTempUnit'
+import { Icon } from './Icon'
 import { StatusDot, type DotStatus } from './StatusDot'
 import { StatusPill } from './StatusPill'
 
@@ -23,26 +23,26 @@ export function ParameterTile({
   hero?: boolean
 }) {
   const { tempUnit } = useTempUnit()
-  const { id, name, unit, ideal_min, ideal_max, latestReading } = parameter
+  const { hardnessUnit } = useHardnessUnit()
+  const { id, name, ideal_min, ideal_max, latestReading } = parameter
   const overdue = isOverdue(name, latestReading?.tested_at ?? null)
   const status = latestReading
     ? getReadingStatus(latestReading.value, ideal_min, ideal_max)
     : null
 
   const isTemperature = name === TEMPERATURE_PARAMETER_NAME
-  const displayUnit = isTemperature ? tempUnitLabel(tempUnit) : unit
+  const displayUnit = getDisplayUnit(parameter, tempUnit, hardnessUnit)
   const displayIdealMin =
-    isTemperature && ideal_min != null
-      ? convertTempForDisplay(ideal_min, tempUnit)
+    ideal_min != null
+      ? toDisplayValue(ideal_min, parameter, tempUnit, hardnessUnit)
       : ideal_min
   const displayIdealMax =
-    isTemperature && ideal_max != null
-      ? convertTempForDisplay(ideal_max, tempUnit)
+    ideal_max != null
+      ? toDisplayValue(ideal_max, parameter, tempUnit, hardnessUnit)
       : ideal_max
-  const displayValue =
-    isTemperature && latestReading
-      ? convertTempForDisplay(latestReading.value, tempUnit)
-      : (latestReading?.value ?? null)
+  const displayValue = latestReading
+    ? toDisplayValue(latestReading.value, parameter, tempUnit, hardnessUnit)
+    : null
   const rangeText = formatIdealRange(displayIdealMin, displayIdealMax)
 
   const overdueVisual = !latestReading || overdue
@@ -56,6 +56,7 @@ export function ParameterTile({
     : 'No readings yet'
 
   const nameLabel = isTemperature ? 'Temp' : name
+  const icon = getParameterIcon(name)
 
   if (hero) {
     return (
@@ -64,8 +65,9 @@ export function ParameterTile({
         className="col-span-2 flex items-center justify-between gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile active:opacity-80"
       >
         <div className="flex min-w-0 flex-col gap-1.5">
-          <div className="flex items-center gap-2">
-            <span className="truncate text-heading font-sans text-ink">
+          <div className="flex min-w-0 items-center gap-2">
+            {icon && <Icon name={icon} size={18} className="shrink-0 text-ink-3" />}
+            <span className="min-w-0 flex-1 truncate text-heading font-sans text-ink">
               {nameLabel}
             </span>
             {status && <StatusPill status={status} size="sm" />}
@@ -96,9 +98,10 @@ export function ParameterTile({
           : 'border border-line bg-surface shadow-tile'
       }`}
     >
-      <div className="flex items-center gap-1.5">
+      <div className="flex min-w-0 items-center gap-1.5">
+        {icon && <Icon name={icon} size={18} className="shrink-0 text-ink-3" />}
         <StatusDot status={dotStatus} />
-        <span className="truncate text-heading font-sans text-ink">
+        <span className="min-w-0 flex-1 truncate text-heading font-sans text-ink">
           {nameLabel}
           {displayUnit && (
             <span className="ml-1 text-meta font-mono text-ink-3">

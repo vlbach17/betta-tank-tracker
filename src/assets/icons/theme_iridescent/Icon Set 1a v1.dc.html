@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=Fira+Code:wght@400;500;600&amp;family=DynaPuff:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #fbfbfe; }
+  a { color: #14b8c4; }
+  a:hover { color: #d63a8f; }
+</style>
+</helmet>
+
+<section style="padding: 40px 32px 64px; font-family: 'Plus Jakarta Sans', sans-serif; color: #293132;">
+  <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 26px;">
+    <div style="font: 600 11px/1 'Fira Code', monospace; letter-spacing: 0.14em; text-transform: uppercase; color: #66697f;">Turn 2 · iconography</div>
+    <h1 style="margin: 0; font: 400 24px/28px 'DynaPuff', sans-serif; text-transform: lowercase;">icon set 1a v1</h1>
+    <p style="margin: 0; max-width: 620px; font: 500 14px/1.5 'Plus Jakarta Sans', sans-serif; color: #5d6080; text-wrap: pretty;">1a silhouettes at 1b's weight, optically compensated: 1.6px at 32 and 24, 1.8px at 20, 2.0px at 18.</p>
+  </div>
+
+  <div style="box-sizing: border-box; width: 500px; background: #ffffff; border: 1px solid #e6e6f2; border-radius: 24px; box-shadow: 0 2px 12px rgba(41,49,50,0.06); padding: 22px 20px 20px; display: grid; grid-template-columns: 74px 1fr; align-items: center; gap: 8px 10px;">
+    <div></div>
+    <div style="display: flex; gap: 6px;">
+      <div style="width: 42px; text-align: center; font: 400 11px/1 'Fira Code', monospace; color: #66697f;">32</div>
+      <div style="width: 42px; text-align: center; font: 400 11px/1 'Fira Code', monospace; color: #66697f;">24</div>
+      <div style="width: 42px; text-align: center; font: 400 11px/1 'Fira Code', monospace; color: #66697f;">20</div>
+      <div style="width: 42px; margin-right: 18px; text-align: center; font: 400 11px/1 'Fira Code', monospace; color: #66697f;">18</div>
+      <div style="width: 42px; text-align: center; font: 400 11px/1 'Fira Code', monospace; color: #66697f;">32</div>
+      <div style="width: 42px; text-align: center; font: 400 11px/1 'Fira Code', monospace; color: #66697f;">24</div>
+      <div style="width: 42px; text-align: center; font: 400 11px/1 'Fira Code', monospace; color: #66697f;">20</div>
+      <div style="width: 42px; text-align: center; font: 400 11px/1 'Fira Code', monospace; color: #66697f;">18</div>
+    </div>
+
+    <div style="font: 600 12px/1 'Fira Code', monospace; color: #293132;">fish</div>
+    <div style="display: flex; gap: 6px;">
+      <sc-for list="{{ cells }}" as="c" hint-placeholder-count="8">
+        <div style="width: 42px; height: 42px; margin-right: {{ c.mr }}; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: {{ c.bg }}; color: {{ c.fg }};">
+          <svg width="{{ c.px }}" height="{{ c.px }}" viewBox="0 0 24 24" fill="none">
+            <path d="M7.4 12C9.3 8.3 12.2 6.6 14.7 6.6C17.6 6.6 19.7 9 20.7 12C19.7 15 17.6 17.4 14.7 17.4C12.2 17.4 9.3 15.7 7.4 12Z" stroke="currentColor" strokeWidth="{{ c.w }}" strokeLinecap="round" strokeLinejoin="round"></path>
+            <path d="M7.4 12L2.6 7.4V16.6Z" stroke="currentColor" strokeWidth="{{ c.w }}" strokeLinecap="round" strokeLinejoin="round"></path>
+            <circle cx="17" cy="10.7" r="1" fill="currentColor"></circle>
+          </svg>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="font: 600 12px/1 'Fira Code', monospace; color: #293132;">bubbles</div>
+    <div style="display: flex; gap: 6px;">
+      <sc-for list="{{ cells }}" as="c" hint-placeholder-count="8">
+        <div style="width: 42px; height: 42px; margin-right: {{ c.mr }}; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: {{ c.bg }}; color: {{ c.fg }};">
+          <svg width="{{ c.px }}" height="{{ c.px }}" viewBox="0 0 24 24" fill="none">
+            <circle cx="8.8" cy="15.2" r="4.4" stroke="currentColor" strokeWidth="{{ c.w }}"></circle>
+            <circle cx="16.2" cy="8.8" r="2.6" stroke="currentColor" strokeWidth="{{ c.w }}"></circle>
+            <circle cx="7.4" cy="13.8" r="0.9" fill="currentColor"></circle>
+          </svg>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="font: 600 12px/1 'Fira Code', monospace; color: #293132;">temp</div>
+    <div style="display: flex; gap: 6px;">
+      <sc-for list="{{ cells }}" as="c" hint-placeholder-count="8">
+        <div style="width: 42px; height: 42px; margin-right: {{ c.mr }}; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: {{ c.bg }}; color: {{ c.fg }};">
+          <svg width="{{ c.px }}" height="{{ c.px }}" viewBox="0 0 24 24" fill="none">
+            <path d="M9.2 14.9V5.2a2.8 2.8 0 0 1 5.6 0v9.7a3.9 3.9 0 1 1-5.6 0Z" stroke="currentColor" strokeWidth="{{ c.w }}" strokeLinecap="round" strokeLinejoin="round"></path>
+            <circle cx="12" cy="17.6" r="2" fill="currentColor"></circle>
+            <sc-if value="{{ c.twin }}" hint-placeholder-val="{{ true }}">
+              <path d="M11.6 11.1V17.6M12.4 11.1V17.6" stroke="currentColor" strokeWidth="{{ c.w }}" strokeLinecap="round"></path>
+            </sc-if>
+            <sc-if value="{{ c.solo }}" hint-placeholder-val="{{ false }}">
+              <path d="M12 11.1V17.6" stroke="currentColor" strokeWidth="{{ c.w }}" strokeLinecap="round"></path>
+            </sc-if>
+          </svg>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="font: 600 12px/1 'Fira Code', monospace; color: #293132;">beaker</div>
+    <div style="display: flex; gap: 6px;">
+      <sc-for list="{{ cells }}" as="c" hint-placeholder-count="8">
+        <div style="width: 42px; height: 42px; margin-right: {{ c.mr }}; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: {{ c.bg }}; color: {{ c.fg }};">
+          <svg width="{{ c.px }}" height="{{ c.px }}" viewBox="0 0 24 24" fill="none">
+            <path d="M8.4 3.2h7.2" stroke="currentColor" strokeWidth="{{ c.w }}" strokeLinecap="round"></path>
+            <path d="M10 3.2V9.7L6.2 18.6Q5.4 20.6 7.4 20.6h9.2Q18.6 20.6 17.8 18.6L14 9.7V3.2" stroke="currentColor" strokeWidth="{{ c.w }}" strokeLinecap="round" strokeLinejoin="round"></path>
+            <path d="M8.2 14h7.6" stroke="currentColor" strokeWidth="{{ c.w }}" strokeLinecap="round"></path>
+          </svg>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const mist = { bg: "#eeeef8", fg: "#293132" };
+    const ink = { bg: "#293132", fg: "#ffffff" };
+    const steps = [
+      { px: 32, w: 1.6 },
+      { px: 24, w: 1.6 },
+      { px: 20, w: 1.8 },
+      { px: 18, w: 2.0 },
+    ];
+    const cells = [];
+    [mist, ink].forEach((ground, gi) => {
+      steps.forEach((s, i) => {
+        cells.push({
+          px: s.px,
+          w: s.w,
+          twin: s.px > 18,
+          solo: s.px === 18,
+          bg: ground.bg,
+          fg: ground.fg,
+          mr: gi === 0 && i === steps.length - 1 ? "18px" : "0px",
+        });
+      });
+    });
+    return { cells };
+  }
+}
+</script>
+</body>
+</html>

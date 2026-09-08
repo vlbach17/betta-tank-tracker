@@ -2,10 +2,17 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { formatIdealRange, toDatetimeLocalValue } from '../lib/format'
 import {
+  convertHardnessForDisplay,
+  convertHardnessForStorage,
+  hardnessUnitLabel,
+  isHardnessUnit,
+} from '../lib/hardness'
+import {
   fetchActiveParameters,
   saveReadings,
   type NewReading,
 } from '../lib/parameters'
+import { useHardnessUnit } from '../lib/useHardnessUnit'
 import type { Parameter } from '../types/database'
 import { BackLink } from './BackLink'
 import { Button } from './Button'
@@ -14,6 +21,7 @@ import { Notice } from './Notice'
 
 export function LogTest() {
   const navigate = useNavigate()
+  const { hardnessUnit } = useHardnessUnit()
 
   const [parameters, setParameters] = useState<Parameter[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -58,8 +66,11 @@ export function LogTest() {
       .map((parameter) => {
         const raw = values[parameter.id]?.trim()
         if (!raw) return null
-        const value = Number(raw)
-        if (!Number.isFinite(value)) return null
+        const entered = Number(raw)
+        if (!Number.isFinite(entered)) return null
+        const value = isHardnessUnit(parameter.unit)
+          ? convertHardnessForStorage(entered, hardnessUnit)
+          : entered
         return {
           parameter_id: parameter.id,
           value,
@@ -113,41 +124,54 @@ export function LogTest() {
           />
 
           <div className="grid grid-cols-2 gap-2.5">
-            {parameters.map((parameter) => (
-              <div
-                key={parameter.id}
-                className="flex flex-col gap-1.5 rounded-tile border border-line bg-surface p-3 shadow-tile"
-              >
-                <label
-                  htmlFor={`value-${parameter.id}`}
-                  className="truncate text-heading font-sans text-ink"
+            {parameters.map((parameter) => {
+              const isHardness = isHardnessUnit(parameter.unit)
+              const displayUnit = isHardness
+                ? hardnessUnitLabel(parameter.unit, hardnessUnit)
+                : parameter.unit
+              const displayIdealMin =
+                isHardness && parameter.ideal_min != null
+                  ? convertHardnessForDisplay(parameter.ideal_min, hardnessUnit)
+                  : parameter.ideal_min
+              const displayIdealMax =
+                isHardness && parameter.ideal_max != null
+                  ? convertHardnessForDisplay(parameter.ideal_max, hardnessUnit)
+                  : parameter.ideal_max
+
+              return (
+                <div
+                  key={parameter.id}
+                  className="flex flex-col gap-1.5 rounded-tile border border-line bg-surface p-3 shadow-tile"
                 >
-                  {parameter.name}
-                  {parameter.unit && (
-                    <span className="ml-1 text-meta font-mono text-ink-3">
-                      ({parameter.unit})
-                    </span>
-                  )}
-                </label>
-                <Input
-                  id={`value-${parameter.id}`}
-                  mono
-                  type="number"
-                  inputMode="decimal"
-                  step="any"
-                  placeholder={
-                    formatIdealRange(
-                      parameter.ideal_min,
-                      parameter.ideal_max,
-                    ) ?? undefined
-                  }
-                  value={values[parameter.id] ?? ''}
-                  onChange={(v) =>
-                    setValues((prev) => ({ ...prev, [parameter.id]: v }))
-                  }
-                />
-              </div>
-            ))}
+                  <label
+                    htmlFor={`value-${parameter.id}`}
+                    className="truncate text-heading font-sans text-ink"
+                  >
+                    {parameter.name}
+                    {displayUnit && (
+                      <span className="ml-1 text-meta font-mono text-ink-3">
+                        ({displayUnit})
+                      </span>
+                    )}
+                  </label>
+                  <Input
+                    id={`value-${parameter.id}`}
+                    mono
+                    type="number"
+                    inputMode="decimal"
+                    step="any"
+                    placeholder={
+                      formatIdealRange(displayIdealMin, displayIdealMax) ??
+                      undefined
+                    }
+                    value={values[parameter.id] ?? ''}
+                    onChange={(v) =>
+                      setValues((prev) => ({ ...prev, [parameter.id]: v }))
+                    }
+                  />
+                </div>
+              )
+            })}
           </div>
 
           <Input

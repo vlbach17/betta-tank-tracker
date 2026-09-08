@@ -42,11 +42,7 @@
   --color-status-overdue-bg: #e6e6f2;
   --color-status-overdue-fg: #5d6080;
 
-  /* Gradients — one source of truth (--gradient-cta-track); ring/wash share its stops at different angles */
-  /* Teal stop is darkened from the brand teal (#14b8c4) specifically here —
-     white button-label text over pure brand teal fails contrast (~2.4:1);
-     this darker teal clears ~4.9:1 while the rest of the gradient (and the
-     brand teal everywhere else: avatar ring, chart line) stays untouched. */
+  /* Gradients */
   --gradient-cta-track: linear-gradient(
     90deg,
     #0d7d87 0%,
@@ -139,7 +135,7 @@
   --text-num-sm--font-weight: 600;
 
   --text-meta: 11px;
-  --text-meta--line-height: 1;
+  --text-meta--line-height: 1.65;
   --text-meta--font-weight: 400;
 }
 
