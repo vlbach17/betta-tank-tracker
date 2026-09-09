@@ -94,7 +94,7 @@ export function LogTest() {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col px-5 pt-5 pb-28">
+    <main className="mx-auto flex min-h-svh max-w-md flex-col px-5 pt-5 pb-[calc(env(safe-area-inset-bottom)+var(--bottom-nav-h)+84px)]">
       <BackLink to="/" label="Dashboard" />
 
       <div className="mb-5 flex flex-col gap-1">
@@ -186,7 +186,7 @@ export function LogTest() {
         </form>
       )}
 
-      <div className="fixed inset-x-0 bottom-0 bg-gradient-to-t from-bg from-40% to-transparent px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+16px)]">
+      <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+var(--bottom-nav-h))] z-30 bg-gradient-to-t from-bg from-40% to-transparent px-5 pt-3 pb-4">
         <div className="mx-auto max-w-md">
           <Button
             type="submit"

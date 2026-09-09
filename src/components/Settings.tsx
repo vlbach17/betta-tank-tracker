@@ -27,7 +27,6 @@ import type { Parameter } from '../types/database'
 import { Avatar } from './Avatar'
 import { Button } from './Button'
 import { Input } from './Input'
-import { NavChips } from './NavChips'
 import { Notice } from './Notice'
 import { RangeField, type RangeFieldValue } from './RangeField'
 
@@ -374,26 +373,16 @@ export function Settings() {
   const newParamBounds = getNewParameterBounds(newUnitPreset, hardnessUnit)
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-6 px-5 pt-5 pb-8">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <Avatar />
-          <div className="flex flex-col">
-            <h1 className="text-title font-sans text-ink">Settings</h1>
-            <p className="text-caption font-sans text-ink-3">
-              Ranges, parameters, backup
-            </p>
-          </div>
+    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-6 px-5 pt-5 pb-28">
+      <div className="flex items-center gap-3">
+        <Avatar />
+        <div className="flex flex-col">
+          <h1 className="text-title font-sans text-ink">Settings</h1>
+          <p className="text-caption font-sans text-ink-3">
+            Ranges, parameters, backup
+          </p>
         </div>
       </div>
-
-      <NavChips
-        items={[
-          { to: '/', label: 'Now' },
-          { to: '/overview', label: 'Overview' },
-          { to: '/settings', label: 'Settings' },
-        ]}
-      />
 
       <section className="flex flex-col gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile">
         <h2 className="text-heading font-sans text-ink">Display</h2>

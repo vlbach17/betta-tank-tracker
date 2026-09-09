@@ -69,6 +69,10 @@
   --radius-row: 16px;
   --radius-input: 14px;
 
+  /* Layout — flat height of the persistent bottom nav, excluding the
+     safe-area inset. Shared with any fixed bar that must stack above it. */
+  --bottom-nav-h: 56px;
+
   /* Elevation */
   --shadow-tile: 0 2px 12px rgba(41, 49, 50, 0.06);
   --shadow-segment: 0 1px 4px rgba(41, 49, 50, 0.1);

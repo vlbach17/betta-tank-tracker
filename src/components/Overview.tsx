@@ -3,7 +3,6 @@ import { fetchAllHistories, type ParameterWithReadings } from '../lib/parameters
 import { isWithinRange, type Range } from '../lib/range'
 import { Avatar } from './Avatar'
 import { MiniHistoryChart } from './MiniHistoryChart'
-import { NavChips } from './NavChips'
 import { Notice } from './Notice'
 import { RangeToggle } from './RangeToggle'
 
@@ -44,19 +43,11 @@ export function Overview() {
   }, [parameters, range])
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-8">
+    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-28">
       <div className="flex items-center gap-3">
         <Avatar />
         <h1 className="text-title font-sans text-ink">Overview</h1>
       </div>
-
-      <NavChips
-        items={[
-          { to: '/', label: 'Now' },
-          { to: '/overview', label: 'Overview' },
-          { to: '/settings', label: 'Settings' },
-        ]}
-      />
 
       {error && <Notice>Couldn't load your tank data: {error}</Notice>}
 
