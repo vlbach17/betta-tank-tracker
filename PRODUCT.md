@@ -8,48 +8,50 @@ web
 
 ## Users
 
-A single user — the owner of one Betta tank ("Spunk's") — who tests the water with strip/liquid kits and logs results, almost always from her iPhone standing at the tank. She built the app herself and is also its only user; there is no login screen and no multi-user scope. She checks daily to weekly depending on the parameter (temperature far more often than chemistry).
+Vanessa, the single user, testing and logging her Betta aquarium's water parameters (Spunk's tank). Built on a laptop, used almost exclusively from an iPhone as an installed PWA — she opens it right at the tank whenever she runs a test.
 
 ## Product Purpose
 
-Log water test results as they happen, see at a glance whether each is in range, and look back at trends over time to judge overall tank health. It exists to replace an ad hoc handwritten log with something that answers "is my tank okay right now" and "how has it been trending" in a few seconds each.
+A private water-parameter log for one Betta aquarium. Log a test result the moment it's taken, see instantly whether it's in range, and review trends over time to judge overall tank health. Success is fast, low-friction logging and trustworthy at-a-glance status — not comprehensive record-keeping for its own sake.
 
 ## Positioning
 
-The one deliberate mechanism a generic tracker template would not have: a reading is logged one parameter at a time, never as a forced full panel. Blank fields are skipped, not saved as zero — she can log just temperature on a Tuesday and a full chemistry panel on Sunday, and the data model treats those the same way. Built and tuned for one specific tank and one specific person's real usage pattern, not a general-purpose aquarium app.
+One reading per test, never a forced full panel. Most water-log tools assume you test every parameter every time and structure the entry form (and the data model) around a full panel. This app's `readings` table stores one parameter, one value, one timestamp per row, so logging just pH after a quick check is a first-class action, not a workaround. That single choice is called out in the build spec as "the key design choice."
 
 ## Operating Context
 
-- Used almost exclusively on an iPhone, installed to the home screen as a PWA (`display: standalone`), including moments with a poor connection at the tank.
-- Built on a laptop, used on a phone — desktop is a build/admin environment, not a target usage surface.
-- A "test" is a real physical event: dipping a strip or running a liquid kit, then keying in whatever numbers were read off it, sometimes immediately, sometimes with a note like "day after water change."
-- Temperature is logged far more often (sometimes daily) than the chemistry parameters (strip tests, more like every 1-2 weeks), and is tracked against a shorter 3-day overdue threshold versus 14 days for everything else.
+- Day-to-day use is one-handed, at the tank, on an iPhone — checking a test strip or liquid kit result and logging it before it's forgotten.
+- The app was built on a laptop but is essentially never administered from one day to day.
+- No login: single hardcoded user, private repo, Supabase anon key. This is a personal log, not a shared or multi-tenant product.
+- Data lives in Supabase (Postgres); the client never talks to any other backend.
 
 ## Capabilities and Constraints
 
-- One Betta tank, single user, no auth screen, no sharing/multi-user access (explicitly out of scope for v1).
-- Stack: Vite + React + TypeScript, Tailwind, Supabase (free tier), Recharts, deployed to Cloudflare Pages. (Existing codebase; not a decision this file governs.)
-- Data model: `parameters` (reference rows: name, unit, ideal min/max, sort order, active flag) and `readings` (one row per single test: parameter, value, tested_at, optional note, indexed on parameter + tested_at desc). Readings saved together in one "Log a test" submission share the same `tested_at` and `note` but are still independent rows — there is no explicit "session" or "entry" table; an entry is a group of readings sharing a timestamp.
-- Status is computed, not stored: in range / watch (within 10% outside the ideal band) / out of range, or unknown when no ideal range is set. A parameter is "overdue" when its latest reading is older than its threshold (3 days for temperature, 14 days for everything else).
-- Values allow decimals everywhere. Temperature is stored in °F; a Settings toggle converts for display only, without touching stored data. Hardness (KH/GH) has an analogous dGH/dKH display toggle over stored values.
-- Out of scope for v1: multiple tanks, photo import of handwritten logs (planned v2, see spec), storing/gallerying tank photos, push notifications, water-change/feeding logs, sharing or multi-user access.
+- Two tables: `parameters` (reference data — name, unit, ideal min/max, sort order, active flag) and `readings` (one row per single test, backdatable, optional note).
+- Seven tracked parameters out of the box: pH, Ammonia, Nitrite, Nitrate, Carbonate hardness (KH), General hardness (GH), Temperature — each with an ideal range checked on every reading. Custom parameters can be added at runtime from Settings.
+- Temperature is handled distinctly from the chemistry parameters: logged far more often, so it uses a 3-day overdue threshold instead of the standard 14 days; stored in Fahrenheit with a display-only °F/°C toggle in Settings (stored data never changes on toggle); its history view calls out the largest swing between consecutive readings in the selected range.
+- Status is always shown as both a text label and a color (In range / Watch / Out of range), not color alone.
+- CSV export and import of all readings, from Settings.
+- Installed as a PWA (Add to Home Screen); the app shell must keep working on a poor connection.
+- Out of scope for v1 (deliberately, not yet decided): multiple tanks, storing or gallerying tank photos, push notifications for overdue tests, water change/feeding logs, sharing or multi-user access.
+- Deferred to v2, spec already written (`betta-tank-tracker-spec.md`): photo import of a handwritten test-strip log. A photo is resized client-side, sent to a Supabase Edge Function, which calls the Anthropic API to extract structured readings; the user always reviews and corrects before anything saves — nothing writes to the database straight from the photo. Photos are processed and discarded, never stored. This is the one feature with a real (small, prepaid) running cost, which is why it's gated behind a feature flag rather than shipped by default.
 
 ## Brand Commitments
 
-- Product name: "Spunk's Bettabase" (the tank's Betta is named Spunk). Copy voice is plain, warm, and lowercase-leaning in headings ("log a test," "bettabase") rather than corporate-toned.
-- Visual identity: the "Iridescent" system — ink (`#293132`) on page/mist (`#fbfbfe` / `#eeeef8`) neutrals, with teal (`#14b8c4`) as the primary accent/link color and magenta (`#d63a8f`) as a hover/secondary accent. A custom 16-glyph monoline icon set (`src/assets/icons/theme_iridescent`) is integrated as the icon vocabulary going forward, including a `calendar` glyph already reserved in the app's own icon-usage notes for a planned History nav destination.
-- A recent internal design critique (`.impeccable/critique/2026-09-08T02-55-08Z__all-app-views.md`) is standing project evidence: known open issues include inconsistent tap-target sizing and missing focus-visible states on several shared components (`NavChips`, `IconButton`, `RangeToggle`, `ParameterTile`), and a Dashboard that only visually promotes one "hero" alarm at a time. Treat these as known incumbent debt, not something every new surface must silently inherit.
+- Name: "Spunk's Bettabase" — named after the actual betta fish it was built for (Spunk). The pattern "{Name}'s Bettabase" is reserved for any future tank (e.g., a second fish named Juniper would get "Juniper's Bettabase").
+- A real photo of Spunk is used as the header avatar. There is no separate logo or brand mark; the current favicon/PWA icon shape predates the brand and is explicitly legacy (tracked in ROADMAP as a "Someday" to redesign from Spunk's likeness).
+- The visual language (palette, type, components) is documented independently as the "Iridescent" design system (`docs/design/iridescent_v1/`) — that is design authority, not product truth, and is out of scope for this file.
 
 ## Evidence on Hand
 
-- `betta-tank-tracker-spec.md` is the authoritative build spec (schema, screens, mobile requirements, v2 plans) and should be treated as durable product truth alongside this file.
-- Real Supabase-backed data model already implemented: Dashboard, Log a test, per-parameter history, Overview (all-parameter mini trends), and Settings are all built and in use.
-- No user testimonials, external customers, pricing, or licensing claims exist or apply — this is a personal, non-commercial tool.
+- Live production data: real logged readings for Spunk's actual tank in Supabase.
+- A real photograph of Spunk exists and is used in the UI (header avatar). No other brand photography or imagery exists yet.
+- No customer testimonials, case studies, or third-party evidence apply — this is a single-user personal tool, not a marketed product.
 
 ## Product Principles
 
-1. Never force a full panel — logging one parameter is a first-class, equally valid action to logging all seven.
-2. Recognition over recall: the ideal range and current status should be visible at the moment they're needed, not something she has to hold in memory or dig for.
-3. Every parameter that's actually a problem must be visually obvious at the same time — the tool's core job is not to let a second, quieter emergency hide behind one loud one.
-4. Stored data stays unit-neutral (Fahrenheit, native hardness units); display-only toggles convert on the way out so history is never silently rewritten by a preference change.
-5. Built for one real tank and one real routine, not a general-purpose configurable aquarium platform — depth over breadth.
+1. **Partial logging is normal, not a fallback.** Every flow (form, storage, status calculation) must work correctly when only one parameter was tested, not just when a full panel was run.
+2. **Status must be legible at a glance, one-handed, on a phone.** Never encode meaning in color alone; pair every status with a text label.
+3. **Stored data is immutable under display preference.** Unit toggles (°F/°C) convert on the way out only — changing a preference must never rewrite or reinterpret historical values.
+4. **Stay free or near-free to run.** Default to free-tier infrastructure (Supabase, Cloudflare); any feature with a real recurring cost (e.g., photo import's Anthropic API calls) ships behind a flag, off by default.
+5. **This is a private, single-user tool by design.** No login, no sharing, no multi-tenant considerations — simplicity for one user beats generality for many.
