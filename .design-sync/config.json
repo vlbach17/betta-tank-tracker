@@ -1,0 +1,46 @@
+{
+  "projectId": "14518ad3-6141-42f6-b931-dbfaf1191daf",
+  "shape": "package",
+  "pkg": "betta-tank-tracker",
+  "globalName": "BettaTankTracker",
+  "srcDir": ".design-sync/entry-src",
+  "buildCmd": "npm run build",
+  "readmeHeader": ".design-sync/conventions.md",
+  "guidelinesGlob": ["docs/design/iridescent_v1/readme.md"],
+  "cssEntry": "dist/assets/index-D39HGZXj.css",
+  "extraEntries": ["react-router-dom"],
+  "extraFonts": [
+    "node_modules/@fontsource-variable/plus-jakarta-sans/index.css",
+    "node_modules/@fontsource/fira-code/400.css",
+    "node_modules/@fontsource/fira-code/500.css",
+    "node_modules/@fontsource/fira-code/600.css",
+    "node_modules/@fontsource/dynapuff/400.css"
+  ],
+  "componentSrcMap": {
+    "Avatar": "src/components/Avatar.tsx",
+    "BackLink": "src/components/BackLink.tsx",
+    "Button": "src/components/Button.tsx",
+    "Icon": "src/components/Icon.tsx",
+    "IconButton": "src/components/IconButton.tsx",
+    "Input": "src/components/Input.tsx",
+    "NavChips": "src/components/NavChips.tsx",
+    "Notice": "src/components/Notice.tsx",
+    "ParameterTile": "src/components/ParameterTile.tsx",
+    "RangeField": "src/components/RangeField.tsx",
+    "RangeToggle": "src/components/RangeToggle.tsx",
+    "StatusDot": "src/components/StatusDot.tsx",
+    "StatusPill": "src/components/StatusPill.tsx"
+  },
+  "overrides": {
+    "NavChips": { "cardMode": "column" }
+  },
+  "provider": {
+    "component": "MemoryRouter",
+    "inner": {
+      "component": "TempUnitProvider",
+      "inner": {
+        "component": "HardnessUnitProvider"
+      }
+    }
+  }
+}

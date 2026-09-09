@@ -4,9 +4,7 @@
   --font-sans:
     "Plus Jakarta Sans Variable", -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, sans-serif;
-  --font-mono:
-    "Fira Code", ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono",
-    Consolas, monospace;
+  --font-mono: "Fira Code", ui-monospace, "SF Mono", monospace;
   --font-name: "DynaPuff", "Plus Jakarta Sans Variable", sans-serif;
 
   /* Base palette */
