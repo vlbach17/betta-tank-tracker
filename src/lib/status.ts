@@ -13,6 +13,22 @@ export function getReadingStatus(
   return 'out-of-range'
 }
 
+const STATUS_RANK: Record<ReadingStatus, number> = {
+  'out-of-range': 0,
+  watch: 1,
+  unknown: 2,
+  'in-range': 3,
+}
+
+/** The most severe status among a set — an entry with any out-of-range reading reads as out-of-range. */
+export function worstStatus(statuses: ReadingStatus[]): ReadingStatus {
+  let worst: ReadingStatus = 'in-range'
+  for (const status of statuses) {
+    if (STATUS_RANK[status] < STATUS_RANK[worst]) worst = status
+  }
+  return worst
+}
+
 const OVERDUE_DAYS_DEFAULT = 14
 const OVERDUE_DAYS_TEMPERATURE = 3
 
