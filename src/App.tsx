@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
+import { BottomNav } from './components/BottomNav'
 import { Dashboard } from './components/Dashboard'
 import { HardnessUnitProvider } from './components/HardnessUnitProvider'
 import { LogTest } from './components/LogTest'
@@ -47,6 +48,7 @@ function App() {
             }
           />
         </Routes>
+        <BottomNav />
       </HardnessUnitProvider>
     </TempUnitProvider>
   )
