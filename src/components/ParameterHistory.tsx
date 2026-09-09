@@ -154,7 +154,7 @@ export function ParameterHistory() {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-8">
+    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-28">
       <BackLink to="/" label="Dashboard" />
 
       {loadError && <Notice>Couldn't load history: {loadError}</Notice>}
