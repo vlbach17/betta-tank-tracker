@@ -37,15 +37,7 @@ export function BottomNav() {
           </span>
         </NavLink>
 
-        <button
-          type="button"
-          disabled
-          aria-label="History — coming soon"
-          className="flex flex-1 cursor-default flex-col items-center gap-1 pt-0.5 opacity-40"
-        >
-          <Icon name="calendar" size={22} />
-          <span className="text-eyebrow font-sans">History</span>
-        </button>
+        <NavTab to="/history" label="History" icon="calendar" />
 
         <NavTab to="/settings" label="Settings" icon="settings" />
       </div>

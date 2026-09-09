@@ -19,6 +19,18 @@ const Overview = lazy(() =>
   })),
 )
 
+const History = lazy(() =>
+  import('./components/History').then((m) => ({
+    default: m.History,
+  })),
+)
+
+const EntryDetail = lazy(() =>
+  import('./components/EntryDetail').then((m) => ({
+    default: m.EntryDetail,
+  })),
+)
+
 const chartRouteFallback = (
   <p className="p-4 text-sm text-ink-muted">Loading…</p>
 )
@@ -44,6 +56,22 @@ function App() {
             element={
               <Suspense fallback={chartRouteFallback}>
                 <ParameterHistory />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <Suspense fallback={chartRouteFallback}>
+                <History />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/history/:testedAt"
+            element={
+              <Suspense fallback={chartRouteFallback}>
+                <EntryDetail />
               </Suspense>
             }
           />
