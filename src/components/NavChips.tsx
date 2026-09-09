@@ -6,7 +6,7 @@ export function NavChips({
   items: { to: string; label: string }[]
 }) {
   return (
-    <nav aria-label="Primary" className="flex gap-1.5">
+    <nav aria-label="Primary" className="flex gap-1.5 overflow-x-auto">
       {items.map((item) => (
         <NavLink
           key={item.to}

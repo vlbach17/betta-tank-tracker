@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { formatRelativeTime } from '../lib/format'
 import {
   fetchDashboardParameters,
   type ParameterWithLatestReading,
@@ -59,17 +60,26 @@ export function Dashboard() {
     }
   }, [])
 
-  const { heroId, goodCount } = useMemo(() => {
-    if (!parameters) return { heroId: null as string | null, goodCount: 0 }
+  const { heroId, goodCount, lastTestedAt } = useMemo(() => {
+    if (!parameters)
+      return {
+        heroId: null as string | null,
+        goodCount: 0,
+        lastTestedAt: null as string | null,
+      }
     let best: ParameterWithLatestReading | null = null
     let good = 0
+    let latest: string | null = null
     for (const p of parameters) {
       const rank = rankOf(p)
       if (rank === RANK['in-range']) good++
       if (!best || rank < rankOf(best)) best = p
+      if (p.latestReading && (!latest || p.latestReading.tested_at > latest)) {
+        latest = p.latestReading.tested_at
+      }
     }
     const heroId = best && rankOf(best) < RANK['in-range'] ? best.id : null
-    return { heroId, goodCount: good }
+    return { heroId, goodCount: good, lastTestedAt: latest }
   }, [parameters])
 
   return (
@@ -102,6 +112,7 @@ export function Dashboard() {
         items={[
           { to: '/', label: 'Now' },
           { to: '/overview', label: 'Overview' },
+          { to: '/history', label: 'History' },
           { to: '/settings', label: 'Settings' },
         ]}
       />
@@ -133,10 +144,15 @@ export function Dashboard() {
         </div>
       )}
 
-      <div className="flex-1 text-center text-meta font-mono">
-        <span>
-          Last update: functionality not implemented yet. In a real app, this would show the last time a log was submitted.
-        </span>
+      <div className="flex-1 text-center">
+        <Link
+          to="/history"
+          className="rounded-input text-meta font-mono text-ink-3 focus-visible:outline-2 focus-visible:outline-accent-strong"
+        >
+          {lastTestedAt
+            ? `Last tested ${formatRelativeTime(lastTestedAt)}`
+            : 'No tests logged yet'}
+        </Link>
       </div>
 
       <div className="fixed inset-x-0 bottom-0 bg-gradient-to-t from-bg from-40% to-transparent px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+16px)]">
