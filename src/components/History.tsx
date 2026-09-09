@@ -4,7 +4,6 @@ import { formatFullDate, formatRelativeTime } from '../lib/format'
 import { fetchEntries, type Entry } from '../lib/parameters'
 import { getReadingStatus, worstStatus } from '../lib/status'
 import { Avatar } from './Avatar'
-import { NavChips } from './NavChips'
 import { Notice } from './Notice'
 import { StatusPill } from './StatusPill'
 
@@ -31,20 +30,11 @@ export function History() {
   }, [])
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-8">
+    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-28">
       <div className="flex items-center gap-3">
         <Avatar />
         <h1 className="text-title font-sans text-ink">History</h1>
       </div>
-
-      <NavChips
-        items={[
-          { to: '/', label: 'Now' },
-          { to: '/overview', label: 'Overview' },
-          { to: '/history', label: 'History' },
-          { to: '/settings', label: 'Settings' },
-        ]}
-      />
 
       {error && <Notice>Couldn't load your test history: {error}</Notice>}
 

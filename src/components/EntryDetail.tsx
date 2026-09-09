@@ -81,7 +81,7 @@ export function EntryDetail() {
     : null
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-8">
+    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-28">
       <BackLink to="/history" label="History" />
 
       {loadError && <Notice>Couldn't load this entry: {loadError}</Notice>}
