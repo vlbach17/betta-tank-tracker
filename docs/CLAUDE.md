@@ -14,7 +14,7 @@ A single-user water parameter log for one Betta aquarium. Log test results as th
 - Recharts for trend charts
 - `react-router-dom` v7, `HashRouter` (no server rewrite rules needed on static hosting)
 - `vite-plugin-pwa` + `@vite-pwa/assets-generator` for the manifest, service worker, and icons
-- `@fontsource` packages for Libre Franklin, Raleway, IBM Plex Mono
+- `@fontsource` packages for Plus Jakarta Sans, Fira Code, DynaPuff (Iridescent design system fonts)
 - `oxlint` for linting
 - Deployed to Cloudflare (Workers static assets) via Git integration — auto-builds on push to `master`
 
@@ -31,7 +31,7 @@ A single-user water parameter log for one Betta aquarium. Log test results as th
 
 - `src/App.tsx` — route table
 - `src/main.tsx` — entry point, font imports, `HashRouter`
-- `src/components/` — screens (`Dashboard`, `LogTest`, `ParameterHistory`, `Overview`, `Settings`) and shared UI (`ParameterCard`, `StatusPill`, `StatusDot`, `MiniHistoryChart`, `RangeToggle`, `BackLink`)
+- `src/components/` — screens (`Dashboard`, `LogTest`, `ParameterHistory`, `Overview`, `Settings`, `History`, `EntryDetail`) and shared UI (`ParameterTile`, `StatusPill`, `StatusDot`, `MiniHistoryChart`, `RangeField`, `RangeToggle`, `BackLink`, `BottomNav`, `Icon`, `IconButton`, `Button`, `Input`, `Avatar`, `Notice`)
 - `src/lib/` — data access and pure logic: `supabase.ts` (client), `parameters.ts` (all Supabase queries — components never call Supabase directly), `status.ts` (in-range/watch/overdue logic), `range.ts` (30/90/all-time filtering), `analysis.ts` (temperature swing), `format.ts`, `csv.ts`, `chartColors.ts`
 - `src/types/database.ts` — `Parameter` and `Reading` types matching the Supabase schema
 - `public/` — PWA icons, favicon, manifest assets (generated via `pwa-assets.config.ts`, don't hand-edit)
