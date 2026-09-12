@@ -51,9 +51,20 @@ export function formatFullDate(dateIso: string): string {
   })
 }
 
-export function toDatetimeLocalValue(date: Date): string {
+export function toDateInputValue(date: Date): string {
   const pad = (n: number) => String(n).padStart(2, '0')
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
     date.getDate(),
-  )}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+  )}`
+}
+
+export function formatHourOption(hour: number): string {
+  const period = hour < 12 ? 'AM' : 'PM'
+  const displayHour = hour % 12 === 0 ? 12 : hour % 12
+  return `${displayHour}:00 ${period}`
+}
+
+export function toIsoFromDateAndHour(dateInputValue: string, hour: number): string {
+  const [year, month, day] = dateInputValue.split('-').map(Number)
+  return new Date(year, month - 1, day, hour, 0, 0, 0).toISOString()
 }

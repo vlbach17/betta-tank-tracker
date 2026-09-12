@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   abbreviateParameterName,
+  formatHourOption,
   formatIdealRange,
-  toDatetimeLocalValue,
+  toDateInputValue,
+  toIsoFromDateAndHour,
 } from '../lib/format'
 import {
   convertHardnessForDisplay,
@@ -22,6 +24,9 @@ import { BackLink } from './BackLink'
 import { Button } from './Button'
 import { Input } from './Input'
 import { Notice } from './Notice'
+import { Select } from './Select'
+
+const HOURS = Array.from({ length: 24 }, (_, i) => i)
 
 export function LogTest() {
   const navigate = useNavigate()
@@ -30,9 +35,10 @@ export function LogTest() {
   const [parameters, setParameters] = useState<Parameter[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
 
-  const [testedAt, setTestedAt] = useState(() =>
-    toDatetimeLocalValue(new Date()),
+  const [testedDate, setTestedDate] = useState(() =>
+    toDateInputValue(new Date()),
   )
+  const [testedHour, setTestedHour] = useState(() => new Date().getHours())
   const [values, setValues] = useState<Record<string, string>>({})
   const [note, setNote] = useState('')
 
@@ -63,7 +69,7 @@ export function LogTest() {
     event.preventDefault()
     if (!parameters || !hasAnyValue || saving) return
 
-    const testedAtIso = new Date(testedAt).toISOString()
+    const testedAtIso = toIsoFromDateAndHour(testedDate, testedHour)
     const trimmedNote = note.trim()
 
     const readings: NewReading[] = parameters
@@ -118,15 +124,33 @@ export function LogTest() {
           onSubmit={handleSave}
           className="flex flex-col gap-5"
         >
-          <Input
-            id="tested-at"
-            label="Tested at"
-            type="datetime-local"
-            step={900}
-            value={testedAt}
-            onChange={setTestedAt}
-            required
-          />
+          <div className="flex flex-col gap-1">
+            <label htmlFor="tested-at-date" className="text-heading font-sans text-ink">
+              Tested at
+            </label>
+            <div className="flex gap-2">
+              <Input
+                id="tested-at-date"
+                type="date"
+                value={testedDate}
+                onChange={setTestedDate}
+                required
+                className="flex-1"
+              />
+              <Select
+                id="tested-at-hour"
+                value={String(testedHour)}
+                onChange={(v) => setTestedHour(Number(v))}
+                className="w-32 shrink-0"
+              >
+                {HOURS.map((hour) => (
+                  <option key={hour} value={hour}>
+                    {formatHourOption(hour)}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          </div>
 
           <div className="grid grid-cols-2 gap-2.5">
             {parameters.map((parameter) => {
