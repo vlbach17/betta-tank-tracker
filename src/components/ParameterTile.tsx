@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import {
+  abbreviateParameterName,
   formatIdealRange,
   formatReadingValue,
   formatRelativeTime,
@@ -55,14 +56,15 @@ export function ParameterTile({
       : formatRelativeTime(latestReading.tested_at)
     : 'No readings yet'
 
-  const nameLabel = isTemperature ? 'Temp' : name
+  const nameLabel = isTemperature ? 'Temp' : abbreviateParameterName(name)
   const icon = getParameterIcon(name)
 
   if (hero) {
     return (
       <Link
         to={`/parameter/${id}`}
-        className="col-span-2 flex items-center justify-between gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile active:opacity-80"
+        className="col-span-2 flex items-center justify-between gap-3 rounded-tile border border-line p-4 shadow-tile active:opacity-80"
+        style={{ backgroundImage: 'var(--gradient-hero-wash)' }}
       >
         <div className="flex min-w-0 flex-col gap-1.5">
           <div className="flex min-w-0 items-center gap-2">
@@ -98,17 +100,17 @@ export function ParameterTile({
           : 'border border-line bg-surface shadow-tile'
       }`}
     >
-      <div className="flex min-w-0 items-center gap-1.5">
+      <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
         {icon && <Icon name={icon} size={18} className="shrink-0 text-ink-3" />}
         <StatusDot status={dotStatus} />
-        <span className="min-w-0 flex-1 truncate text-heading font-sans text-ink">
+        <span className="min-w-0 break-words text-heading font-sans text-ink">
           {nameLabel}
-          {displayUnit && (
-            <span className="ml-1 text-meta font-mono text-ink-3">
-              ({displayUnit})
-            </span>
-          )}
         </span>
+        {displayUnit && (
+          <span className="text-meta font-mono text-ink-3">
+            ({displayUnit})
+          </span>
+        )}
       </div>
 
       <p className={`text-num-lg font-mono tabular-nums ${valueColorClass}`}>

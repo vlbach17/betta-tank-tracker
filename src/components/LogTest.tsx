@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { formatIdealRange, toDatetimeLocalValue } from '../lib/format'
+import {
+  abbreviateParameterName,
+  formatHourOption,
+  formatIdealRange,
+  toDateInputValue,
+  toIsoFromDateAndHour,
+} from '../lib/format'
 import {
   convertHardnessForDisplay,
   convertHardnessForStorage,
@@ -18,6 +24,9 @@ import { BackLink } from './BackLink'
 import { Button } from './Button'
 import { Input } from './Input'
 import { Notice } from './Notice'
+import { Select } from './Select'
+
+const HOURS = Array.from({ length: 24 }, (_, i) => i)
 
 export function LogTest() {
   const navigate = useNavigate()
@@ -26,9 +35,10 @@ export function LogTest() {
   const [parameters, setParameters] = useState<Parameter[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
 
-  const [testedAt, setTestedAt] = useState(() =>
-    toDatetimeLocalValue(new Date()),
+  const [testedDate, setTestedDate] = useState(() =>
+    toDateInputValue(new Date()),
   )
+  const [testedHour, setTestedHour] = useState(() => new Date().getHours())
   const [values, setValues] = useState<Record<string, string>>({})
   const [note, setNote] = useState('')
 
@@ -59,7 +69,7 @@ export function LogTest() {
     event.preventDefault()
     if (!parameters || !hasAnyValue || saving) return
 
-    const testedAtIso = new Date(testedAt).toISOString()
+    const testedAtIso = toIsoFromDateAndHour(testedDate, testedHour)
     const trimmedNote = note.trim()
 
     const readings: NewReading[] = parameters
@@ -94,7 +104,7 @@ export function LogTest() {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col px-5 pt-5 pb-[calc(env(safe-area-inset-bottom)+var(--bottom-nav-h)+84px)]">
+    <main className="mx-auto flex min-h-svh max-w-md flex-col px-5 pt-5 pb-[calc(env(safe-area-inset-bottom)+var(--bottom-nav-h)+84px)] sm:min-h-0 sm:my-12 sm:rounded-card sm:border sm:border-line sm:bg-surface sm:px-6 sm:pt-6 sm:pb-10 sm:shadow-[0_24px_60px_-16px_rgba(20,20,55,0.35)]">
       <BackLink to="/" label="Dashboard" />
 
       <div className="mb-5 flex flex-col gap-1">
@@ -114,14 +124,33 @@ export function LogTest() {
           onSubmit={handleSave}
           className="flex flex-col gap-5"
         >
-          <Input
-            id="tested-at"
-            label="Tested at"
-            type="datetime-local"
-            value={testedAt}
-            onChange={setTestedAt}
-            required
-          />
+          <div className="flex flex-col gap-1">
+            <label htmlFor="tested-at-date" className="text-heading font-sans text-ink">
+              Tested at
+            </label>
+            <div className="flex gap-2">
+              <Input
+                id="tested-at-date"
+                type="date"
+                value={testedDate}
+                onChange={setTestedDate}
+                required
+                className="flex-1"
+              />
+              <Select
+                id="tested-at-hour"
+                value={String(testedHour)}
+                onChange={(v) => setTestedHour(Number(v))}
+                className="w-32 shrink-0"
+              >
+                {HOURS.map((hour) => (
+                  <option key={hour} value={hour}>
+                    {formatHourOption(hour)}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          </div>
 
           <div className="grid grid-cols-2 gap-2.5">
             {parameters.map((parameter) => {
@@ -147,7 +176,7 @@ export function LogTest() {
                     htmlFor={`value-${parameter.id}`}
                     className="truncate text-heading font-sans text-ink"
                   >
-                    {parameter.name}
+                    {abbreviateParameterName(parameter.name)}
                     {displayUnit && (
                       <span className="ml-1 text-meta font-mono text-ink-3">
                         ({displayUnit})

@@ -12,14 +12,22 @@ All notable changes to this project are documented here. Newest release first.
 - °F / °C display toggle in Settings — temperature readings, ideal range, and the largest-swing callout convert on the way out only; the stored value is always Fahrenheit
 - Bespoke Iridescent icon set (monoline, `currentColor`, optically-sized per-tier stroke weight) replacing `@phosphor-icons/react` in every screen; each parameter now shows a matching glyph (pH → beaker, Ammonia → beaker-plus, Nitrite → bubbles, Nitrate → wave, KH → fish bowl, GH → fish, Temp → thermometer) via a new `getParameterIcon` lookup, with custom parameters rendering without an icon
 - dGH / dKH ↔ ppm display toggle in Settings for hardness readings, mirroring the existing °F/°C toggle — stored values are unchanged, only the display conversion is new
+- `PRODUCT.md` capturing durable product context (users, purpose, positioning, constraints, brand commitments), generated via `/impeccable init`
+- History tab listing past test entries (readings grouped by shared `tested_at`) newest-first, each showing date, relative time, and an aggregate status chip; tapping an entry opens a detail view with every reading submitted, mirroring `ParameterHistory`'s per-reading delete pattern — Dashboard's "last update" line now links to it instead of being a placeholder
+- Persistent bottom nav bar (Now / Overview / Log / History / Settings) fixed to the viewport on every screen, replacing the per-view `NavChips` pill row — Log a test is a raised center action; Dashboard's now-redundant floating CTA and header settings shortcut were removed since the nav covers both
+- Above ~640px width, the app renders as a floating card over a brand-gradient backdrop with `BottomNav` as a floating pill rather than a flush bar; narrow/phone viewports (the primary target) are unaffected
+- Long or custom parameter names abbreviate to their parenthesized unit shorthand on tiles when space is tight (e.g. "General Hardness (GH)" → "GH"); tile name+unit now wraps instead of truncating
+- `design-sync` tooling (config, entry stubs, component previews under `.design-sync/`) for syncing component previews — internal/dev tooling, not user-facing
 
 ### Changed
 - Renamed the app from "Betta Tank Tracker" to "Spunk's Bettabase" — updated the page title, PWA manifest name/short name, home-screen title, in-app dashboard header, and README
 - Deploy workflow now uses `dev` as the working branch and `master` as the production branch — `master` still auto-deploys on push, but `dev` pushes only trigger a Cloudflare preview build, so changes no longer go live automatically as they're made
+- Log a test's "Tested at" field replaced the native `datetime-local` minute picker with a date input plus an hour dropdown (12 AM–11 PM) — readings can only be backdated to the hour now, not the minute, which matches how tests are actually timed
 
 ### Fixed
 - Cloudflare deploy step (`npx wrangler versions upload`) failing with "Missing entry-point to Worker script or to assets directory" — added `wrangler.jsonc` specifying the Worker name and `./dist` as the assets directory, which earlier deploys had been missing without issue until the first `dev`-branch build surfaced it
 - Added missing `role="tablist"`/`aria-selected` to the 30/90/all-time range toggle and a visible focus state to buttons/inputs — neither existed before the Iridescent re-skin
+- Leftover `NavChips` import/usage in `History.tsx` and mismatched bottom padding on `History`/`EntryDetail`, both left over from the bottom-nav-bar merge
 
 ## [1.0.0] - 2026-09-05
 
