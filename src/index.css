@@ -60,6 +60,13 @@
     #eceefb 50%,
     #fbe9f3
   );
+  --gradient-app-backdrop: linear-gradient(
+    160deg,
+    #0d7d87 0%,
+    #3b5bdb 45%,
+    #8b3fd6 72%,
+    #d63a8f 100%
+  );
 
   /* Shape */
   --radius-tile: 20px;
@@ -143,6 +150,23 @@
 
 body {
   background: var(--color-bg);
+}
+
+/* Below ~640px the app fills the full viewport width (real phones, incl. the
+   PWA's primary target), so this backdrop never shows. Above it, the app
+   renders as a floating card and the backdrop fills the surrounding space. */
+@media (min-width: 640px) {
+  body {
+    background: var(--gradient-app-backdrop);
+    background-attachment: fixed;
+  }
+
+  /* Above ~640px BottomNav becomes a floating pill with its own bottom
+     margin instead of a flat bar flush with the viewport edge — its real
+     on-screen footprint is taller than the mobile --bottom-nav-h. */
+  :root {
+    --bottom-nav-h: 104px;
+  }
 }
 
 .recharts-wrapper text {

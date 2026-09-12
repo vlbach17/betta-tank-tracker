@@ -22,6 +22,10 @@ export function formatReadingValue(value: number): string {
   return value.toLocaleString(undefined, { maximumFractionDigits: 2 })
 }
 
+export function abbreviateParameterName(name: string): string {
+  return name.match(/\(([^)]+)\)\s*$/)?.[1] ?? name
+}
+
 export function formatIdealRange(
   min: number | null,
   max: number | null,

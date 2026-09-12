@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { formatIdealRange, toDatetimeLocalValue } from '../lib/format'
+import {
+  abbreviateParameterName,
+  formatIdealRange,
+  toDatetimeLocalValue,
+} from '../lib/format'
 import {
   convertHardnessForDisplay,
   convertHardnessForStorage,
@@ -94,7 +98,7 @@ export function LogTest() {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col px-5 pt-5 pb-[calc(env(safe-area-inset-bottom)+var(--bottom-nav-h)+84px)]">
+    <main className="mx-auto flex min-h-svh max-w-md flex-col px-5 pt-5 pb-[calc(env(safe-area-inset-bottom)+var(--bottom-nav-h)+84px)] sm:min-h-0 sm:my-12 sm:rounded-card sm:border sm:border-line sm:bg-surface sm:px-6 sm:pt-6 sm:pb-10 sm:shadow-[0_24px_60px_-16px_rgba(20,20,55,0.35)]">
       <BackLink to="/" label="Dashboard" />
 
       <div className="mb-5 flex flex-col gap-1">
@@ -118,6 +122,7 @@ export function LogTest() {
             id="tested-at"
             label="Tested at"
             type="datetime-local"
+            step={900}
             value={testedAt}
             onChange={setTestedAt}
             required
@@ -147,7 +152,7 @@ export function LogTest() {
                     htmlFor={`value-${parameter.id}`}
                     className="truncate text-heading font-sans text-ink"
                   >
-                    {parameter.name}
+                    {abbreviateParameterName(parameter.name)}
                     {displayUnit && (
                       <span className="ml-1 text-meta font-mono text-ink-3">
                         ({displayUnit})
