@@ -31,6 +31,12 @@ const EntryDetail = lazy(() =>
   })),
 )
 
+const TankInfo = lazy(() =>
+  import('./components/TankInfo').then((m) => ({
+    default: m.TankInfo,
+  })),
+)
+
 const chartRouteFallback = (
   <p className="p-4 text-sm text-ink-muted">Loading…</p>
 )
@@ -72,6 +78,14 @@ function App() {
             element={
               <Suspense fallback={chartRouteFallback}>
                 <EntryDetail />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/tank-info"
+            element={
+              <Suspense fallback={chartRouteFallback}>
+                <TankInfo />
               </Suspense>
             }
           />

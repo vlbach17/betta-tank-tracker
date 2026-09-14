@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { buildCsv, parseCsv } from '../lib/csv'
 import { getDisplayUnit, toDisplayValue, toStorageValue } from '../lib/displayUnit'
 import {
@@ -383,6 +384,21 @@ export function Settings() {
           </p>
         </div>
       </div>
+
+      <Link
+        to="/tank-info"
+        className="flex items-center justify-between gap-2 rounded-tile border border-line bg-surface p-4 shadow-tile"
+      >
+        <div className="flex flex-col">
+          <span className="text-heading font-sans text-ink">Tank Info</span>
+          <span className="text-body-sm font-sans text-ink-3">
+            Equipment, food, plants, and residents
+          </span>
+        </div>
+        <span aria-hidden className="text-heading font-sans text-ink-3">
+          ›
+        </span>
+      </Link>
 
       <section className="flex flex-col gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile">
         <h2 className="text-heading font-sans text-ink">Display</h2>

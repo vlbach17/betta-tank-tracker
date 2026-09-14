@@ -5,6 +5,7 @@ All notable changes to this project are documented here. Newest release first.
 ## [Unreleased]
 
 ### Added
+- Tank Info page (`/tank-info`, linked from Settings) — 4 tabs (Equipment, Food, Plants, Fish) each backed by its own Supabase table with add, up/down reorder, and active/inactive archive toggle (no hard delete), mirroring Parameters' existing pattern; equipment links out to external manual URLs, fish rows show the existing Spunk avatar when the name matches. Seeded with placeholder content for the user to replace with real tank details.
 - Re-skinned the entire app on a new "Iridescent" design system (Plus Jakarta Sans / Fira Code / DynaPuff, teal→royal→violet→magenta brand gradient, solid-fill status pills, 20px-radius tiles) — colors, type, spacing/radius/shadow tokens, and every screen's visual treatment changed; data model, routing, and Supabase logic unchanged
 - Added a header avatar (Spunk's photo) with a gradient ring to Dashboard/Overview/Settings, a "N of M in range" summary line to Dashboard, a severity-ranked hero tile for the most urgent out-of-range/watch/overdue parameter on Dashboard, and a dual-thumb `RangeField` slider replacing Settings' bare min/max number inputs
 - Replaced Dashboard's header text links ("Overview"/"Settings") with a kebab menu button plus a pill-style `NavChips` row, also added to Overview and Settings (both drop `BackLink` in favor of it — a navigation-structure change, not just a restyle)
