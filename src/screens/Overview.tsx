@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { fetchAllHistories, type ParameterWithReadings } from '../lib/parameters'
 import { isWithinRange, type Range } from '../lib/range'
-import { Avatar } from './Avatar'
-import { MiniHistoryChart } from './MiniHistoryChart'
-import { Notice } from './Notice'
-import { RangeToggle } from './RangeToggle'
+import { Avatar } from '../components/Avatar'
+import { MiniHistoryChart } from '../components/MiniHistoryChart'
+import { Notice } from '../components/Notice'
+import { RangeToggle } from '../components/RangeToggle'
 
 export function Overview() {
   const [parameters, setParameters] = useState<

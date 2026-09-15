@@ -18,12 +18,12 @@ import {
   updatePlant,
 } from '../lib/tankInfo'
 import type { Equipment, Fish, FoodSupply, Plant } from '../types/database'
-import { Avatar } from './Avatar'
-import { BackLink } from './BackLink'
-import { Button } from './Button'
-import { Input } from './Input'
-import { Notice } from './Notice'
-import { TabNav } from './TabNav'
+import { Avatar } from '../components/Avatar'
+import { BackLink } from '../components/BackLink'
+import { Button } from '../components/Button'
+import { Input } from '../components/Input'
+import { Notice } from '../components/Notice'
+import { TabNav } from '../components/TabNav'
 
 const TABS = ['Equipment', 'Food', 'Plants', 'Fish'] as const
 type Tab = (typeof TABS)[number]
