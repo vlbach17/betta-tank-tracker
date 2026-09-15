@@ -23,6 +23,7 @@ import { Icon } from './Icon'
 import { Input } from './Input'
 import { Notice } from './Notice'
 import { RangeField, type RangeFieldValue } from './RangeField'
+import { TabNav } from './TabNav'
 
 type RangeEdits = Record<string, RangeFieldValue>
 
@@ -379,20 +380,7 @@ export function Settings() {
         </span>
       </Link>
 
-      <div className="flex gap-1 overflow-x-auto rounded-full bg-mist p-1">
-        {TABS.map((t) => (
-          <button
-            key={t}
-            type="button"
-            onClick={() => setTab(t)}
-            className={`h-9 shrink-0 rounded-full px-4 text-label font-sans ${
-              tab === t ? 'bg-surface text-ink shadow-segment' : 'text-ink-muted'
-            }`}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
+      <TabNav tabs={TABS} value={tab} onChange={setTab} />
 
       {tab === 'Display' && (
         <section className="flex flex-col gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile">
