@@ -1,37 +1,37 @@
 import { Suspense, lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { BottomNav } from './components/BottomNav'
-import { Dashboard } from './components/Dashboard'
-import { LogTest } from './components/LogTest'
-import { Settings } from './components/Settings'
 import { TempUnitProvider } from './components/TempUnitProvider'
+import { Dashboard } from './screens/Dashboard'
+import { LogTest } from './screens/LogTest'
+import { Settings } from './screens/Settings'
 
 const ParameterHistory = lazy(() =>
-  import('./components/ParameterHistory').then((m) => ({
+  import('./screens/ParameterHistory').then((m) => ({
     default: m.ParameterHistory,
   })),
 )
 
 const Overview = lazy(() =>
-  import('./components/Overview').then((m) => ({
+  import('./screens/Overview').then((m) => ({
     default: m.Overview,
   })),
 )
 
 const History = lazy(() =>
-  import('./components/History').then((m) => ({
+  import('./screens/History').then((m) => ({
     default: m.History,
   })),
 )
 
 const EntryDetail = lazy(() =>
-  import('./components/EntryDetail').then((m) => ({
+  import('./screens/EntryDetail').then((m) => ({
     default: m.EntryDetail,
   })),
 )
 
 const TankInfo = lazy(() =>
-  import('./components/TankInfo').then((m) => ({
+  import('./screens/TankInfo').then((m) => ({
     default: m.TankInfo,
   })),
 )
