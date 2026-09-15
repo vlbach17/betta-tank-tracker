@@ -64,3 +64,11 @@ Tracked at length in `ROADMAP.md`'s "Someday" list; nothing here is started or s
 
 - [x] `CLAUDE.md` process rules: update `CHANGELOG.md` and `ROADMAP.md` after shipping a change, log non-obvious decisions in `DECISIONS.md` as they happen
 - [ ] No automated session-end hook exists yet for changelog/roadmap upkeep — currently a manual step per `CLAUDE.md`
+
+## 8. Mobile Review Notes (2026-09-14)
+
+Live notes from reviewing the app on a phone. Appended to as they come in.
+
+- [x] `RangeField` (Settings, both the per-parameter editor and "Add a custom parameter"): focusing the min number input should also focus/highlight the min slider thumb, and the same for max
+- [x] `RangeField`: the active/focused slider thumb should turn orange (reuse `--color-status-watch`, #f2a51a) to show which one is active
+- [x] KH/GH readings are actually entered/stored in ppm, not degrees as `CLAUDE.md`/code assume — this is the source of the display distortion when toggling units. Remove degree/dKH/dGH support entirely and standardize on ppm: drop the Display tab's ppm/degrees toggle, convert existing stored KH/GH readings from degrees to ppm, and remove the dKH/dGH presets from "Add a custom parameter" — turned out the readings were already ppm; it was the stored ideal range that needed converting instead, see `DECISIONS.md` #20

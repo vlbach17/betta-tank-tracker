@@ -47,8 +47,8 @@ Six chemistry parameters, each with an ideal range checked against every reading
 | Ammonia | ppm | 0 |
 | Nitrite | ppm | 0 |
 | Nitrate | ppm | 0–20 |
-| Carbonate hardness (KH) | dKH | 3–8 |
-| General hardness (GH) | dGH | 3–8 |
+| Carbonate hardness (KH) | ppm | 50–140 |
+| General hardness (GH) | ppm | 50–200 |
 
 Temperature is also tracked (78–80°F) but is handled separately in code: a 3-day overdue threshold instead of the default 14 days, and a "largest swing in range" callout on its history chart (see `getOverdueThresholdDays` and `getLargestSwing`). New parameters can be added from Settings at runtime — the table above is the seed set, not a hardcoded list.
 

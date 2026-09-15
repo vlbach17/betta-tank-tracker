@@ -11,7 +11,6 @@ import { getDisplayUnit, toDisplayValue } from '../lib/displayUnit'
 import { formatIdealRange, formatReadingValue } from '../lib/format'
 import { getParameterIcon } from '../lib/parameterIcons'
 import { getReadingStatus, isOverdue } from '../lib/status'
-import { useHardnessUnit } from '../lib/useHardnessUnit'
 import { useTempUnit } from '../lib/useTempUnit'
 import type { Parameter, Reading } from '../types/database'
 import { Icon } from './Icon'
@@ -30,28 +29,23 @@ export function MiniHistoryChart({
   latestReading: Reading | null
 }) {
   const { tempUnit } = useTempUnit()
-  const { hardnessUnit } = useHardnessUnit()
   const { name, ideal_min, ideal_max } = parameter
   const overdue = isOverdue(name, latestReading?.tested_at ?? null)
   const status = latestReading
     ? getReadingStatus(latestReading.value, ideal_min, ideal_max)
     : null
 
-  const displayUnit = getDisplayUnit(parameter, tempUnit, hardnessUnit)
+  const displayUnit = getDisplayUnit(parameter, tempUnit)
   const displayIdealMin =
-    ideal_min != null
-      ? toDisplayValue(ideal_min, parameter, tempUnit, hardnessUnit)
-      : ideal_min
+    ideal_min != null ? toDisplayValue(ideal_min, parameter, tempUnit) : ideal_min
   const displayIdealMax =
-    ideal_max != null
-      ? toDisplayValue(ideal_max, parameter, tempUnit, hardnessUnit)
-      : ideal_max
+    ideal_max != null ? toDisplayValue(ideal_max, parameter, tempUnit) : ideal_max
   const displayChartReadings = chartReadings.map((r) => ({
     ...r,
-    value: toDisplayValue(r.value, parameter, tempUnit, hardnessUnit),
+    value: toDisplayValue(r.value, parameter, tempUnit),
   }))
   const displayLatestValue = latestReading
-    ? toDisplayValue(latestReading.value, parameter, tempUnit, hardnessUnit)
+    ? toDisplayValue(latestReading.value, parameter, tempUnit)
     : null
   const rangeText = formatIdealRange(displayIdealMin, displayIdealMax)
   const icon = getParameterIcon(name)

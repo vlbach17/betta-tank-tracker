@@ -8,17 +8,10 @@ import {
   toIsoFromDateAndHour,
 } from '../lib/format'
 import {
-  convertHardnessForDisplay,
-  convertHardnessForStorage,
-  hardnessUnitLabel,
-  isHardnessUnit,
-} from '../lib/hardness'
-import {
   fetchActiveParameters,
   saveReadings,
   type NewReading,
 } from '../lib/parameters'
-import { useHardnessUnit } from '../lib/useHardnessUnit'
 import type { Parameter } from '../types/database'
 import { BackLink } from './BackLink'
 import { Button } from './Button'
@@ -30,7 +23,6 @@ const HOURS = Array.from({ length: 24 }, (_, i) => i)
 
 export function LogTest() {
   const navigate = useNavigate()
-  const { hardnessUnit } = useHardnessUnit()
 
   const [parameters, setParameters] = useState<Parameter[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -78,12 +70,9 @@ export function LogTest() {
         if (!raw) return null
         const entered = Number(raw)
         if (!Number.isFinite(entered)) return null
-        const value = isHardnessUnit(parameter.unit)
-          ? convertHardnessForStorage(entered, hardnessUnit)
-          : entered
         return {
           parameter_id: parameter.id,
-          value,
+          value: entered,
           tested_at: testedAtIso,
           note: trimmedNote || null,
         }
@@ -154,18 +143,9 @@ export function LogTest() {
 
           <div className="grid grid-cols-2 gap-2.5">
             {parameters.map((parameter) => {
-              const isHardness = isHardnessUnit(parameter.unit)
-              const displayUnit = isHardness
-                ? hardnessUnitLabel(parameter.unit, hardnessUnit)
-                : parameter.unit
-              const displayIdealMin =
-                isHardness && parameter.ideal_min != null
-                  ? convertHardnessForDisplay(parameter.ideal_min, hardnessUnit)
-                  : parameter.ideal_min
-              const displayIdealMax =
-                isHardness && parameter.ideal_max != null
-                  ? convertHardnessForDisplay(parameter.ideal_max, hardnessUnit)
-                  : parameter.ideal_max
+              const displayUnit = parameter.unit
+              const displayIdealMin = parameter.ideal_min
+              const displayIdealMax = parameter.ideal_max
 
               return (
                 <div

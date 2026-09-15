@@ -6,7 +6,6 @@ import {
   formatRelativeTime,
 } from '../lib/format'
 import { getDisplayUnit, toDisplayValue } from '../lib/displayUnit'
-import { useHardnessUnit } from '../lib/useHardnessUnit'
 import type { ParameterWithLatestReading } from '../lib/parameters'
 import { getParameterIcon } from '../lib/parameterIcons'
 import { getReadingStatus, isOverdue } from '../lib/status'
@@ -24,7 +23,6 @@ export function ParameterTile({
   hero?: boolean
 }) {
   const { tempUnit } = useTempUnit()
-  const { hardnessUnit } = useHardnessUnit()
   const { id, name, ideal_min, ideal_max, latestReading } = parameter
   const overdue = isOverdue(name, latestReading?.tested_at ?? null)
   const status = latestReading
@@ -32,17 +30,13 @@ export function ParameterTile({
     : null
 
   const isTemperature = name === TEMPERATURE_PARAMETER_NAME
-  const displayUnit = getDisplayUnit(parameter, tempUnit, hardnessUnit)
+  const displayUnit = getDisplayUnit(parameter, tempUnit)
   const displayIdealMin =
-    ideal_min != null
-      ? toDisplayValue(ideal_min, parameter, tempUnit, hardnessUnit)
-      : ideal_min
+    ideal_min != null ? toDisplayValue(ideal_min, parameter, tempUnit) : ideal_min
   const displayIdealMax =
-    ideal_max != null
-      ? toDisplayValue(ideal_max, parameter, tempUnit, hardnessUnit)
-      : ideal_max
+    ideal_max != null ? toDisplayValue(ideal_max, parameter, tempUnit) : ideal_max
   const displayValue = latestReading
-    ? toDisplayValue(latestReading.value, parameter, tempUnit, hardnessUnit)
+    ? toDisplayValue(latestReading.value, parameter, tempUnit)
     : null
   const rangeText = formatIdealRange(displayIdealMin, displayIdealMax)
 

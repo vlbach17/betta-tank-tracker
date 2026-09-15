@@ -6,7 +6,6 @@ import { deleteReading, fetchEntry, type Entry } from '../lib/parameters'
 import { getParameterIcon } from '../lib/parameterIcons'
 import { getReadingStatus, worstStatus } from '../lib/status'
 import { TEMPERATURE_PARAMETER_NAME } from '../lib/temperature'
-import { useHardnessUnit } from '../lib/useHardnessUnit'
 import { useTempUnit } from '../lib/useTempUnit'
 import { BackLink } from './BackLink'
 import { Button } from './Button'
@@ -20,7 +19,6 @@ export function EntryDetail() {
   const { testedAt } = useParams<{ testedAt: string }>()
   const navigate = useNavigate()
   const { tempUnit } = useTempUnit()
-  const { hardnessUnit } = useHardnessUnit()
 
   const [entry, setEntry] = useState<Entry | null | undefined>(undefined)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -135,13 +133,8 @@ export function EntryDetail() {
                 reading.value,
                 displayParameter,
                 tempUnit,
-                hardnessUnit,
               )
-              const displayUnit = getDisplayUnit(
-                displayParameter,
-                tempUnit,
-                hardnessUnit,
-              )
+              const displayUnit = getDisplayUnit(displayParameter, tempUnit)
               const icon = getParameterIcon(reading.parameterName)
 
               return (
