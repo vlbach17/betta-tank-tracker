@@ -5,13 +5,13 @@ All notable changes to this project are documented here. Newest release first.
 ## [Unreleased]
 
 ### Added
+- Tank Info page (`/tank-info`, linked from Settings) — 4 tabs (Equipment, Food, Plants, Fish) each backed by its own Supabase table with add, up/down reorder, and active/inactive archive toggle (no hard delete), mirroring Parameters' existing pattern; equipment links out to external manual URLs, fish rows show the existing Spunk avatar when the name matches. Seeded with placeholder content for the user to replace with real tank details.
 - Re-skinned the entire app on a new "Iridescent" design system (Plus Jakarta Sans / Fira Code / DynaPuff, teal→royal→violet→magenta brand gradient, solid-fill status pills, 20px-radius tiles) — colors, type, spacing/radius/shadow tokens, and every screen's visual treatment changed; data model, routing, and Supabase logic unchanged
 - Added a header avatar (Spunk's photo) with a gradient ring to Dashboard/Overview/Settings, a "N of M in range" summary line to Dashboard, a severity-ranked hero tile for the most urgent out-of-range/watch/overdue parameter on Dashboard, and a dual-thumb `RangeField` slider replacing Settings' bare min/max number inputs
 - Replaced Dashboard's header text links ("Overview"/"Settings") with a kebab menu button plus a pill-style `NavChips` row, also added to Overview and Settings (both drop `BackLink` in favor of it — a navigation-structure change, not just a restyle)
 - Installed `@phosphor-icons/react` as an interim icon library for net-new iconography; the app's 3 existing hand-drawn glyphs (back chevron, trash, kebab) are unchanged and centralized into a shared `Icon`/`IconButton` component
 - °F / °C display toggle in Settings — temperature readings, ideal range, and the largest-swing callout convert on the way out only; the stored value is always Fahrenheit
 - Bespoke Iridescent icon set (monoline, `currentColor`, optically-sized per-tier stroke weight) replacing `@phosphor-icons/react` in every screen; each parameter now shows a matching glyph (pH → beaker, Ammonia → beaker-plus, Nitrite → bubbles, Nitrate → wave, KH → fish bowl, GH → fish, Temp → thermometer) via a new `getParameterIcon` lookup, with custom parameters rendering without an icon
-- dGH / dKH ↔ ppm display toggle in Settings for hardness readings, mirroring the existing °F/°C toggle — stored values are unchanged, only the display conversion is new
 - `PRODUCT.md` capturing durable product context (users, purpose, positioning, constraints, brand commitments), generated via `/impeccable init`
 - History tab listing past test entries (readings grouped by shared `tested_at`) newest-first, each showing date, relative time, and an aggregate status chip; tapping an entry opens a detail view with every reading submitted, mirroring `ParameterHistory`'s per-reading delete pattern — Dashboard's "last update" line now links to it instead of being a placeholder
 - Persistent bottom nav bar (Now / Overview / Log / History / Settings) fixed to the viewport on every screen, replacing the per-view `NavChips` pill row — Log a test is a raised center action; Dashboard's now-redundant floating CTA and header settings shortcut were removed since the nav covers both
@@ -28,6 +28,8 @@ All notable changes to this project are documented here. Newest release first.
 - Cloudflare deploy step (`npx wrangler versions upload`) failing with "Missing entry-point to Worker script or to assets directory" — added `wrangler.jsonc` specifying the Worker name and `./dist` as the assets directory, which earlier deploys had been missing without issue until the first `dev`-branch build surfaced it
 - Added missing `role="tablist"`/`aria-selected` to the 30/90/all-time range toggle and a visible focus state to buttons/inputs — neither existed before the Iridescent re-skin
 - Leftover `NavChips` import/usage in `History.tsx` and mismatched bottom padding on `History`/`EntryDetail`, both left over from the bottom-nav-bar merge
+- KH/GH ideal ranges were stored in degrees while actual readings were always entered and stored in ppm, so in-range/watch/out-of-range status for both parameters was computed against the wrong scale — removed the degree/ppm display toggle entirely, standardized KH/GH on ppm (unit and stored `ideal_min`/`ideal_max` converted; existing reading values were already correct ppm numbers and untouched), and removed the dKH/dGH presets from "Add a custom parameter"
+- `RangeField`'s slider thumb now focuses (and highlights orange) in sync with its paired min/max number input, instead of only reacting to direct interaction with the slider itself
 
 ## [1.0.0] - 2026-09-05
 

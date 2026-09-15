@@ -29,6 +29,11 @@ export function RangeField({
     pending.current = value
   }, [value])
 
+  const minSliderRef = useRef<HTMLInputElement>(null)
+  const maxSliderRef = useRef<HTMLInputElement>(null)
+  const focusMinSlider = () => minSliderRef.current?.focus()
+  const focusMaxSlider = () => maxSliderRef.current?.focus()
+
   const lo = value.min == null ? min : value.min
   const hi = value.max == null ? max : value.max
   const pct = (v: number) =>
@@ -75,6 +80,7 @@ export function RangeField({
               max: value.max,
             })
           }}
+          onFocus={focusMinSlider}
           onBlur={commit}
         />
         <span className="text-meta font-mono text-ink-3">to</span>
@@ -90,6 +96,7 @@ export function RangeField({
               max: raw === '' ? null : Math.max(clamp(Number(raw)), lo),
             })
           }}
+          onFocus={focusMaxSlider}
           onBlur={commit}
         />
         <div className="rf-slider min-w-[90px] flex-1">
@@ -100,6 +107,7 @@ export function RangeField({
             />
           </div>
           <input
+            ref={minSliderRef}
             type="range"
             min={min}
             max={max}
@@ -116,6 +124,7 @@ export function RangeField({
             onKeyUp={commit}
           />
           <input
+            ref={maxSliderRef}
             type="range"
             min={min}
             max={max}

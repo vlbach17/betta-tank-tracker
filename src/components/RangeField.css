@@ -35,6 +35,9 @@
   transform: scale(1.1);
   cursor: grabbing;
 }
+.rf-slider input[type='range']:focus::-webkit-slider-thumb {
+  border-color: var(--color-status-watch);
+}
 .rf-slider input[type='range']::-moz-range-thumb {
   pointer-events: auto;
   width: 20px;
@@ -44,6 +47,9 @@
   border: 2px solid var(--color-accent-strong);
   box-shadow: var(--shadow-segment);
   cursor: grab;
+}
+.rf-slider input[type='range']:focus::-moz-range-thumb {
+  border-color: var(--color-status-watch);
 }
 .rf-track {
   position: absolute;

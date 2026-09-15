@@ -1,0 +1,131 @@
+import { supabase } from './supabase'
+import type { Equipment, Fish, FoodSupply, Plant } from '../types/database'
+
+/**
+ * Shared CRUD for the 4 Tank Info tables (equipment, food_supplies, plants,
+ * fish). They're all shaped like `parameters`: a name, some optional detail
+ * fields, `sort_order`, and an `active` flag used to archive rather than
+ * delete. The generic helpers below do the Supabase calls; each table gets
+ * thin typed wrappers so components never touch table-name strings directly.
+ */
+
+type TankInfoTable = 'equipment' | 'food_supplies' | 'plants' | 'fish'
+
+interface Sortable {
+  id: string
+  sort_order: number
+}
+
+async function fetchAll<T>(table: TankInfoTable): Promise<T[]> {
+  const { data, error } = await supabase
+    .from(table)
+    .select('*')
+    .order('sort_order', { ascending: true })
+
+  if (error) throw error
+  return (data ?? []) as T[]
+}
+
+async function create<T>(table: TankInfoTable, input: object): Promise<T> {
+  const { data: existing, error: existingError } = await supabase
+    .from(table)
+    .select('sort_order')
+    .order('sort_order', { ascending: false })
+    .limit(1)
+  if (existingError) throw existingError
+
+  const nextSortOrder =
+    ((existing?.[0]?.sort_order as number | undefined) ?? 0) + 1
+
+  const { data, error } = await supabase
+    .from(table)
+    .insert({ ...input, sort_order: nextSortOrder, active: true })
+    .select('*')
+    .single()
+
+  if (error) throw error
+  return data as T
+}
+
+async function update(
+  table: TankInfoTable,
+  id: string,
+  updates: object,
+): Promise<void> {
+  const { error } = await supabase.from(table).update(updates).eq('id', id)
+  if (error) throw error
+}
+
+/** Swaps `sort_order` between two rows so one moves up/down in the list. */
+async function swapOrder(
+  table: TankInfoTable,
+  a: Sortable,
+  b: Sortable,
+): Promise<void> {
+  const { error: e1 } = await supabase
+    .from(table)
+    .update({ sort_order: b.sort_order })
+    .eq('id', a.id)
+  if (e1) throw e1
+
+  const { error: e2 } = await supabase
+    .from(table)
+    .update({ sort_order: a.sort_order })
+    .eq('id', b.id)
+  if (e2) throw e2
+}
+
+// Equipment
+
+export type NewEquipment = Pick<
+  Equipment,
+  'name' | 'manual_url' | 'purchase_date' | 'notes'
+>
+
+export const fetchAllEquipment = () => fetchAll<Equipment>('equipment')
+export const createEquipment = (input: NewEquipment) =>
+  create<Equipment>('equipment', input)
+export const updateEquipment = (
+  id: string,
+  updates: Partial<Omit<Equipment, 'id'>>,
+) => update('equipment', id, updates)
+export const swapEquipmentOrder = (a: Sortable, b: Sortable) =>
+  swapOrder('equipment', a, b)
+
+// Food supplies
+
+export type NewFoodSupply = Pick<FoodSupply, 'name' | 'notes'>
+
+export const fetchAllFoodSupplies = () => fetchAll<FoodSupply>('food_supplies')
+export const createFoodSupply = (input: NewFoodSupply) =>
+  create<FoodSupply>('food_supplies', input)
+export const updateFoodSupply = (
+  id: string,
+  updates: Partial<Omit<FoodSupply, 'id'>>,
+) => update('food_supplies', id, updates)
+export const swapFoodSupplyOrder = (a: Sortable, b: Sortable) =>
+  swapOrder('food_supplies', a, b)
+
+// Plants
+
+export type NewPlant = Pick<
+  Plant,
+  'name' | 'quantity' | 'planted_date' | 'notes'
+>
+
+export const fetchAllPlants = () => fetchAll<Plant>('plants')
+export const createPlant = (input: NewPlant) => create<Plant>('plants', input)
+export const updatePlant = (id: string, updates: Partial<Omit<Plant, 'id'>>) =>
+  update('plants', id, updates)
+export const swapPlantOrder = (a: Sortable, b: Sortable) =>
+  swapOrder('plants', a, b)
+
+// Fish
+
+export type NewFish = Pick<Fish, 'name' | 'species' | 'acquired_date' | 'notes'>
+
+export const fetchAllFish = () => fetchAll<Fish>('fish')
+export const createFish = (input: NewFish) => create<Fish>('fish', input)
+export const updateFish = (id: string, updates: Partial<Omit<Fish, 'id'>>) =>
+  update('fish', id, updates)
+export const swapFishOrder = (a: Sortable, b: Sortable) => swapOrder('fish', a, b)

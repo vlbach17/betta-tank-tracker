@@ -27,7 +27,6 @@ import { getParameterIcon } from '../lib/parameterIcons'
 import { getReadingStatus } from '../lib/status'
 import { isWithinRange, type Range } from '../lib/range'
 import { TEMPERATURE_PARAMETER_NAME, convertTempDeltaForDisplay } from '../lib/temperature'
-import { useHardnessUnit } from '../lib/useHardnessUnit'
 import { useTempUnit } from '../lib/useTempUnit'
 import type { Parameter, Reading } from '../types/database'
 import { BackLink } from './BackLink'
@@ -43,7 +42,6 @@ import { makeStatusDot } from './StatusDot'
 export function ParameterHistory() {
   const { parameterId } = useParams<{ parameterId: string }>()
   const { tempUnit } = useTempUnit()
-  const { hardnessUnit } = useHardnessUnit()
   const gradientId = useId()
 
   const [parameter, setParameter] = useState<Parameter | null>(null)
@@ -80,15 +78,15 @@ export function ParameterHistory() {
   const isTemperature = parameter?.name === TEMPERATURE_PARAMETER_NAME
   const icon = parameter ? getParameterIcon(parameter.name) : undefined
   const displayUnit = parameter
-    ? getDisplayUnit(parameter, tempUnit, hardnessUnit)
+    ? getDisplayUnit(parameter, tempUnit)
     : undefined
   const displayIdealMin =
     parameter && parameter.ideal_min != null
-      ? toDisplayValue(parameter.ideal_min, parameter, tempUnit, hardnessUnit)
+      ? toDisplayValue(parameter.ideal_min, parameter, tempUnit)
       : (parameter?.ideal_min ?? null)
   const displayIdealMax =
     parameter && parameter.ideal_max != null
-      ? toDisplayValue(parameter.ideal_max, parameter, tempUnit, hardnessUnit)
+      ? toDisplayValue(parameter.ideal_max, parameter, tempUnit)
       : (parameter?.ideal_max ?? null)
 
   const readingsDesc = useMemo(
@@ -104,10 +102,10 @@ export function ParameterHistory() {
       parameter
         ? readingsDesc.map((r) => ({
             ...r,
-            value: toDisplayValue(r.value, parameter, tempUnit, hardnessUnit),
+            value: toDisplayValue(r.value, parameter, tempUnit),
           }))
         : readingsDesc,
-    [readingsDesc, parameter, tempUnit, hardnessUnit],
+    [readingsDesc, parameter, tempUnit],
   )
   const displayReadingsAsc = useMemo(
     () => [...displayReadingsDesc].reverse(),
@@ -128,7 +126,7 @@ export function ParameterHistory() {
   const latest = readings?.[0] ?? null
   const latestDisplayValue =
     latest && parameter
-      ? toDisplayValue(latest.value, parameter, tempUnit, hardnessUnit)
+      ? toDisplayValue(latest.value, parameter, tempUnit)
       : (latest?.value ?? null)
   const latestStatus = latest
     ? getReadingStatus(latest.value, parameter?.ideal_min ?? null, parameter?.ideal_max ?? null)

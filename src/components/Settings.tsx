@@ -1,13 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { buildCsv, parseCsv } from '../lib/csv'
 import { getDisplayUnit, toDisplayValue, toStorageValue } from '../lib/displayUnit'
-import {
-  convertHardnessForDisplay,
-  convertHardnessForStorage,
-  hardnessUnitLabel,
-  isHardnessUnit,
-  type HardnessUnit,
-} from '../lib/hardness'
 import {
   createParameter,
   fetchAllParameters,
@@ -21,49 +15,43 @@ import {
   tempUnitLabel,
   type TempUnit,
 } from '../lib/temperature'
-import { useHardnessUnit } from '../lib/useHardnessUnit'
 import { useTempUnit } from '../lib/useTempUnit'
 import type { Parameter } from '../types/database'
 import { Avatar } from './Avatar'
 import { Button } from './Button'
+import { Icon } from './Icon'
 import { Input } from './Input'
 import { Notice } from './Notice'
 import { RangeField, type RangeFieldValue } from './RangeField'
 
 type RangeEdits = Record<string, RangeFieldValue>
 
-const UNIT_PRESETS = ['ppm', 'dKH', 'dGH'] as const
+const TABS = ['Display', 'Parameters', 'Backup'] as const
+type Tab = (typeof TABS)[number]
+
+const UNIT_PRESETS = ['ppm'] as const
 type UnitPreset = (typeof UNIT_PRESETS)[number] | 'other'
 
 // Tuned slider bounds for the 6 seed parameters + Temperature. Any other
-// (custom) parameter falls back to a generic bounds formula below. Hardness
-// bounds are in degrees (dKH/dGH), the storage unit — converted for display
-// below when the ppm toggle is on.
+// (custom) parameter falls back to a generic bounds formula below.
 const KNOWN_BOUNDS: Record<string, { min: number; max: number; step: number }> =
   {
     pH: { min: 5, max: 9, step: 0.1 },
     Ammonia: { min: 0, max: 8, step: 0.25 },
     Nitrite: { min: 0, max: 5, step: 0.25 },
     Nitrate: { min: 0, max: 80, step: 1 },
-    'Carbonate hardness (KH)': { min: 0, max: 20, step: 1 },
-    'General hardness (GH)': { min: 0, max: 20, step: 1 },
+    'Carbonate hardness (KH)': { min: 0, max: 300, step: 10 },
+    'General hardness (GH)': { min: 0, max: 300, step: 10 },
     [TEMPERATURE_PARAMETER_NAME]: { min: 65, max: 90, step: 1 },
   }
 
-function getRangeFieldBounds(
-  parameter: Parameter,
-  tempUnit: TempUnit,
-  hardnessUnit: HardnessUnit,
-) {
+function getRangeFieldBounds(parameter: Parameter, tempUnit: TempUnit) {
   const known = KNOWN_BOUNDS[parameter.name]
   if (known) {
-    if (
-      parameter.name === TEMPERATURE_PARAMETER_NAME ||
-      isHardnessUnit(parameter.unit)
-    ) {
+    if (parameter.name === TEMPERATURE_PARAMETER_NAME) {
       return {
-        min: toDisplayValue(known.min, parameter, tempUnit, hardnessUnit),
-        max: toDisplayValue(known.max, parameter, tempUnit, hardnessUnit),
+        min: toDisplayValue(known.min, parameter, tempUnit),
+        max: toDisplayValue(known.max, parameter, tempUnit),
         step: known.step,
       }
     }
@@ -74,43 +62,18 @@ function getRangeFieldBounds(
     const padding = Math.max(1, span * 0.5)
     const min = Math.max(0, parameter.ideal_min - padding)
     const max = parameter.ideal_max + padding
-    if (isHardnessUnit(parameter.unit)) {
-      return {
-        min: toDisplayValue(min, parameter, tempUnit, hardnessUnit),
-        max: toDisplayValue(max, parameter, tempUnit, hardnessUnit),
-        step: 0.1,
-      }
-    }
     return { min, max, step: 0.1 }
   }
   return { min: 0, max: 100, step: 0.1 }
 }
 
-function getNewParameterBounds(unitPreset: UnitPreset, hardnessUnit: HardnessUnit) {
-  if (unitPreset === 'dKH' || unitPreset === 'dGH') {
-    const degrees = { min: 0, max: 20, step: 1 }
-    return hardnessUnit === 'ppm'
-      ? {
-          min: convertHardnessForDisplay(degrees.min, hardnessUnit),
-          max: convertHardnessForDisplay(degrees.max, hardnessUnit),
-          step: degrees.step,
-        }
-      : degrees
-  }
-  return { min: 0, max: 100, step: 1 }
-}
+const NEW_PARAMETER_BOUNDS = { min: 0, max: 100, step: 1 }
 
-function toEdit(
-  parameter: Parameter,
-  tempUnit: TempUnit,
-  hardnessUnit: HardnessUnit,
-): RangeFieldValue {
-  const roundToOneDecimal =
-    parameter.name === TEMPERATURE_PARAMETER_NAME ||
-    isHardnessUnit(parameter.unit)
+function toEdit(parameter: Parameter, tempUnit: TempUnit): RangeFieldValue {
+  const roundToOneDecimal = parameter.name === TEMPERATURE_PARAMETER_NAME
   const displayValue = (value: number | null) => {
     if (value == null) return null
-    const converted = toDisplayValue(value, parameter, tempUnit, hardnessUnit)
+    const converted = toDisplayValue(value, parameter, tempUnit)
     // Allow one decimal place, per spec, instead of a long float tail.
     return roundToOneDecimal ? Math.round(converted * 10) / 10 : converted
   }
@@ -121,13 +84,39 @@ function toEdit(
   }
 }
 
+function formatRangeSummary(value: RangeFieldValue, unit?: string) {
+  const u = unit ? ` ${unit}` : ''
+  if (value.min == null && value.max == null) return 'No ideal range set'
+  if (value.min != null && value.max != null) {
+    return `Ideal ${value.min}–${value.max}${u}`
+  }
+  return value.min != null
+    ? `Ideal ≥ ${value.min}${u}`
+    : `Ideal ≤ ${value.max}${u}`
+}
+
 export function Settings() {
+  const [tab, setTab] = useState<Tab>('Display')
   const { tempUnit, setTempUnit } = useTempUnit()
-  const { hardnessUnit, setHardnessUnit } = useHardnessUnit()
   const [parameters, setParameters] = useState<Parameter[] | null>(null)
   const [edits, setEdits] = useState<RangeEdits>({})
   const [loadError, setLoadError] = useState<string | null>(null)
   const [rowError, setRowError] = useState<string | null>(null)
+  const [expandedParamIds, setExpandedParamIds] = useState<Set<string>>(
+    () => new Set(),
+  )
+
+  function toggleParamExpanded(id: string) {
+    setExpandedParamIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
 
   const [newName, setNewName] = useState('')
   const [newUnitPreset, setNewUnitPreset] = useState<UnitPreset>('other')
@@ -157,9 +146,7 @@ export function Settings() {
         if (cancelled) return
         setParameters(data)
         setEdits(
-          Object.fromEntries(
-            data.map((p) => [p.id, toEdit(p, tempUnit, hardnessUnit)]),
-          ),
+          Object.fromEntries(data.map((p) => [p.id, toEdit(p, tempUnit)])),
         )
       })
       .catch((err: unknown) => {
@@ -182,16 +169,14 @@ export function Settings() {
     const current = parametersRef.current
     if (!current) return
     setEdits(
-      Object.fromEntries(
-        current.map((p) => [p.id, toEdit(p, tempUnit, hardnessUnit)]),
-      ),
+      Object.fromEntries(current.map((p) => [p.id, toEdit(p, tempUnit)])),
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tempUnit, hardnessUnit])
+  }, [tempUnit])
 
   async function commitRange(parameter: Parameter, next: RangeFieldValue) {
     const toStorage = (v: number | null) =>
-      v == null ? null : toStorageValue(v, parameter, tempUnit, hardnessUnit)
+      v == null ? null : toStorageValue(v, parameter, tempUnit)
 
     const newMin = toStorage(next.min)
     const newMax = toStorage(next.max)
@@ -212,7 +197,7 @@ export function Settings() {
       setRowError(err instanceof Error ? err.message : 'Failed to save')
       setEdits((e) => ({
         ...e,
-        [parameter.id]: toEdit(parameter, tempUnit, hardnessUnit),
+        [parameter.id]: toEdit(parameter, tempUnit),
       }))
     }
   }
@@ -243,9 +228,6 @@ export function Settings() {
     if (!name || adding) return
 
     const unit = newUnit.trim()
-    const isHardness = isHardnessUnit(unit)
-    const toStorage = (v: number | null) =>
-      v == null ? null : isHardness ? convertHardnessForStorage(v, hardnessUnit) : v
 
     setAdding(true)
     setAddError(null)
@@ -253,13 +235,13 @@ export function Settings() {
       const created = await createParameter({
         name,
         unit,
-        ideal_min: toStorage(newRange.min),
-        ideal_max: toStorage(newRange.max),
+        ideal_min: newRange.min,
+        ideal_max: newRange.max,
       })
       setParameters((ps) => [...(ps ?? []), created])
       setEdits((e) => ({
         ...e,
-        [created.id]: toEdit(created, tempUnit, hardnessUnit),
+        [created.id]: toEdit(created, tempUnit),
       }))
       setNewName('')
       setNewUnitPreset('other')
@@ -370,8 +352,6 @@ export function Settings() {
     }
   }
 
-  const newParamBounds = getNewParameterBounds(newUnitPreset, hardnessUnit)
-
   return (
     <main className="mx-auto flex min-h-svh max-w-md flex-col gap-6 px-5 pt-5 pb-28 sm:min-h-0 sm:my-12 sm:rounded-card sm:border sm:border-line sm:bg-surface sm:px-6 sm:pt-6 sm:pb-10 sm:shadow-[0_24px_60px_-16px_rgba(20,20,55,0.35)]">
       <div className="flex items-center gap-3">
@@ -384,85 +364,84 @@ export function Settings() {
         </div>
       </div>
 
-      <section className="flex flex-col gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile">
-        <h2 className="text-heading font-sans text-ink">Display</h2>
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-body font-sans text-ink">
-            Temperature unit
+      <Link
+        to="/tank-info"
+        className="flex items-center justify-between gap-2 rounded-tile border border-line bg-surface p-4 shadow-tile"
+      >
+        <div className="flex flex-col">
+          <span className="text-heading font-sans text-ink">Tank Info</span>
+          <span className="text-body-sm font-sans text-ink-3">
+            Equipment, food, plants, and residents
           </span>
-          <div className="flex gap-1 rounded-full bg-mist p-1">
-            {(['F', 'C'] as const).map((unit) => (
-              <button
-                key={unit}
-                type="button"
-                onClick={() => setTempUnit(unit)}
-                className={`h-9 w-14 rounded-full text-label font-sans ${
-                  tempUnit === unit
-                    ? 'bg-surface text-ink shadow-segment'
-                    : 'text-ink-muted'
-                }`}
-              >
-                {tempUnitLabel(unit)}
-              </button>
-            ))}
-          </div>
         </div>
-        <p className="text-body-sm font-sans text-ink-3">
-          Temperature is always stored in °F — this only changes how it's
-          displayed.
-        </p>
+        <span aria-hidden className="text-heading font-sans text-ink-3">
+          ›
+        </span>
+      </Link>
 
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-body font-sans text-ink">
-            Hardness unit (KH/GH)
-          </span>
-          <div className="flex gap-1 rounded-full bg-mist p-1">
-            {(['degrees', 'ppm'] as const).map((unit) => (
-              <button
-                key={unit}
-                type="button"
-                onClick={() => setHardnessUnit(unit)}
-                className={`h-9 rounded-full px-3 text-label font-sans ${
-                  hardnessUnit === unit
-                    ? 'bg-surface text-ink shadow-segment'
-                    : 'text-ink-muted'
-                }`}
-              >
-                {unit === 'ppm' ? 'ppm' : 'dKH / dGH'}
-              </button>
-            ))}
+      <div className="flex gap-1 overflow-x-auto rounded-full bg-mist p-1">
+        {TABS.map((t) => (
+          <button
+            key={t}
+            type="button"
+            onClick={() => setTab(t)}
+            className={`h-9 shrink-0 rounded-full px-4 text-label font-sans ${
+              tab === t ? 'bg-surface text-ink shadow-segment' : 'text-ink-muted'
+            }`}
+          >
+            {t}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'Display' && (
+        <section className="flex flex-col gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-body font-sans text-ink">
+              Temperature unit
+            </span>
+            <div className="flex gap-1 rounded-full bg-mist p-1">
+              {(['F', 'C'] as const).map((unit) => (
+                <button
+                  key={unit}
+                  type="button"
+                  onClick={() => setTempUnit(unit)}
+                  className={`h-9 w-14 rounded-full text-label font-sans ${
+                    tempUnit === unit
+                      ? 'bg-surface text-ink shadow-segment'
+                      : 'text-ink-muted'
+                  }`}
+                >
+                  {tempUnitLabel(unit)}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-        <p className="text-body-sm font-sans text-ink-3">
-          KH and GH readings are always stored in degrees — this only
-          changes how they're displayed.
-        </p>
-      </section>
+          <p className="text-body-sm font-sans text-ink-3">
+            Temperature is always stored in °F — this only changes how it's
+            displayed.
+          </p>
+        </section>
+      )}
 
-      {loadError && <Notice>Couldn't load parameters: {loadError}</Notice>}
+      {tab === 'Parameters' && loadError && (
+        <Notice>Couldn't load parameters: {loadError}</Notice>
+      )}
 
-      {!loadError && !parameters && (
+      {tab === 'Parameters' && !loadError && !parameters && (
         <p className="text-body font-sans text-ink-3">Loading…</p>
       )}
 
-      {parameters && (
+      {tab === 'Parameters' && parameters && (
         <section className="flex flex-col gap-3">
-          <h2 className="text-heading font-sans text-ink">Parameters</h2>
-
           {rowError && <Notice>{rowError}</Notice>}
 
           <div className="flex flex-col gap-3">
             {parameters.map((parameter) => {
-              const bounds = getRangeFieldBounds(
-                parameter,
-                tempUnit,
-                hardnessUnit,
-              )
-              const displayUnit = getDisplayUnit(
-                parameter,
-                tempUnit,
-                hardnessUnit,
-              )
+              const bounds = getRangeFieldBounds(parameter, tempUnit)
+              const displayUnit = getDisplayUnit(parameter, tempUnit)
+              const isExpanded = expandedParamIds.has(parameter.id)
+              const rangeValue = edits[parameter.id] ?? { min: null, max: null }
 
               return (
                 <div
@@ -474,39 +453,73 @@ export function Settings() {
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <h3 className="text-heading font-sans text-ink">
-                      {parameter.name}
-                      {displayUnit && (
-                        <span className="ml-1 text-meta font-mono text-ink-3">
-                          ({displayUnit})
-                        </span>
-                      )}
-                    </h3>
                     <button
                       type="button"
-                      onClick={() => toggleActive(parameter)}
-                      className={`h-9 shrink-0 rounded-full px-3 text-label-sm font-sans ${
-                        parameter.active
-                          ? 'bg-status-good-bg text-status-good-fg'
-                          : 'bg-status-overdue-bg text-status-overdue-fg'
-                      }`}
+                      onClick={() => toggleParamExpanded(parameter.id)}
+                      aria-expanded={isExpanded}
+                      className="flex min-w-0 flex-1 flex-col items-start gap-0.5 text-left"
                     >
-                      {parameter.active ? 'Active' : 'Inactive'}
+                      <h3 className="truncate text-heading font-sans text-ink">
+                        {parameter.name}
+                        {displayUnit && (
+                          <span className="ml-1 text-meta font-mono text-ink-3">
+                            ({displayUnit})
+                          </span>
+                        )}
+                      </h3>
+                      {!isExpanded && (
+                        <span className="truncate text-body-sm font-sans text-ink-3">
+                          {formatRangeSummary(rangeValue, displayUnit || undefined)}
+                        </span>
+                      )}
                     </button>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => toggleActive(parameter)}
+                        className={`h-9 shrink-0 rounded-full px-3 text-label-sm font-sans ${
+                          parameter.active
+                            ? 'bg-status-good-bg text-status-good-fg'
+                            : 'bg-status-overdue-bg text-status-overdue-fg'
+                        }`}
+                      >
+                        {parameter.active ? 'Active' : 'Inactive'}
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={
+                          isExpanded
+                            ? `Collapse ${parameter.name}`
+                            : `Expand ${parameter.name}`
+                        }
+                        onClick={() => toggleParamExpanded(parameter.id)}
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink-3"
+                      >
+                        <Icon
+                          name="chevronLeft"
+                          size={18}
+                          className={`transition-transform ${
+                            isExpanded ? 'rotate-90' : '-rotate-90'
+                          }`}
+                        />
+                      </button>
+                    </div>
                   </div>
 
-                  <RangeField
-                    label="Ideal range"
-                    unit={displayUnit || undefined}
-                    min={bounds.min}
-                    max={bounds.max}
-                    step={bounds.step}
-                    value={edits[parameter.id] ?? { min: null, max: null }}
-                    onChange={(next) =>
-                      setEdits((prev) => ({ ...prev, [parameter.id]: next }))
-                    }
-                    onCommit={(next) => commitRange(parameter, next)}
-                  />
+                  {isExpanded && (
+                    <RangeField
+                      label="Ideal range"
+                      unit={displayUnit || undefined}
+                      min={bounds.min}
+                      max={bounds.max}
+                      step={bounds.step}
+                      value={rangeValue}
+                      onChange={(next) =>
+                        setEdits((prev) => ({ ...prev, [parameter.id]: next }))
+                      }
+                      onCommit={(next) => commitRange(parameter, next)}
+                    />
+                  )}
                 </div>
               )
             })}
@@ -514,7 +527,7 @@ export function Settings() {
         </section>
       )}
 
-      {parameters && (
+      {tab === 'Parameters' && parameters && (
         <section className="flex flex-col gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile">
           <h2 className="text-heading font-sans text-ink">
             Add a custom parameter
@@ -572,23 +585,13 @@ export function Settings() {
                   placeholder="ppm"
                 />
               )}
-              {(newUnitPreset === 'dKH' || newUnitPreset === 'dGH') && (
-                <p className="text-caption font-sans text-ink-3">
-                  Gets the same ppm / dKH-dGH display toggle as KH and GH,
-                  above.
-                </p>
-              )}
             </div>
             <RangeField
               label="Ideal range (optional)"
-              unit={
-                isHardnessUnit(newUnit)
-                  ? hardnessUnitLabel(newUnit, hardnessUnit)
-                  : newUnit || undefined
-              }
-              min={newParamBounds.min}
-              max={newParamBounds.max}
-              step={newParamBounds.step}
+              unit={newUnit || undefined}
+              min={NEW_PARAMETER_BOUNDS.min}
+              max={NEW_PARAMETER_BOUNDS.max}
+              step={NEW_PARAMETER_BOUNDS.step}
               value={newRange}
               onChange={setNewRange}
             />
@@ -607,39 +610,39 @@ export function Settings() {
         </section>
       )}
 
-      <section className="flex flex-col gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile">
-        <h2 className="text-heading font-sans text-ink">Backup</h2>
+      {tab === 'Backup' && (
+        <section className="flex flex-col gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile">
+          <Button variant="outline" size="md" onClick={handleExport}>
+            Export all readings to CSV
+          </Button>
+          {exportError && <Notice>{exportError}</Notice>}
 
-        <Button variant="outline" size="md" onClick={handleExport}>
-          Export all readings to CSV
-        </Button>
-        {exportError && <Notice>{exportError}</Notice>}
-
-        <Button
-          variant="outline"
-          size="md"
-          onClick={() => fileInputRef.current?.click()}
-        >
-          Import readings from CSV
-        </Button>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".csv,text/csv"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0]
-            if (file) void handleImportFile(file)
-            e.target.value = ''
-          }}
-        />
-        <p className="text-body-sm font-sans text-ink-3">
-          Expects the same columns as the export: parameter, value, unit,
-          tested_at, note.
-        </p>
-        {importResult && <Notice tone="good">{importResult}</Notice>}
-        {importError && <Notice>{importError}</Notice>}
-      </section>
+          <Button
+            variant="outline"
+            size="md"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            Import readings from CSV
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv,text/csv"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              if (file) void handleImportFile(file)
+              e.target.value = ''
+            }}
+          />
+          <p className="text-body-sm font-sans text-ink-3">
+            Expects the same columns as the export: parameter, value, unit,
+            tested_at, note.
+          </p>
+          {importResult && <Notice tone="good">{importResult}</Notice>}
+          {importError && <Notice>{importError}</Notice>}
+        </section>
+      )}
     </main>
   )
 }
