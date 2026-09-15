@@ -26,6 +26,7 @@ Concrete, checkbox-tracked build tasks for Spunk's Bettabase. For high-level upc
 - [x] History — reverse-chron list of past test entries (grouped by `tested_at`) with aggregate status chip, tap-through to entry detail
 - [x] Settings — dual-thumb `RangeField` for ideal min/max, active/inactive toggle, custom parameters, °F/°C and dGH/dKH↔ppm display toggles, CSV import/export
 - [x] Tank Info — Equipment/Food/Plants/Fish tabs (linked from Settings), each with add, up/down reorder, and active/inactive archive; equipment links out to external manual URLs, seeded with placeholder content
+- [x] Tank Info — Water Changes tab: date, amount (gallons), and optional notes per entry, reverse-chronological with confirm-before-delete (no reorder/archive, unlike the other 4 tabs, since it's a log not a managed list)
 - [ ] First-open/install flow guiding the user to add to home screen
 
 ## 3. Navigation
@@ -56,7 +57,7 @@ Tracked at length in `ROADMAP.md`'s "Someday" list; nothing here is started or s
 - [ ] Photo import of handwritten logs — full spec already written in `betta-tank-tracker-spec.md` under "v2 (future)"; deferred to avoid an Anthropic API key/prepaid balance dependency
 - [ ] Push notifications for overdue tests
 - [ ] Multiple aquarium support, with species tracking per tank
-- [ ] Water change and feeding logs
+- [ ] Feeding logs (water change logs shipped — see section 2)
 - [ ] Storing or gallerying tank photos
 - [ ] Sharing or multi-user access
 
