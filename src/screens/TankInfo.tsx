@@ -18,11 +18,12 @@ import {
   updatePlant,
 } from '../lib/tankInfo'
 import type { Equipment, Fish, FoodSupply, Plant } from '../types/database'
-import { Avatar } from './Avatar'
-import { BackLink } from './BackLink'
-import { Button } from './Button'
-import { Input } from './Input'
-import { Notice } from './Notice'
+import { Avatar } from '../components/Avatar'
+import { BackLink } from '../components/BackLink'
+import { Button } from '../components/Button'
+import { Input } from '../components/Input'
+import { Notice } from '../components/Notice'
+import { TabNav } from '../components/TabNav'
 
 const TABS = ['Equipment', 'Food', 'Plants', 'Fish'] as const
 type Tab = (typeof TABS)[number]
@@ -353,20 +354,7 @@ export function TankInfo() {
         </p>
       </div>
 
-      <div className="flex gap-1 overflow-x-auto rounded-full bg-mist p-1">
-        {TABS.map((t) => (
-          <button
-            key={t}
-            type="button"
-            onClick={() => setTab(t)}
-            className={`h-9 shrink-0 rounded-full px-4 text-label font-sans ${
-              tab === t ? 'bg-surface text-ink shadow-segment' : 'text-ink-muted'
-            }`}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
+      <TabNav tabs={TABS} value={tab} onChange={setTab} />
 
       {tab === 'Equipment' && (
         <EntityManager<Equipment>

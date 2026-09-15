@@ -6,9 +6,9 @@ import {
   type ParameterWithLatestReading,
 } from '../lib/parameters'
 import { getReadingStatus, isOverdue } from '../lib/status'
-import { Avatar } from './Avatar'
-import { Notice } from './Notice'
-import { ParameterTile } from './ParameterTile'
+import { Avatar } from '../components/Avatar'
+import { Notice } from '../components/Notice'
+import { ParameterTile } from '../components/ParameterTile'
 
 const RANK = {
   'out-of-range': 0,

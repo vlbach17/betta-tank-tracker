@@ -13,11 +13,11 @@ import {
   type NewReading,
 } from '../lib/parameters'
 import type { Parameter } from '../types/database'
-import { BackLink } from './BackLink'
-import { Button } from './Button'
-import { Input } from './Input'
-import { Notice } from './Notice'
-import { Select } from './Select'
+import { BackLink } from '../components/BackLink'
+import { Button } from '../components/Button'
+import { Input } from '../components/Input'
+import { Notice } from '../components/Notice'
+import { Select } from '../components/Select'
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
 
