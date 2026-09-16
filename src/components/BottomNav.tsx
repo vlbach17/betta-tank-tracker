@@ -37,7 +37,12 @@ export function BottomNav() {
                 : 'var(--color-accent)',
             }}
           >
-            <Icon name="beakerPlus" size={24} className="text-white" />
+            <Icon
+              name="beakerPlus"
+              size={24}
+              filled={logActive}
+              className={logActive ? 'text-lime' : 'text-white'}
+            />
           </span>
           <span className="mt-1 text-eyebrow font-sans text-ink-muted">
             Log
@@ -81,8 +86,20 @@ function NavTab({
         } ${TAB_FOCUS}`
       }
     >
-      <Icon name={icon} size={22} />
-      <span className="text-eyebrow font-sans">{label}</span>
+      {({ isActive }) => {
+        const active = activeOverride ?? isActive
+        return (
+          <>
+            <Icon
+              name={icon}
+              size={22}
+              filled={active}
+              className={active ? 'text-lime' : undefined}
+            />
+            <span className="text-eyebrow font-sans">{label}</span>
+          </>
+        )
+      }}
     </NavLink>
   )
 }

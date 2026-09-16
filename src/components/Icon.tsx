@@ -44,17 +44,26 @@ const STROKE: Record<IconSize, number> = {
   18: 2.0,
 }
 
+/** Ink outline drawn around solid-fill shapes so they hold their silhouette
+ * against light backgrounds instead of reading as a flat blob. Uses the same
+ * tiered stroke weight as the outline glyphs (see README's optical-sizing table). */
+const FILL_STROKE = 'var(--color-ink)'
+
 /** Primitive shapes. All coordinates are in the glyph's authoring grid. */
 type Prim =
-  | { t: 'path'; d: string; join?: boolean; w?: number }
+  | { t: 'path'; d: string; join?: boolean; w?: number; fill?: boolean; fillRule?: 'evenodd' }
   | { t: 'circle'; cx: number; cy: number; r: number; fill?: boolean }
-  | { t: 'rect'; x: number; y: number; w: number; h: number; rx: number }
+  | { t: 'rect'; x: number; y: number; w: number; h: number; rx: number; fill?: boolean }
 
 type Glyph = {
   /** Default geometry, used at 20 / 24 / 32. */
   base: Prim[]
   /** Optional simplified geometry used at 18. Falls back to `base`. */
   sm?: Prim[]
+  /** Solid-fill geometry, used when `filled` is set, at 20 / 24 / 32. */
+  solid?: Prim[]
+  /** Optional simplified solid-fill geometry used at 18. Falls back to `solid`. */
+  solidSm?: Prim[]
   /** Authoring viewBox. Defaults to the Iridescent 24x24 grid. */
   viewBox?: string
   /** Overrides the tiered stroke weight with a single fixed width. */
@@ -67,6 +76,15 @@ const GLYPHS: Record<IconName, Glyph> = {
       { t: 'path', join: true, d: 'M7.4 12C9.3 8.3 12.2 6.6 14.7 6.6C17.6 6.6 19.7 9 20.7 12C19.7 15 17.6 17.4 14.7 17.4C12.2 17.4 9.3 15.7 7.4 12Z' },
       { t: 'path', join: true, d: 'M7.4 12L2.6 7.4V16.6Z' },
       { t: 'circle', cx: 17, cy: 10.7, r: 1, fill: true },
+    ],
+    solid: [
+      {
+        t: 'path',
+        fill: true,
+        fillRule: 'evenodd',
+        d: 'M7.4 12C9.3 8.3 12.2 6.6 14.7 6.6C17.6 6.6 19.7 9 20.7 12C19.7 15 17.6 17.4 14.7 17.4C12.2 17.4 9.3 15.7 7.4 12Z M17 9.7a1 1 0 1 0 0 2a1 1 0 1 0 0-2Z',
+      },
+      { t: 'path', fill: true, d: 'M7.4 12L2.6 7.4V16.6Z' },
     ],
   },
   bubbles: {
@@ -81,11 +99,25 @@ const GLYPHS: Record<IconName, Glyph> = {
       { t: 'path', join: true, d: 'M6.6 6.4A8.2 8.2 0 1 0 17.4 6.4' },
       { t: 'path', d: 'M5.2 6.4h13.6' },
     ],
+    solid: [
+      { t: 'path', fill: true, d: 'M6.6 6.4A8.2 8.2 0 1 0 17.4 6.4Z' },
+      { t: 'rect', fill: true, x: 5.2, y: 5.6, w: 13.6, h: 1.6, rx: 0.8 },
+    ],
   },
   wave: {
     base: [
       { t: 'path', join: true, d: 'M2.6 10.2C4.95 10.2 4.95 7.6 7.3 7.6C9.65 7.6 9.65 10.2 12 10.2C14.35 10.2 14.35 7.6 16.7 7.6C19.05 7.6 19.05 10.2 21.4 10.2' },
       { t: 'path', join: true, d: 'M2.6 16.2C4.95 16.2 4.95 13.6 7.3 13.6C9.65 13.6 9.65 16.2 12 16.2C14.35 16.2 14.35 13.6 16.7 13.6C19.05 13.6 19.05 16.2 21.4 16.2' },
+    ],
+    // Solid: one filled ribbon following the same curve rhythm as the top
+    // outline wave, closed against a parallel curve below it. Thick enough
+    // that the 2px ink stroke still leaves visible lime fill inside it.
+    solid: [
+      {
+        t: 'path',
+        fill: true,
+        d: 'M2.6 10.2C4.95 10.2 4.95 7.6 7.3 7.6C9.65 7.6 9.65 10.2 12 10.2C14.35 10.2 14.35 7.6 16.7 7.6C19.05 7.6 19.05 10.2 21.4 10.2L21.4 15.2C19.05 15.2 19.05 12.6 16.7 12.6C14.35 12.6 14.35 15.2 12 15.2C9.65 15.2 9.65 12.6 7.3 12.6C4.95 12.6 4.95 15.2 2.6 15.2Z',
+      },
     ],
   },
   thermometer: {
@@ -116,6 +148,24 @@ const GLYPHS: Record<IconName, Glyph> = {
       { t: 'path', join: true, d: 'M8 3.2V9.7L4.2 18.6Q3.4 20.6 5.4 20.6h9.2Q16.6 20.6 15.8 18.6L12 9.7V3.2' },
       { t: 'path', d: 'M19.4 3.2v5.2M16.8 5.8h5.2' },
     ],
+    solid: [
+      { t: 'rect', fill: true, x: 6.4, y: 2.6, w: 7.2, h: 1.2, rx: 0.6 },
+      {
+        t: 'path',
+        fill: true,
+        d: 'M8 3.2V9.7L4.2 18.6Q3.4 20.6 5.4 20.6h9.2Q16.6 20.6 15.8 18.6L12 9.7V3.2Z',
+      },
+      { t: 'path', d: 'M18.6 4.6v4.4M16.4 6.8h4.4' },
+    ],
+    solidSm: [
+      { t: 'rect', fill: true, x: 6.4, y: 2.6, w: 7.2, h: 1.2, rx: 0.6 },
+      {
+        t: 'path',
+        fill: true,
+        d: 'M8 3.2V9.7L4.2 18.6Q3.4 20.6 5.4 20.6h9.2Q16.6 20.6 15.8 18.6L12 9.7V3.2Z',
+      },
+      { t: 'path', d: 'M19.4 3.2v5.2M16.8 5.8h5.2' },
+    ],
   },
   hamburger: {
     base: [{ t: 'path', d: 'M4 7h16M4 12h16M4 17h16' }],
@@ -131,6 +181,24 @@ const GLYPHS: Record<IconName, Glyph> = {
       { t: 'circle', cx: 12, cy: 12, r: 7 },
       { t: 'circle', cx: 12, cy: 12, r: 2.6 },
       { t: 'path', d: 'M12 2.6v2.4M12 19v2.4M2.6 12h2.4M19 12h2.4M5.35 5.35l1.7 1.7M16.95 16.95l1.7 1.7M18.65 5.35l-1.7 1.7M7.05 16.95l-1.7 1.7' },
+    ],
+    solid: [
+      {
+        t: 'path',
+        fill: true,
+        fillRule: 'evenodd',
+        d: 'M18.3 10.1L21.1 10.4L21.1 13.6L18.3 13.9L16.8 16.5L17.9 19.1L15.2 20.6L13.5 18.4L10.5 18.4L8.9 20.6L6.1 19.1L7.2 16.5L5.7 13.9L2.9 13.6L2.9 10.4L5.7 10.1L7.2 7.5L6.1 4.9L8.9 3.4L10.5 5.6L13.5 5.6L15.2 3.4L17.9 4.9L16.8 7.5Z M12 9.2a2.8 2.8 0 1 0 0 5.6a2.8 2.8 0 1 0 0-5.6Z',
+      },
+    ],
+    // 18px: the toothed silhouette closes up into a filled ring, same as
+    // the outline's sm simplification.
+    solidSm: [
+      {
+        t: 'path',
+        fill: true,
+        fillRule: 'evenodd',
+        d: 'M12 5a7 7 0 1 0 0 14a7 7 0 1 0 0-14Z M12 9.4a2.6 2.6 0 1 0 0 5.2a2.6 2.6 0 1 0 0-5.2Z',
+      },
     ],
   },
   calendar: {
@@ -213,6 +281,8 @@ export type IconProps = {
   color?: string
   /** Accessible label. Omit for decorative icons (renders aria-hidden). */
   title?: string
+  /** Renders the icon's solid-fill variant, if one is defined. Falls back to the outline. */
+  filled?: boolean
   className?: string
   style?: React.CSSProperties
 }
@@ -222,12 +292,19 @@ export function Icon({
   size = 24,
   color = 'currentColor',
   title,
+  filled,
   className,
   style,
 }: IconProps) {
   const tier = nearestTier(size)
   const glyph = GLYPHS[name]
-  const prims = tier === 18 && glyph.sm ? glyph.sm : glyph.base
+  const solidPrims = tier === 18 ? (glyph.solidSm ?? glyph.solid) : glyph.solid
+  const prims =
+    filled && solidPrims
+      ? solidPrims
+      : tier === 18 && glyph.sm
+        ? glyph.sm
+        : glyph.base
   const sw = glyph.fixedStroke ?? STROKE[tier]
 
   return (
@@ -259,7 +336,19 @@ export function Icon({
           )
         }
         if (p.t === 'rect') {
-          return (
+          return p.fill ? (
+            <rect
+              key={i}
+              x={p.x}
+              y={p.y}
+              width={p.w}
+              height={p.h}
+              rx={p.rx}
+              fill={color}
+              stroke={FILL_STROKE}
+              strokeWidth={sw}
+            />
+          ) : (
             <rect
               key={i}
               x={p.x}
@@ -272,7 +361,17 @@ export function Icon({
             />
           )
         }
-        return (
+        return p.fill ? (
+          <path
+            key={i}
+            d={p.d}
+            fill={color}
+            fillRule={p.fillRule}
+            stroke={FILL_STROKE}
+            strokeWidth={sw}
+            strokeLinejoin="round"
+          />
+        ) : (
           <path
             key={i}
             d={p.d}
