@@ -37,6 +37,7 @@
 }
 .rf-slider input[type='range']:focus::-webkit-slider-thumb {
   border-color: var(--color-status-watch);
+  background: var(--color-status-watch);
 }
 .rf-slider input[type='range']::-moz-range-thumb {
   pointer-events: auto;
