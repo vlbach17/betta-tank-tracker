@@ -17,6 +17,7 @@ import { BackLink } from '../components/BackLink'
 import { Button } from '../components/Button'
 import { Input } from '../components/Input'
 import { Notice } from '../components/Notice'
+import { Screen, SCREEN_WIDTH } from '../components/Screen'
 import { Select } from '../components/Select'
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
@@ -93,7 +94,10 @@ export function LogTest() {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col px-5 pt-5 pb-[calc(env(safe-area-inset-bottom)+var(--bottom-nav-h)+84px)] sm:min-h-0 sm:my-12 sm:rounded-card sm:border sm:border-line sm:bg-surface sm:px-6 sm:pt-6 sm:pb-10 sm:shadow-[0_24px_60px_-16px_rgba(20,20,55,0.35)]">
+    <Screen
+      gap="gap-0"
+      paddingBottom="pb-[calc(env(safe-area-inset-bottom)+var(--bottom-nav-h)+84px)]"
+    >
       <BackLink to="/" label="Dashboard" />
 
       <div className="mb-5 flex flex-col gap-1">
@@ -141,7 +145,7 @@ export function LogTest() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3">
             {parameters.map((parameter) => {
               const displayUnit = parameter.unit
               const displayIdealMin = parameter.ideal_min
@@ -196,7 +200,7 @@ export function LogTest() {
       )}
 
       <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+var(--bottom-nav-h))] z-30 bg-gradient-to-t from-bg from-40% to-transparent px-5 pt-3 pb-4">
-        <div className="mx-auto max-w-md">
+        <div className={`mx-auto ${SCREEN_WIDTH}`}>
           <Button
             type="submit"
             form="log-test-form"
@@ -207,6 +211,6 @@ export function LogTest() {
           </Button>
         </div>
       </div>
-    </main>
+    </Screen>
   )
 }

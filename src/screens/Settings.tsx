@@ -23,6 +23,7 @@ import { Icon } from '../components/Icon'
 import { Input } from '../components/Input'
 import { Notice } from '../components/Notice'
 import { RangeField, type RangeFieldValue } from '../components/RangeField'
+import { Screen } from '../components/Screen'
 import { TabNav } from '../components/TabNav'
 
 type RangeEdits = Record<string, RangeFieldValue>
@@ -354,7 +355,7 @@ export function Settings() {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-6 px-5 pt-5 pb-28 sm:min-h-0 sm:my-12 sm:rounded-card sm:border sm:border-line sm:bg-surface sm:px-6 sm:pt-6 sm:pb-10 sm:shadow-[0_24px_60px_-16px_rgba(20,20,55,0.35)]">
+    <Screen gap="gap-6">
       <div className="flex items-center gap-3">
         <Avatar />
         <div className="flex flex-col">
@@ -631,6 +632,6 @@ export function Settings() {
           {importError && <Notice>{importError}</Notice>}
         </section>
       )}
-    </main>
+    </Screen>
   )
 }

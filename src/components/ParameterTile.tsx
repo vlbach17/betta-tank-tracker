@@ -57,7 +57,7 @@ export function ParameterTile({
     return (
       <Link
         to={`/parameter/${id}`}
-        className="col-span-2 flex items-center justify-between gap-3 rounded-tile border border-line p-4 shadow-tile active:opacity-80"
+        className="col-span-full flex items-center justify-between gap-3 rounded-tile border border-line p-4 shadow-tile active:opacity-80"
         style={{ backgroundImage: 'var(--gradient-hero-wash)' }}
       >
         <div className="flex min-w-0 flex-col gap-1.5">

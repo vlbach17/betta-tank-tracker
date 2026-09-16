@@ -9,6 +9,7 @@ import { getReadingStatus, isOverdue } from '../lib/status'
 import { Avatar } from '../components/Avatar'
 import { Notice } from '../components/Notice'
 import { ParameterTile } from '../components/ParameterTile'
+import { Screen } from '../components/Screen'
 
 const RANK = {
   'out-of-range': 0,
@@ -79,7 +80,7 @@ export function Dashboard() {
   }, [parameters])
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-28 sm:min-h-0 sm:my-12 sm:rounded-card sm:border sm:border-line sm:bg-surface sm:px-6 sm:pt-6 sm:pb-10 sm:shadow-[0_24px_60px_-16px_rgba(20,20,55,0.35)]">
+    <Screen>
       <div className="flex items-center gap-3">
         <Avatar />
         <div className="flex flex-col">
@@ -110,7 +111,7 @@ export function Dashboard() {
       )}
 
       {parameters && parameters.length > 0 && (
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3">
           {parameters
             .slice()
             .sort((a, b) => (a.id === heroId ? -1 : b.id === heroId ? 1 : 0))
@@ -134,6 +135,6 @@ export function Dashboard() {
             : 'No tests logged yet'}
         </Link>
       </div>
-    </main>
+    </Screen>
   )
 }

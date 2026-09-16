@@ -28,6 +28,7 @@ import { Button } from '../components/Button'
 import { IconButton } from '../components/IconButton'
 import { Input } from '../components/Input'
 import { Notice } from '../components/Notice'
+import { Screen } from '../components/Screen'
 import { TabNav } from '../components/TabNav'
 
 const TABS = ['Equipment', 'Food', 'Plants', 'Fish', 'Water Changes'] as const
@@ -521,7 +522,7 @@ export function TankInfo() {
   }, [])
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-6 px-5 pt-5 pb-28 sm:min-h-0 sm:my-12 sm:rounded-card sm:border sm:border-line sm:bg-surface sm:px-6 sm:pt-6 sm:pb-10 sm:shadow-[0_24px_60px_-16px_rgba(20,20,55,0.35)]">
+    <Screen gap="gap-6">
       <div>
         <BackLink to="/settings" label="Settings" />
         <h1 className="text-title font-sans text-ink">Tank Info</h1>
@@ -736,6 +737,6 @@ export function TankInfo() {
           }}
         />
       )}
-    </main>
+    </Screen>
   )
 }

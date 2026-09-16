@@ -5,6 +5,7 @@ import { Avatar } from '../components/Avatar'
 import { MiniHistoryChart } from '../components/MiniHistoryChart'
 import { Notice } from '../components/Notice'
 import { RangeToggle } from '../components/RangeToggle'
+import { Screen } from '../components/Screen'
 
 export function Overview() {
   const [parameters, setParameters] = useState<
@@ -43,7 +44,7 @@ export function Overview() {
   }, [parameters, range])
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-28 sm:min-h-0 sm:my-12 sm:rounded-card sm:border sm:border-line sm:bg-surface sm:px-6 sm:pt-6 sm:pb-10 sm:shadow-[0_24px_60px_-16px_rgba(20,20,55,0.35)]">
+    <Screen>
       <div className="flex items-center gap-3">
         <Avatar />
         <h1 className="text-title font-sans text-ink">Overview</h1>
@@ -77,6 +78,6 @@ export function Overview() {
           </div>
         </>
       )}
-    </main>
+    </Screen>
   )
 }

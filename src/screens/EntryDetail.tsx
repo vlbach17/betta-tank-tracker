@@ -12,6 +12,7 @@ import { Button } from '../components/Button'
 import { Icon } from '../components/Icon'
 import { IconButton } from '../components/IconButton'
 import { Notice } from '../components/Notice'
+import { Screen } from '../components/Screen'
 import { StatusDot } from '../components/StatusDot'
 import { StatusPill } from '../components/StatusPill'
 
@@ -79,7 +80,7 @@ export function EntryDetail() {
     : null
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col gap-4 px-5 pt-5 pb-28 sm:min-h-0 sm:my-12 sm:rounded-card sm:border sm:border-line sm:bg-surface sm:px-6 sm:pt-6 sm:pb-10 sm:shadow-[0_24px_60px_-16px_rgba(20,20,55,0.35)]">
+    <Screen>
       <BackLink to="/history" label="History" />
 
       {loadError && <Notice>Couldn't load this entry: {loadError}</Notice>}
@@ -201,6 +202,6 @@ export function EntryDetail() {
           </div>
         </>
       )}
-    </main>
+    </Screen>
   )
 }
