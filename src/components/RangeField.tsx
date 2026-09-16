@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import './RangeField.css'
 
 export type RangeFieldValue = { min: number | null; max: number | null }
 
