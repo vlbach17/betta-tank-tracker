@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import type { Equipment, Fish, FoodSupply, Plant } from '../types/database'
+import type { Equipment, Fish, FoodSupply, Plant, WaterChange } from '../types/database'
 
 /**
  * Shared CRUD for the 4 Tank Info tables (equipment, food_supplies, plants,
@@ -129,3 +129,40 @@ export const createFish = (input: NewFish) => create<Fish>('fish', input)
 export const updateFish = (id: string, updates: Partial<Omit<Fish, 'id'>>) =>
   update('fish', id, updates)
 export const swapFishOrder = (a: Sortable, b: Sortable) => swapOrder('fish', a, b)
+
+// Water changes — a chronological log, not a manageable entity list, so it
+// skips the `sort_order`/`active` machinery above: newest first, hard delete.
+
+export type NewWaterChange = Pick<
+  WaterChange,
+  'changed_at' | 'amount_gallons' | 'notes'
+>
+
+export async function fetchAllWaterChanges(): Promise<WaterChange[]> {
+  const { data, error } = await supabase
+    .from('water_changes')
+    .select('*')
+    .order('changed_at', { ascending: false })
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return (data ?? []) as WaterChange[]
+}
+
+export async function createWaterChange(
+  input: NewWaterChange,
+): Promise<WaterChange> {
+  const { data, error } = await supabase
+    .from('water_changes')
+    .insert(input)
+    .select('*')
+    .single()
+
+  if (error) throw error
+  return data as WaterChange
+}
+
+export async function deleteWaterChange(id: string): Promise<void> {
+  const { error } = await supabase.from('water_changes').delete().eq('id', id)
+  if (error) throw error
+}
