@@ -59,6 +59,7 @@ Temperature is also tracked (78–80°F) but is handled separately in code: a 3-
 - Async effects use a `cancelled` flag in the cleanup function to avoid setting state after unmount
 - Caught errors are typed `unknown` and narrowed with `err instanceof Error`
 - Styling is Tailwind utility classes inline — no CSS modules or styled-components. Design tokens (`--color-ink`, `--color-accent`, `--color-status-*`, fonts) are defined once in `src/index.css`'s `@theme` block
+- **All CSS lives in `src/index.css`.** Never create a per-component stylesheet (`Foo.css`) or import a CSS file into a component, even for styling that can't be expressed as Tailwind utilities (e.g. pseudo-elements like `::-webkit-slider-thumb`) — add it as a plain rule in `src/index.css` instead, unless explicitly directed otherwise
 - Mobile-first: 44px minimum tap targets, `inputMode="decimal"` on every numeric input, `env(safe-area-inset-bottom)` padding on fixed bottom bars
 - Status/range/format logic lives in small, pure, individually-testable functions in `src/lib/` — keep new logic there rather than inline in components
 
