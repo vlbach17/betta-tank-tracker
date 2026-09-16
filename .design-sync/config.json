@@ -7,7 +7,7 @@
   "buildCmd": "npm run build",
   "readmeHeader": ".design-sync/conventions.md",
   "guidelinesGlob": ["docs/design/iridescent_v1/readme.md"],
-  "cssEntry": "dist/assets/index-D39HGZXj.css",
+  "cssEntry": "dist/assets/index-BSQCm_EQ.css",
   "extraEntries": ["react-router-dom"],
   "extraFonts": [
     "node_modules/@fontsource-variable/plus-jakarta-sans/index.css",
@@ -34,10 +34,7 @@
   "provider": {
     "component": "MemoryRouter",
     "inner": {
-      "component": "TempUnitProvider",
-      "inner": {
-        "component": "HardnessUnitProvider"
-      }
+      "component": "TempUnitProvider"
     }
   }
 }

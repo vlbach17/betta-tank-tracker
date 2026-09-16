@@ -1,18 +1,16 @@
 ## Wrapping and setup
 
-Three of these components read React context and will render blank (or throw) if used outside it: `ParameterTile` calls `useTempUnit()`/`useHardnessUnit()`, which throw if there's no provider above them; `BackLink`, `NavChips`, and `ParameterTile` render `react-router-dom` `Link`/`NavLink`, which need a Router. Wrap any composition using these in:
+Two of these components read React context and will render blank (or throw) if used outside it: `ParameterTile` calls `useTempUnit()`, which throws if there's no provider above it; `BackLink` and `ParameterTile` render `react-router-dom` `Link`, which needs a Router. Wrap any composition using these in:
 
 ```jsx
 <MemoryRouter>
   <TempUnitProvider>
-    <HardnessUnitProvider>
-      {/* your composition */}
-    </HardnessUnitProvider>
+    {/* your composition */}
   </TempUnitProvider>
 </MemoryRouter>
 ```
 
-All three are exported on the bundle (`window.BettaTankTracker.MemoryRouter` / `TempUnitProvider` / `HardnessUnitProvider`) alongside the components themselves — no separate import needed.
+Both are exported on the bundle (`window.BettaTankTracker.MemoryRouter` / `TempUnitProvider`) alongside the components themselves — no separate import needed.
 
 ## Styling idiom: Tailwind utility classes over CSS custom-property tokens
 
@@ -37,26 +35,24 @@ Read `_ds_bundle.css` (imported by `styles.css`, which also pulls in `fonts/font
 ```jsx
 <MemoryRouter>
   <TempUnitProvider>
-    <HardnessUnitProvider>
-      <div className="flex flex-col gap-3 rounded-card border border-line bg-surface p-4 shadow-tile">
-        <div className="flex items-center justify-between">
-          <span className="text-heading font-sans text-ink">Log a reading</span>
-          <StatusPill status="watch" />
-        </div>
-        <Input
-          id="ph"
-          label="pH"
-          mono
-          value="7.2"
-          onChange={() => {}}
-          placeholder="7.0–7.5"
-        />
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary">Cancel</Button>
-          <Button variant="primary">Save reading</Button>
-        </div>
+    <div className="flex flex-col gap-3 rounded-card border border-line bg-surface p-4 shadow-tile">
+      <div className="flex items-center justify-between">
+        <span className="text-heading font-sans text-ink">Log a reading</span>
+        <StatusPill status="watch" />
       </div>
-    </HardnessUnitProvider>
+      <Input
+        id="ph"
+        label="pH"
+        mono
+        value="7.2"
+        onChange={() => {}}
+        placeholder="7.0–7.5"
+      />
+      <div className="flex justify-end gap-2">
+        <Button variant="secondary">Cancel</Button>
+        <Button variant="primary">Save reading</Button>
+      </div>
+    </div>
   </TempUnitProvider>
 </MemoryRouter>
 ```
