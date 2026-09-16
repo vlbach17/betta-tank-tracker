@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { formatFullDate, formatRelativeTime } from '../lib/format'
 import { fetchEntries, type Entry } from '../lib/parameters'
 import { getReadingStatus, worstStatus } from '../lib/status'
-import { Avatar } from './Avatar'
-import { Notice } from './Notice'
-import { StatusPill } from './StatusPill'
+import { Avatar } from '../components/Avatar'
+import { Notice } from '../components/Notice'
+import { StatusPill } from '../components/StatusPill'
 
 export function History() {
   const [entries, setEntries] = useState<Entry[] | null>(null)
