@@ -56,7 +56,7 @@ export function ParameterTile({
   if (hero) {
     return (
       <Link
-        to={`/parameter/${id}`}
+        to={`/overview?tab=Overview&parameter=${id}`}
         className="col-span-2 flex items-center justify-between gap-3 rounded-tile border border-line p-4 shadow-tile active:opacity-80"
         style={{ backgroundImage: 'var(--gradient-hero-wash)' }}
       >
