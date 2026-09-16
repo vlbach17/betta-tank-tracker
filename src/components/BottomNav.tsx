@@ -5,8 +5,10 @@ const TAB_FOCUS =
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong rounded-2xl'
 
 export function BottomNav() {
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const logActive = pathname.startsWith('/log')
+  const onOverview = pathname === '/overview'
+  const overviewTab = new URLSearchParams(search).get('tab')
 
   return (
     <nav
@@ -15,7 +17,12 @@ export function BottomNav() {
     >
       <div className="mx-auto flex max-w-md items-start justify-between px-1 pt-2 pb-[calc(env(safe-area-inset-bottom)+8px)] sm:rounded-3xl sm:border sm:border-line sm:bg-surface sm:px-4 sm:pt-3 sm:pb-3 sm:shadow-tile">
         <NavTab to="/" label="Now" icon="fishBowl" end />
-        <NavTab to="/overview" label="Overview" icon="wave" />
+        <NavTab
+          to="/overview?tab=Overview"
+          label="Overview"
+          icon="wave"
+          activeOverride={onOverview && overviewTab !== 'Tank'}
+        />
 
         <NavLink
           to="/log"
@@ -37,7 +44,12 @@ export function BottomNav() {
           </span>
         </NavLink>
 
-        <NavTab to="/history" label="History" icon="calendar" />
+        <NavTab
+          to="/overview?tab=Tank"
+          label="Tank"
+          icon="fish"
+          activeOverride={onOverview && overviewTab === 'Tank'}
+        />
 
         <NavTab to="/settings" label="Settings" icon="settings" />
       </div>
@@ -50,11 +62,14 @@ function NavTab({
   label,
   icon,
   end,
+  activeOverride,
 }: {
   to: string
   label: string
   icon: IconName
   end?: boolean
+  /** Overrides NavLink's own pathname-only match — needed when two nav items share a path and differ only by search params (Overview vs. Tank, both on /overview). */
+  activeOverride?: boolean
 }) {
   return (
     <NavLink
@@ -62,7 +77,7 @@ function NavTab({
       end={end}
       className={({ isActive }) =>
         `flex flex-1 flex-col items-center gap-1 pt-0.5 ${
-          isActive ? 'text-ink' : 'text-ink-muted'
+          (activeOverride ?? isActive) ? 'text-ink' : 'text-ink-muted'
         } ${TAB_FOCUS}`
       }
     >

@@ -6,27 +6,9 @@ import { Dashboard } from './screens/Dashboard'
 import { LogTest } from './screens/LogTest'
 import { Settings } from './screens/Settings'
 
-const ParameterHistory = lazy(() =>
-  import('./screens/ParameterHistory').then((m) => ({
-    default: m.ParameterHistory,
-  })),
-)
-
 const Overview = lazy(() =>
   import('./screens/Overview').then((m) => ({
     default: m.Overview,
-  })),
-)
-
-const History = lazy(() =>
-  import('./screens/History').then((m) => ({
-    default: m.History,
-  })),
-)
-
-const EntryDetail = lazy(() =>
-  import('./screens/EntryDetail').then((m) => ({
-    default: m.EntryDetail,
   })),
 )
 
@@ -52,30 +34,6 @@ function App() {
           element={
             <Suspense fallback={chartRouteFallback}>
               <Overview />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/parameter/:parameterId"
-          element={
-            <Suspense fallback={chartRouteFallback}>
-              <ParameterHistory />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/history"
-          element={
-            <Suspense fallback={chartRouteFallback}>
-              <History />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/history/:testedAt"
-          element={
-            <Suspense fallback={chartRouteFallback}>
-              <EntryDetail />
             </Suspense>
           }
         />

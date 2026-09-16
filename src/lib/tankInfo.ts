@@ -122,7 +122,10 @@ export const swapPlantOrder = (a: Sortable, b: Sortable) =>
 
 // Fish
 
-export type NewFish = Pick<Fish, 'name' | 'species' | 'acquired_date' | 'notes'>
+export type NewFish = Pick<
+  Fish,
+  'name' | 'species' | 'acquired_date' | 'notes' | 'tank_gallons' | 'tank_setup_date'
+>
 
 export const fetchAllFish = () => fetchAll<Fish>('fish')
 export const createFish = (input: NewFish) => create<Fish>('fish', input)

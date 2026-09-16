@@ -53,6 +53,8 @@ export interface Fish {
   notes: string | null
   sort_order: number
   active: boolean
+  tank_gallons: number | null
+  tank_setup_date: string | null
 }
 
 export interface WaterChange {

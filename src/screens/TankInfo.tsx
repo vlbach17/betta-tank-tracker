@@ -660,13 +660,19 @@ export function TankInfo() {
           fields={[
             { key: 'species', label: 'Species', type: 'text', placeholder: 'Betta splendens' },
             { key: 'acquired_date', label: 'Acquired', type: 'date' },
+            { key: 'tank_gallons', label: 'Tank size (gal)', type: 'number', placeholder: '15' },
+            { key: 'tank_setup_date', label: 'Tank set up', type: 'date' },
           ]}
           displayField={(item, f) =>
             f.key === 'species'
               ? item.species
               : f.key === 'acquired_date'
                 ? item.acquired_date
-                : null
+                : f.key === 'tank_gallons'
+                  ? item.tank_gallons != null ? `${item.tank_gallons} gal` : null
+                  : f.key === 'tank_setup_date'
+                    ? item.tank_setup_date
+                    : null
           }
           onToggleActive={(item) => toggleActive(item, setFish, setFishRowError, updateFish)}
           onMove={(item, direction) =>
@@ -674,12 +680,18 @@ export function TankInfo() {
           }
           onCreate={async (values) => {
             if (!values.name?.trim()) return 'Name is required'
+            const tankGallons = values.tank_gallons ? Number(values.tank_gallons) : null
+            if (values.tank_gallons && !Number.isFinite(tankGallons)) {
+              return 'Tank size must be a number'
+            }
             try {
               const created = await createFish({
                 name: values.name.trim(),
                 species: values.species?.trim() || null,
                 acquired_date: values.acquired_date || null,
                 notes: values.notes?.trim() || null,
+                tank_gallons: tankGallons,
+                tank_setup_date: values.tank_setup_date || null,
               })
               setFish((items) => [...(items ?? []), created])
               return null
