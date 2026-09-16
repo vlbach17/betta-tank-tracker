@@ -54,3 +54,11 @@ export interface Fish {
   sort_order: number
   active: boolean
 }
+
+export interface WaterChange {
+  id: string
+  changed_at: string
+  amount_gallons: number
+  notes: string | null
+  created_at: string
+}

@@ -4,10 +4,13 @@ import {
   createFish,
   createFoodSupply,
   createPlant,
+  createWaterChange,
+  deleteWaterChange,
   fetchAllEquipment,
   fetchAllFish,
   fetchAllFoodSupplies,
   fetchAllPlants,
+  fetchAllWaterChanges,
   swapEquipmentOrder,
   swapFishOrder,
   swapFoodSupplyOrder,
@@ -17,15 +20,17 @@ import {
   updateFoodSupply,
   updatePlant,
 } from '../lib/tankInfo'
-import type { Equipment, Fish, FoodSupply, Plant } from '../types/database'
+import { toDateInputValue } from '../lib/format'
+import type { Equipment, Fish, FoodSupply, Plant, WaterChange } from '../types/database'
 import { Avatar } from '../components/Avatar'
 import { BackLink } from '../components/BackLink'
 import { Button } from '../components/Button'
+import { IconButton } from '../components/IconButton'
 import { Input } from '../components/Input'
 import { Notice } from '../components/Notice'
 import { TabNav } from '../components/TabNav'
 
-const TABS = ['Equipment', 'Food', 'Plants', 'Fish'] as const
+const TABS = ['Equipment', 'Food', 'Plants', 'Fish', 'Water Changes'] as const
 type Tab = (typeof TABS)[number]
 
 type Sortable = { id: string; sort_order: number; active: boolean }
@@ -269,6 +274,157 @@ function EntityManager<T extends Sortable & { name: string; notes: string | null
   )
 }
 
+function WaterChangeLog({
+  items,
+  loadError,
+  rowError,
+  onDelete,
+  onCreate,
+}: {
+  items: WaterChange[] | null
+  loadError: string | null
+  rowError: string | null
+  onDelete: (item: WaterChange) => void
+  onCreate: (values: Record<string, string>) => Promise<string | null>
+}) {
+  const [changedAt, setChangedAt] = useState(() => toDateInputValue(new Date()))
+  const [amount, setAmount] = useState('')
+  const [notes, setNotes] = useState('')
+  const [adding, setAdding] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
+  const [confirmingId, setConfirmingId] = useState<string | null>(null)
+
+  async function handleAdd(e: React.FormEvent) {
+    e.preventDefault()
+    setAdding(true)
+    setAddError(null)
+    const error = await onCreate({ changed_at: changedAt, amount, notes })
+    setAdding(false)
+    if (error) {
+      setAddError(error)
+      return
+    }
+    setAmount('')
+    setNotes('')
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      {loadError && <Notice>Couldn't load: {loadError}</Notice>}
+      {!loadError && !items && (
+        <p className="text-body font-sans text-ink-3">Loading…</p>
+      )}
+
+      {items && (
+        <section className="flex flex-col gap-3">
+          {rowError && <Notice>{rowError}</Notice>}
+
+          {items.length === 0 && (
+            <p className="text-body-sm font-sans text-ink-3">
+              No water changes logged yet.
+            </p>
+          )}
+
+          <div className="flex flex-col gap-3">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className="flex flex-col gap-2 rounded-tile border border-line bg-surface p-4 shadow-tile"
+              >
+                {confirmingId === item.id ? (
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-body font-sans text-ink">
+                      Delete this entry?
+                    </span>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setConfirmingId(null)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => {
+                          setConfirmingId(null)
+                          onDelete(item)
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3 className="text-heading font-sans text-ink">
+                        {item.amount_gallons} gal
+                      </h3>
+                      <p className="text-body-sm font-sans text-ink-3">
+                        {item.changed_at}
+                      </p>
+                      {item.notes && (
+                        <p className="mt-1 text-body-sm font-sans text-ink">
+                          {item.notes}
+                        </p>
+                      )}
+                    </div>
+                    <IconButton
+                      icon="trash"
+                      label="Delete water change"
+                      tone="danger"
+                      onClick={() => setConfirmingId(item.id)}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="flex flex-col gap-3 rounded-tile border border-line bg-surface p-4 shadow-tile">
+        <h2 className="text-heading font-sans text-ink">Log a water change</h2>
+        <form onSubmit={handleAdd} className="flex flex-col gap-3">
+          <Input
+            id="water-change-date"
+            label="Date"
+            type="date"
+            value={changedAt}
+            onChange={setChangedAt}
+            required
+          />
+          <Input
+            id="water-change-amount"
+            label="Amount (gallons)"
+            mono
+            type="number"
+            inputMode="decimal"
+            step="any"
+            placeholder="2.5"
+            value={amount}
+            onChange={setAmount}
+            required
+          />
+          <Input
+            id="water-change-notes"
+            label="Notes"
+            value={notes}
+            onChange={setNotes}
+            placeholder="optional"
+          />
+          {addError && <Notice>{addError}</Notice>}
+          <Button type="submit" size="md" disabled={adding}>
+            {adding ? 'Adding…' : 'Add'}
+          </Button>
+        </form>
+      </section>
+    </div>
+  )
+}
+
 export function TankInfo() {
   const [tab, setTab] = useState<Tab>('Equipment')
 
@@ -287,6 +443,10 @@ export function TankInfo() {
   const [fish, setFish] = useState<Fish[] | null>(null)
   const [fishLoadError, setFishLoadError] = useState<string | null>(null)
   const [fishRowError, setFishRowError] = useState<string | null>(null)
+
+  const [waterChanges, setWaterChanges] = useState<WaterChange[] | null>(null)
+  const [waterChangesLoadError, setWaterChangesLoadError] = useState<string | null>(null)
+  const [waterChangesRowError, setWaterChangesRowError] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -344,13 +504,29 @@ export function TankInfo() {
     }
   }, [])
 
+  useEffect(() => {
+    let cancelled = false
+    fetchAllWaterChanges()
+      .then((data) => !cancelled && setWaterChanges(data))
+      .catch(
+        (err: unknown) =>
+          !cancelled &&
+          setWaterChangesLoadError(
+            err instanceof Error ? err.message : 'Failed to load',
+          ),
+      )
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   return (
     <main className="mx-auto flex min-h-svh max-w-md flex-col gap-6 px-5 pt-5 pb-28 sm:min-h-0 sm:my-12 sm:rounded-card sm:border sm:border-line sm:bg-surface sm:px-6 sm:pt-6 sm:pb-10 sm:shadow-[0_24px_60px_-16px_rgba(20,20,55,0.35)]">
       <div>
         <BackLink to="/settings" label="Settings" />
         <h1 className="text-title font-sans text-ink">Tank Info</h1>
         <p className="text-caption font-sans text-ink-3">
-          Equipment, food, plants, and residents
+          Equipment, food, plants, residents, and water changes
         </p>
       </div>
 
@@ -506,6 +682,53 @@ export function TankInfo() {
                 notes: values.notes?.trim() || null,
               })
               setFish((items) => [...(items ?? []), created])
+              return null
+            } catch (err) {
+              return err instanceof Error ? err.message : 'Failed to add'
+            }
+          }}
+        />
+      )}
+
+      {tab === 'Water Changes' && (
+        <WaterChangeLog
+          items={waterChanges}
+          loadError={waterChangesLoadError}
+          rowError={waterChangesRowError}
+          onDelete={async (item) => {
+            const previous = waterChanges
+            setWaterChanges((items) => (items ?? []).filter((i) => i.id !== item.id))
+            setWaterChangesRowError(null)
+            try {
+              await deleteWaterChange(item.id)
+            } catch (err) {
+              setWaterChanges(previous)
+              setWaterChangesRowError(
+                err instanceof Error ? err.message : 'Failed to delete',
+              )
+            }
+          }}
+          onCreate={async (values) => {
+            if (!values.changed_at) return 'Date is required'
+            const amount = Number(values.amount)
+            if (!Number.isFinite(amount) || amount <= 0) {
+              return 'Amount must be a positive number'
+            }
+            try {
+              const created = await createWaterChange({
+                changed_at: values.changed_at,
+                amount_gallons: amount,
+                notes: values.notes?.trim() || null,
+              })
+              setWaterChanges((items) => {
+                const next = [...(items ?? []), created]
+                next.sort(
+                  (a, b) =>
+                    b.changed_at.localeCompare(a.changed_at) ||
+                    b.created_at.localeCompare(a.created_at),
+                )
+                return next
+              })
               return null
             } catch (err) {
               return err instanceof Error ? err.message : 'Failed to add'

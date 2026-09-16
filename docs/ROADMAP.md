@@ -23,5 +23,5 @@ Feature ideas and maybes, including things set aside while building. Nothing her
 - Multiple tanks — each tank/fish would get its own name following the app's naming pattern, "{Name}'s Bettabase" (e.g. a second tank could be "Juniper's Bettabase")
 - Storing or gallerying tank photos
 - Push notifications for overdue tests
-- Water change and feeding logs
+- Feeding logs (water change logs shipped — see Tank Info's Water Changes tab)
 - Sharing or multi-user access
