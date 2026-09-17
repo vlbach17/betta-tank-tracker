@@ -16,7 +16,7 @@ export function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface shadow-[0_-2px_12px_rgba(41,49,50,0.06)] sm:border-t-0 sm:bg-transparent sm:pb-6 sm:shadow-none"
     >
       <div className="mx-auto flex max-w-md items-start justify-between px-1 pt-2 pb-[calc(env(safe-area-inset-bottom)+8px)] sm:rounded-3xl sm:border sm:border-line sm:bg-surface sm:px-4 sm:pt-3 sm:pb-3 sm:shadow-tile">
-        <NavTab to="/" label="Now" icon="fishBowl" end activeStyle="offset" />
+        <NavTab to="/" label="Now" icon="fishBowl" end />
         <NavTab
           to="/overview?tab=Overview"
           label="Overview"
@@ -54,7 +54,6 @@ export function BottomNav() {
           label="Tank"
           icon="fish"
           activeOverride={onOverview && overviewTab === 'Tank'}
-          activeStyle="offset"
         />
 
         <NavTab to="/settings" label="Settings" icon="settings" />
@@ -69,7 +68,6 @@ function NavTab({
   icon,
   end,
   activeOverride,
-  activeStyle = 'fill',
 }: {
   to: string
   label: string
@@ -77,11 +75,6 @@ function NavTab({
   end?: boolean
   /** Overrides NavLink's own pathname-only match — needed when two nav items share a path and differ only by search params (Overview vs. Tank, both on /overview). */
   activeOverride?: boolean
-  /**
-   * 'fill' (default): active icon swaps to its solid-fill glyph in lime.
-   * 'offset': icon stays outline; a lime disc sits offset behind it instead.
-   */
-  activeStyle?: 'fill' | 'offset'
 }) {
   return (
     <NavLink
@@ -95,24 +88,6 @@ function NavTab({
     >
       {({ isActive }) => {
         const active = activeOverride ?? isActive
-        if (activeStyle === 'offset') {
-          return (
-            <>
-              <span className="relative flex h-7 w-7 items-center justify-center">
-                <span
-                  aria-hidden
-                  className={`absolute inset-0 rounded-full bg-lime transition-all duration-200 ${
-                    active
-                      ? 'translate-x-1 -translate-y-1 scale-100 opacity-100'
-                      : 'translate-x-0 translate-y-0 scale-75 opacity-0'
-                  }`}
-                />
-                <Icon name={icon} size={22} className="relative" />
-              </span>
-              <span className="text-eyebrow font-sans">{label}</span>
-            </>
-          )
-        }
         return (
           <>
             <Icon
