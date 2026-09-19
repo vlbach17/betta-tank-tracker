@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import {
   abbreviateParameterName,
   formatHourOption,
@@ -13,17 +12,21 @@ import {
   type NewReading,
 } from '../lib/parameters'
 import type { Parameter } from '../types/database'
-import { BackLink } from '../components/BackLink'
 import { Button } from '../components/Button'
 import { Input } from '../components/Input'
+import { Modal } from '../components/Modal'
 import { Notice } from '../components/Notice'
 import { Select } from '../components/Select'
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
 
-export function LogTest() {
-  const navigate = useNavigate()
-
+export function LogTest({
+  onClose,
+  onSaved,
+}: {
+  onClose: () => void
+  onSaved: () => void
+}) {
   const [parameters, setParameters] = useState<Parameter[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
 
@@ -85,7 +88,8 @@ export function LogTest() {
     setSaveError(null)
     try {
       await saveReadings(readings)
-      navigate('/')
+      onSaved()
+      onClose()
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : 'Failed to save')
       setSaving(false)
@@ -93,26 +97,19 @@ export function LogTest() {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col px-5 pt-5 pb-[calc(env(safe-area-inset-bottom)+var(--bottom-nav-h)+84px)] sm:min-h-0 sm:my-12 sm:rounded-card sm:border sm:border-line sm:bg-surface sm:px-6 sm:pt-6 sm:pb-10 sm:shadow-[0_24px_60px_-16px_rgba(20,20,55,0.35)]">
-      <BackLink to="/" label="Dashboard" />
-
-      <div className="mb-5 flex flex-col gap-1">
-        <h1 className="lowercase text-title font-name text-ink">
-          log a test
-        </h1>
-        <p className="text-caption font-sans text-ink-3">
-          Fill in whatever you tested. Blanks are skipped.
-        </p>
-      </div>
-
+    <Modal open onClose={onClose} title="Log a test">
       {loadError && <Notice>Couldn't load parameters: {loadError}</Notice>}
 
+      {!parameters && !loadError && (
+        <p className="text-body font-sans text-ink-3">Loading…</p>
+      )}
+
       {parameters && (
-        <form
-          id="log-test-form"
-          onSubmit={handleSave}
-          className="flex flex-col gap-5"
-        >
+        <form onSubmit={handleSave} className="flex flex-col gap-5">
+          <p className="text-caption font-sans text-ink-3">
+            Fill in whatever you tested. Blanks are skipped.
+          </p>
+
           <div className="flex flex-col gap-1">
             <label htmlFor="tested-at-date" className="text-heading font-sans text-ink">
               Tested at
@@ -192,21 +189,12 @@ export function LogTest() {
           />
 
           {saveError && <Notice>{saveError}</Notice>}
-        </form>
-      )}
 
-      <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+var(--bottom-nav-h))] z-30 bg-gradient-to-t from-bg from-40% to-transparent px-5 pt-3 pb-4">
-        <div className="mx-auto max-w-md">
-          <Button
-            type="submit"
-            form="log-test-form"
-            className="w-full"
-            disabled={!parameters || !hasAnyValue || saving}
-          >
+          <Button type="submit" size="md" disabled={!hasAnyValue || saving}>
             {saving ? 'Saving…' : 'Save readings'}
           </Button>
-        </div>
-      </div>
-    </main>
+        </form>
+      )}
+    </Modal>
   )
 }

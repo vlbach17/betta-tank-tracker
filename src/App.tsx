@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { BottomNav } from './components/BottomNav'
 import { TempUnitProvider } from './components/TempUnitProvider'
@@ -23,11 +23,13 @@ const chartRouteFallback = (
 )
 
 function App() {
+  const [logOpen, setLogOpen] = useState(false)
+  const [dashboardRefreshKey, setDashboardRefreshKey] = useState(0)
+
   return (
     <TempUnitProvider>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/log" element={<LogTest />} />
+        <Route path="/" element={<Dashboard key={dashboardRefreshKey} />} />
         <Route path="/settings" element={<Settings />} />
         <Route
           path="/overview"
@@ -46,7 +48,13 @@ function App() {
           }
         />
       </Routes>
-      <BottomNav />
+      <BottomNav logActive={logOpen} onOpenLog={() => setLogOpen(true)} />
+      {logOpen && (
+        <LogTest
+          onClose={() => setLogOpen(false)}
+          onSaved={() => setDashboardRefreshKey((k) => k + 1)}
+        />
+      )}
     </TempUnitProvider>
   )
 }

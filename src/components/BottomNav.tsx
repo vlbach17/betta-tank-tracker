@@ -4,9 +4,14 @@ import { Icon, type IconName } from './Icon'
 const TAB_FOCUS =
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong rounded-2xl'
 
-export function BottomNav() {
+export function BottomNav({
+  logActive,
+  onOpenLog,
+}: {
+  logActive: boolean
+  onOpenLog: () => void
+}) {
   const { pathname, search } = useLocation()
-  const logActive = pathname.startsWith('/log')
   const onOverview = pathname === '/overview'
   const overviewTab = new URLSearchParams(search).get('tab')
 
@@ -24,8 +29,9 @@ export function BottomNav() {
           activeOverride={onOverview && overviewTab !== 'Tank'}
         />
 
-        <NavLink
-          to="/log"
+        <button
+          type="button"
+          onClick={onOpenLog}
           aria-label="Log a test"
           className={`flex flex-1 flex-col items-center ${TAB_FOCUS}`}
         >
@@ -47,7 +53,7 @@ export function BottomNav() {
           <span className="mt-1 text-eyebrow font-sans text-ink-muted">
             Log
           </span>
-        </NavLink>
+        </button>
 
         <NavTab
           to="/overview?tab=Tank"
