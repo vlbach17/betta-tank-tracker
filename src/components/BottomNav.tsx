@@ -16,7 +16,7 @@ export function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface shadow-[0_-2px_12px_rgba(41,49,50,0.06)] sm:border-t-0 sm:bg-transparent sm:pb-6 sm:shadow-none"
     >
       <div className="mx-auto flex max-w-md items-start justify-between px-1 pt-2 pb-[calc(env(safe-area-inset-bottom)+8px)] sm:rounded-3xl sm:border sm:border-line sm:bg-surface sm:px-4 sm:pt-3 sm:pb-3 sm:shadow-tile">
-        <NavTab to="/" label="Now" icon="fishBowl" end />
+        <NavTab to="/" label="Dashboard" icon="fish" end />
         <NavTab
           to="/overview?tab=Overview"
           label="Overview"
@@ -52,7 +52,7 @@ export function BottomNav() {
         <NavTab
           to="/overview?tab=Tank"
           label="Tank"
-          icon="fish"
+          icon="fishBowl"
           activeOverride={onOverview && overviewTab === 'Tank'}
         />
 
