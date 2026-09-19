@@ -1,15 +1,30 @@
 import { supabase } from './supabase'
-import type { Equipment, Fish, FoodSupply, Plant, WaterChange } from '../types/database'
+import type {
+  Equipment,
+  Fish,
+  FoodSupply,
+  Hardscape,
+  Plant,
+  WaterChange,
+  WaterTreatment,
+} from '../types/database'
 
 /**
- * Shared CRUD for the 4 Tank Info tables (equipment, food_supplies, plants,
- * fish). They're all shaped like `parameters`: a name, some optional detail
- * fields, `sort_order`, and an `active` flag used to archive rather than
- * delete. The generic helpers below do the Supabase calls; each table gets
- * thin typed wrappers so components never touch table-name strings directly.
+ * Shared CRUD for the 6 Tank Info tables (equipment, food_supplies, plants,
+ * fish, hardscape, water_treatments). They're all shaped like `parameters`: a
+ * name, some optional detail fields, `sort_order`, and an `active` flag used
+ * to archive rather than delete. The generic helpers below do the Supabase
+ * calls; each table gets thin typed wrappers so components never touch
+ * table-name strings directly.
  */
 
-type TankInfoTable = 'equipment' | 'food_supplies' | 'plants' | 'fish'
+type TankInfoTable =
+  | 'equipment'
+  | 'food_supplies'
+  | 'plants'
+  | 'fish'
+  | 'hardscape'
+  | 'water_treatments'
 
 interface Sortable {
   id: string
@@ -56,6 +71,11 @@ async function update(
   if (error) throw error
 }
 
+async function remove(table: TankInfoTable, id: string): Promise<void> {
+  const { error } = await supabase.from(table).delete().eq('id', id)
+  if (error) throw error
+}
+
 /** Swaps `sort_order` between two rows so one moves up/down in the list. */
 async function swapOrder(
   table: TankInfoTable,
@@ -91,10 +111,14 @@ export const updateEquipment = (
 ) => update('equipment', id, updates)
 export const swapEquipmentOrder = (a: Sortable, b: Sortable) =>
   swapOrder('equipment', a, b)
+export const deleteEquipment = (id: string) => remove('equipment', id)
 
 // Food supplies
 
-export type NewFoodSupply = Pick<FoodSupply, 'name' | 'notes'>
+export type NewFoodSupply = Pick<
+  FoodSupply,
+  'name' | 'manual_url' | 'purchase_date' | 'notes'
+>
 
 export const fetchAllFoodSupplies = () => fetchAll<FoodSupply>('food_supplies')
 export const createFoodSupply = (input: NewFoodSupply) =>
@@ -105,12 +129,13 @@ export const updateFoodSupply = (
 ) => update('food_supplies', id, updates)
 export const swapFoodSupplyOrder = (a: Sortable, b: Sortable) =>
   swapOrder('food_supplies', a, b)
+export const deleteFoodSupply = (id: string) => remove('food_supplies', id)
 
 // Plants
 
 export type NewPlant = Pick<
   Plant,
-  'name' | 'quantity' | 'planted_date' | 'notes'
+  'name' | 'quantity' | 'manual_url' | 'planted_date' | 'notes'
 >
 
 export const fetchAllPlants = () => fetchAll<Plant>('plants')
@@ -119,6 +144,7 @@ export const updatePlant = (id: string, updates: Partial<Omit<Plant, 'id'>>) =>
   update('plants', id, updates)
 export const swapPlantOrder = (a: Sortable, b: Sortable) =>
   swapOrder('plants', a, b)
+export const deletePlant = (id: string) => remove('plants', id)
 
 // Fish
 
@@ -132,6 +158,44 @@ export const createFish = (input: NewFish) => create<Fish>('fish', input)
 export const updateFish = (id: string, updates: Partial<Omit<Fish, 'id'>>) =>
   update('fish', id, updates)
 export const swapFishOrder = (a: Sortable, b: Sortable) => swapOrder('fish', a, b)
+export const deleteFish = (id: string) => remove('fish', id)
+
+// Hardscape
+
+export type NewHardscape = Pick<
+  Hardscape,
+  'name' | 'manual_url' | 'purchase_date' | 'notes'
+>
+
+export const fetchAllHardscape = () => fetchAll<Hardscape>('hardscape')
+export const createHardscape = (input: NewHardscape) =>
+  create<Hardscape>('hardscape', input)
+export const updateHardscape = (
+  id: string,
+  updates: Partial<Omit<Hardscape, 'id'>>,
+) => update('hardscape', id, updates)
+export const swapHardscapeOrder = (a: Sortable, b: Sortable) =>
+  swapOrder('hardscape', a, b)
+export const deleteHardscape = (id: string) => remove('hardscape', id)
+
+// Water treatments
+
+export type NewWaterTreatment = Pick<
+  WaterTreatment,
+  'name' | 'manual_url' | 'purchase_date' | 'notes'
+>
+
+export const fetchAllWaterTreatments = () =>
+  fetchAll<WaterTreatment>('water_treatments')
+export const createWaterTreatment = (input: NewWaterTreatment) =>
+  create<WaterTreatment>('water_treatments', input)
+export const updateWaterTreatment = (
+  id: string,
+  updates: Partial<Omit<WaterTreatment, 'id'>>,
+) => update('water_treatments', id, updates)
+export const swapWaterTreatmentOrder = (a: Sortable, b: Sortable) =>
+  swapOrder('water_treatments', a, b)
+export const deleteWaterTreatment = (id: string) => remove('water_treatments', id)
 
 // Water changes — a chronological log, not a manageable entity list, so it
 // skips the `sort_order`/`active` machinery above: newest first, hard delete.

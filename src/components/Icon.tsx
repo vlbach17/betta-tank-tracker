@@ -32,6 +32,9 @@ export type IconName =
   | 'trash'
   | 'envelope'
   | 'bell'
+  | 'plus'
+  | 'pencil'
+  | 'close'
   | 'chevronLeft'
 
 export type IconSize = 18 | 20 | 24 | 32
@@ -257,6 +260,15 @@ const GLYPHS: Record<IconName, Glyph> = {
       { t: 'path', join: true, d: 'M6.2 16.6V11a5.8 5.8 0 0 1 11.6 0v5.6' },
       { t: 'path', d: 'M4.4 16.6h15.2' },
     ],
+  },
+  plus: {
+    base: [{ t: 'path', d: 'M12 5v14M5 12h14' }],
+  },
+  pencil: {
+    base: [{ t: 'path', join: true, d: 'M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z' }],
+  },
+  close: {
+    base: [{ t: 'path', d: 'M6 6l12 12M18 6L6 18' }],
   },
   // Pre-Iridescent glyph, kept as-is until design draws a replacement to the 24x24 rules.
   chevronLeft: {

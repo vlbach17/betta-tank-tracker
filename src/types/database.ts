@@ -30,6 +30,8 @@ export interface Equipment {
 export interface FoodSupply {
   id: string
   name: string
+  manual_url: string | null
+  purchase_date: string | null
   notes: string | null
   sort_order: number
   active: boolean
@@ -39,7 +41,28 @@ export interface Plant {
   id: string
   name: string
   quantity: number
+  manual_url: string | null
   planted_date: string | null
+  notes: string | null
+  sort_order: number
+  active: boolean
+}
+
+export interface Hardscape {
+  id: string
+  name: string
+  manual_url: string | null
+  purchase_date: string | null
+  notes: string | null
+  sort_order: number
+  active: boolean
+}
+
+export interface WaterTreatment {
+  id: string
+  name: string
+  manual_url: string | null
+  purchase_date: string | null
   notes: string | null
   sort_order: number
   active: boolean
